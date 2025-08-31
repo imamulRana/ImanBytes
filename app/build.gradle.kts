@@ -105,6 +105,9 @@ dependencies {
     //androidx media3
     implementation(libs.bundles.media3)
 
+    //parse string from html jsoup
+    implementation(libs.jsoup)
+
     //test
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

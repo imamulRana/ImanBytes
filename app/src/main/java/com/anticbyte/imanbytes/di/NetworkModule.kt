@@ -29,7 +29,6 @@ object NetworkModule {
         HttpClient(CIO) {
             install(plugin = ContentNegotiation, configure = jsonConfig)
             install(plugin = Logging, configure = loggingConfig)
-            install(plugin = DefaultRequest, configure = defaultRequestConfig)
         }
 
     @Provides

@@ -8,6 +8,7 @@ import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.LoggingConfig
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
+import org.jsoup.Jsoup
 
 val jsonConfig: ContentNegotiationConfig.() -> Unit = {
     json(
@@ -25,5 +26,11 @@ val loggingConfig: LoggingConfig.() -> Unit = {
 }
 
 val defaultRequestConfig: DefaultRequest.DefaultRequestBuilder.() -> Unit = {
-    url(urlString = "")
+    url(urlString = "https://anticbyte.com/api/v2")
+}
+
+inline fun <T> apiSafeCall(block: () -> T): Result<T> {
+    return runCatching { block() }.onFailure {
+        it.localizedMessage
+    }
 }

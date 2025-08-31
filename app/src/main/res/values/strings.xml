@@ -28,5 +28,12 @@ Just as a bell rings as soon as an examination is over, similarly as soon as the
 
 This present world of ours is illuminated by the light of the sun, which is able to show us only tangible things. The world of the Hereafter will be directly illuminated by God’s light (nur). So even the intangible realities of the world will become visible to man’s eyes. At that time, people will be brought in to the Court of God. In the present world, people ignored the prophets and the preachers operating under their guidance. But, in the Hereafter, people will be wonderstruck to find that their future is decided on the basis of the support or rejection of these prophets and preachers.</string>
 
+    <string name="title_arabic_recitation">Arabic Recitation</string>
+    <string name="desc_arabic_recitation">Arabic Recitation of the Quran.</string>
+    <string name="arabic_recitation_spl">Best for Memorization</string>
+
+    <string name="title_translation_recitation">Recitation with Translation</string>
+    <string name="desc_translation_recitation">Arabic Recitation of the Quran with Realtime Translation.</string>
+    <string name="translation_recitation_spl">Best for Understanding</string>
 
 </resources>

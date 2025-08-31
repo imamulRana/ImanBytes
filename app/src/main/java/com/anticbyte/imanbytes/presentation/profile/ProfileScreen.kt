@@ -43,7 +43,7 @@ fun ProfileScreen(
 
     Scaffold(topBar = {
         AppTopBar(
-            title = "Profile", subtitle = "Customize your profile",
+            title = "Profile",
             onNavigationIconClick = navigateUp
         )
     }) {

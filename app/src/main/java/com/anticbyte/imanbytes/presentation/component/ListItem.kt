@@ -9,8 +9,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -28,10 +28,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.anticbyte.imanbytes.R
@@ -47,36 +51,28 @@ fun KnowledgeSectionItem(
     @StringRes descriptionRes: Int = R.string.desc_quran,
     onItemClick: () -> Unit = {}
 ) {
-    ImanBytesTheme(darkTheme = true) {
-        ElevatedCard(
-            onClick = onItemClick,
-            modifier = modifier
-                .aspectRatio(ratio = 1f),
-            shape = shapes.extraLarge,
+    ElevatedCard(
+        onClick = onItemClick,
+        modifier = modifier.heightIn(160.dp, 250.dp),
+        shape = shapes.extraLarge,
+    ) {
+        Column(
+            modifier = Modifier.padding(
+                vertical = 16.dp, horizontal = 12.dp
+            ), verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Column(
-                modifier = Modifier.padding(
-                    vertical = 16.dp,
-                    horizontal = 12.dp
-                ),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Icon(imageVector = ImageVector.vectorResource(id = leadingIcon), null)
-                    Text(
-                        text = stringResource(id = titleRes),
-                        style = typography.titleLarge
-                    )
-                }
+                Icon(imageVector = ImageVector.vectorResource(id = leadingIcon), null)
                 Text(
-                    text = stringResource(id = descriptionRes),
-                    style = typography.labelLarge,
-                    color = Color(0xFFAAAAAA)
+                    text = stringResource(id = titleRes), style = typography.titleLarge
                 )
             }
+            Text(
+                text = stringResource(id = descriptionRes), style = typography.labelLarge
+            )
         }
     }
 }
@@ -90,21 +86,18 @@ fun AudioPlayerInfoItem(
     onPlayPauseClick: () -> Unit = {},
     onItemClick: () -> Unit = {}
 ) {
-    Row(
-        modifier = modifier
-            .clickable {
-                onItemClick()
-            }
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
+    Row(modifier = modifier
+        .clickable {
+            onItemClick()
+        }
+        .fillMaxWidth()
+        .padding(horizontal = 16.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically) {
         OutlinedIconButton(onClick = onPlayPauseClick) {
             Icon(
                 imageVector = ImageVector.vectorResource(
                     id = if (isPlaying) R.drawable.pause_24px else R.drawable.play_arrow_24px
-                ),
-                contentDescription = "Play Audio"
+                ), contentDescription = "Play Audio"
             )
         }
         Spacer(modifier = Modifier.width(8.dp))
@@ -121,39 +114,11 @@ fun AudioPlayerInfoItem(
 }
 
 @Composable
-fun QuranListItem(
-    modifier: Modifier = Modifier,
-    leading: String = "",
-    heading: String = "",
-    description: String = "",
-) {
-    ListItem(
-        modifier = modifier,
-        leadingContent = {
-            Box(
-                modifier = Modifier
-                    .size(48.dp)
-                    .clip(CircleShape)
-                    .background(color = colorScheme.surfaceContainer),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(text = leading)
-            }
-        }, headlineContent = {
-            Text(text = heading)
-        }, supportingContent = {
-            Text(text = description)
-        })
-}
-
-
-@Composable
 fun AudioPlayerSmall(modifier: Modifier = Modifier) {
     ElevatedCard(
         onClick = {
             //todo apply on click
-        },
-        modifier = modifier
+        }, modifier = modifier
     ) {
         Row(
             modifier = Modifier
@@ -187,10 +152,58 @@ fun AudioPlayerSmall(modifier: Modifier = Modifier) {
     }
 }
 
+@Composable
+fun QuranScreenItem(
+    modifier: Modifier = Modifier,
+    @DrawableRes leadingIcon: Int = R.drawable.ic_book_fill_sharp,
+    @StringRes titleRes: Int = R.string.title_arabic_recitation,
+    @StringRes descriptionRes: Int = R.string.desc_arabic_recitation,
+    @StringRes styleRes: Int = R.string.arabic_recitation_spl,
+    onItemClick: () -> Unit = {}
+) {
+    ElevatedCard(
+        onClick = onItemClick, modifier = modifier.fillMaxWidth()
+
+    ) {
+        Column(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(imageVector = ImageVector.vectorResource(leadingIcon), null)
+                Text(
+                    text = stringResource(titleRes), style = typography.bodyLarge
+                )
+            }
+            Text(
+                text = styledContentDesc(
+                    text = stringResource(descriptionRes), styleText = stringResource(styleRes)
+                ),
+
+                minLines = 2, style = typography.bodyMedium
+            )
+        }
+    }
+}
+
+@Composable
+fun styledContentDesc(text: String, styleText: String): AnnotatedString {
+    return buildAnnotatedString {
+        append(text)
+        append(" ")
+        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+            append(styleText)
+        }
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
-private fun TopicCardPreview() {
+private fun DefPrev() {
     ImanBytesTheme(darkTheme = true, dynamicColor = false) {
-        AudioPlayerSmall()
+        QuranScreenItem(modifier = Modifier)
     }
 }

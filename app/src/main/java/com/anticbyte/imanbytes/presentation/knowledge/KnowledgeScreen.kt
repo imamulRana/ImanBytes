@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyGridScope
@@ -13,16 +14,14 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.anticbyte.imanbytes.presentation.component.AppTopBar
 import com.anticbyte.imanbytes.presentation.component.KnowledgeSectionItem
-import com.anticbyte.imanbytes.presentation.quran.QuranViewModel
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
 
 /**
@@ -34,14 +33,14 @@ import com.anticbyte.imanbytes.theme.ImanBytesTheme
  *                  It is typically provided by Hilt.
  */
 @Composable
-fun KnowledgeScreen(
+fun KnowledgeScreenRoot(
     modifier: Modifier = Modifier,
-    viewModel: QuranViewModel = hiltViewModel()
+    viewModel: KnowledgeViewModel = hiltViewModel(),
+    navigateToQuran: () -> Unit
 ) {
-    val screenState by viewModel.city.collectAsStateWithLifecycle()
-    screenState
-    KnowledgeScreen(navigateToQuran = {})
+    KnowledgeScreen(navigateToQuran = navigateToQuran, onItemClick = {})
 }
+
 /**
  * Displays the main screen for accessing various knowledge sections.
  *
@@ -62,7 +61,9 @@ fun KnowledgeScreen(
     Scaffold(topBar = {
         AppTopBar(
             title = "Knowledge",
-            isBackVisible = true
+            isBackVisible = true,
+            subtitle = null,
+            onNavigationIconClick = navigateToQuran
         )
     }) { innerPadding ->
         LazyVerticalGrid(
@@ -70,12 +71,13 @@ fun KnowledgeScreen(
                 .fillMaxSize()
                 .padding(innerPadding),
             columns = GridCells.Fixed(2),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(horizontal = 16.dp)
         ) {
             knowledgeItems(
                 items = KnowledgeItem.entries,
+                //todo implement the click functions properly
                 onItemClick = onItemClick
             )
         }
@@ -94,7 +96,6 @@ fun LazyGridScope.knowledgeItems(
 ) {
     items(
         count = items.size,
-        span = { GridItemSpan(1) },
         key = { items[it].ordinal },
         itemContent = { index ->
             KnowledgeSectionItem(
@@ -110,7 +111,7 @@ fun LazyGridScope.knowledgeItems(
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 private fun HomeScreenPreview() {
-    ImanBytesTheme(dynamicColor = false, darkTheme = true) {
-        KnowledgeScreen()
+    ImanBytesTheme(dynamicColor = false) {
+        KnowledgeScreen(navigateToQuran = {})
     }
 }
