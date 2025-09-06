@@ -11,13 +11,9 @@ fun NavigationHost(
     navController: NavHostController,
 ) {
     NavHost(
-        modifier = modifier,
         navController = navController,
-        startDestination = HomeBaseRoute
+        startDestination = KnowledgeRoute
     ) {
-//        authGraph(navController)
-        homeGraph(navController)
-        knowledgeGraph(navController)
-        profileGraph(navController)
+        knowledgeNavGraph(navController = navController)
     }
 }

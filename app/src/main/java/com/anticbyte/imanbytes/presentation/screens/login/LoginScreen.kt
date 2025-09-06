@@ -41,8 +41,7 @@ fun LoginScreen(modifier: Modifier = Modifier, onLogin: () -> Unit = {}) {
     //draw the ui
     Scaffold(topBar = {
         AppTopBar(
-            title = "Login",
-            subtitle = "Enter your credentials"
+            title = "Login"
         )
     }) { innerPadding ->
         Column(

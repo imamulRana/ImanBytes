@@ -15,18 +15,27 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.material3.MaterialTheme.typography
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.layout.AlignmentLine
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.LayoutCoordinates
+import androidx.compose.ui.layout.positionOnScreen
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastForEachIndexed
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.anticbyte.imanbytes.R
+import com.anticbyte.imanbytes.navigation.NavigationBarItem
+import com.anticbyte.imanbytes.presentation.component.AppBottomBar
 import com.anticbyte.imanbytes.presentation.component.AppTopBar
 import com.anticbyte.imanbytes.presentation.component.AudioPlayerSmall
 import com.anticbyte.imanbytes.presentation.component.SectionTitle
@@ -35,22 +44,19 @@ import com.anticbyte.imanbytes.theme.ImanBytesTheme
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun HomeScreen(
-    modifier: Modifier = Modifier
-) {
+fun HomeScreen(modifier: Modifier = Modifier) {
     val scrollState = rememberScrollState()
     val imageList = listOf(R.drawable.img_quran_verse, R.drawable.img_hadith)
-
     Scaffold(
         topBar = {
-            AppTopBar(title = "Home", subtitle = "Welcome back, User")
+            AppTopBar(title = "Home")
         }
     ) {
+
         Column(
-            modifier = modifier
-                .padding(it)
+            modifier = Modifier
                 .verticalScroll(scrollState)
-                .fillMaxSize(),
+                .padding(it),
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
             //todo get next prayer time

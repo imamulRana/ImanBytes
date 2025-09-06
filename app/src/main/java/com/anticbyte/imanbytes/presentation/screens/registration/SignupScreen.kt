@@ -41,7 +41,7 @@ fun SignupScreen(modifier: Modifier = Modifier) {
 
     //draw the ui
     Scaffold(topBar = {
-        AppTopBar(title = "Signup", subtitle = "Enter your credentials")
+        AppTopBar(title = "Signup")
     }) { innerPadding ->
         Column(
             modifier = modifier

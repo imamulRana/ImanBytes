@@ -14,13 +14,13 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        enableEdgeToEdge()
         installSplashScreen()
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContent {
             val navController = rememberNavController()
-            ImanBytesTheme(darkTheme = true) {
-                NavigationScaffold(modifier = Modifier, navController)
+            ImanBytesTheme(dynamicColor = false) {
+                NavigationScaffold(modifier = Modifier, navController = navController)
             }
         }
     }

@@ -39,7 +39,6 @@ fun TopicsScreen(
     Scaffold(topBar = {
         AppTopBar(
             title = "Choose Topics",
-            subtitle = "Select topics to get your desired knowledge",
         )
     }) {
         Column(
