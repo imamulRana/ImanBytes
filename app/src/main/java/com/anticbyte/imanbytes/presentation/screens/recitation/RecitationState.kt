@@ -5,5 +5,5 @@ import com.anticbyte.imanbytes.domain.model.Surah
 data class RecitationState(
     val surahList: List<Surah> = emptyList(),
     val recitationType: RecitationType = RecitationType.ARABIC,
-
+    val nowPlayingSurah: Surah? = null
 )

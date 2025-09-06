@@ -34,6 +34,11 @@ android {
                 name = "BASE_URL",
                 value = "\"https://jsonplaceholder.typicode.com/\""
             )
+            buildConfigField(
+                "String",
+                "AUDIO_BASE_URL",
+                "\"https://cdn.islamic.network/quran/audio-surah/128/%s/%s.mp3\""
+            )
         }
         release {
             isMinifyEnabled = true

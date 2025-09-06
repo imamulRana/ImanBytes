@@ -35,11 +35,12 @@ fun NavGraphBuilder.knowledgeNavGraph(navController: NavHostController) {
             KnowledgeScreenRoot(
                 modifier = Modifier,
                 viewModel = viewModel,
-                navigateToQuran = { navController.navigate(RecitationRoute) },
+                navigateToQuran = { navController.navigate(RecitationRoute) }
             )
         }
         composable<RecitationRoute> {
             val viewModel = hiltViewModel<RecitationViewModel>()
+            val state by viewModel.recitationUiState.collectAsStateWithLifecycle()
             RecitationScreen()
         }
         composable<HadithRoute> {

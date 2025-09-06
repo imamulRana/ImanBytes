@@ -3,22 +3,17 @@
 package com.anticbyte.imanbytes.presentation.knowledge
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.GridItemSpan
-import androidx.compose.foundation.lazy.grid.LazyGridScope
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastForEach
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.anticbyte.imanbytes.presentation.component.AppTopBar
 import com.anticbyte.imanbytes.presentation.component.KnowledgeSectionItem
@@ -38,7 +33,9 @@ fun KnowledgeScreenRoot(
     viewModel: KnowledgeViewModel = hiltViewModel(),
     navigateToQuran: () -> Unit
 ) {
-    KnowledgeScreen(navigateToQuran = navigateToQuran, onItemClick = {})
+    KnowledgeScreen(navigateToQuran = {}, onItemClick = {
+        navigateToQuran()
+    })
 }
 
 /**
@@ -63,20 +60,17 @@ fun KnowledgeScreen(
             title = "Knowledge",
             isBackVisible = true,
             subtitle = null,
-            onNavigationIconClick = navigateToQuran
+            onNavigationIconClick = {}
         )
     }) { innerPadding ->
-        LazyVerticalGrid(
+        Column(
             modifier = modifier
                 .fillMaxSize()
                 .padding(innerPadding),
-            columns = GridCells.Fixed(2),
             verticalArrangement = Arrangement.spacedBy(12.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(horizontal = 16.dp)
-        ) {
-            knowledgeItems(
-                items = KnowledgeItem.entries,
+
+            ) {
+            KnowledgeItems(
                 //todo implement the click functions properly
                 onItemClick = onItemClick
             )
@@ -90,22 +84,18 @@ fun KnowledgeScreen(
  * @param items The list of [KnowledgeItem]s to display.
  * @param onItemClick A callback function that is invoked when an item is clicked.
  */
-fun LazyGridScope.knowledgeItems(
-    items: List<KnowledgeItem>,
+@Composable
+fun KnowledgeItems(
     onItemClick: (KnowledgeItem) -> Unit
 ) {
-    items(
-        count = items.size,
-        key = { items[it].ordinal },
-        itemContent = { index ->
-            KnowledgeSectionItem(
-                leadingIcon = items[index].iconRes,
-                titleRes = items[index].titleRes,
-                descriptionRes = items[index].descriptionRes,
-                onItemClick = { onItemClick(items[index]) }
-            )
-        }
-    )
+    KnowledgeItem.entries.fastForEach { item ->
+        KnowledgeSectionItem(
+            leadingIcon = item.iconRes,
+            titleRes = item.titleRes,
+            descriptionRes = item.descriptionRes,
+            onItemClick = { onItemClick(item) }
+        )
+    }
 }
 
 @Preview(showSystemUi = true, showBackground = true)

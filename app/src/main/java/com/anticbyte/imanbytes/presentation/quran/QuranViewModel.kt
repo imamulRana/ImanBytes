@@ -42,16 +42,6 @@ class QuranViewModel @Inject constructor(
             initialValue = ScreenUiState.Loading
         )
 
-    val city: StateFlow<String>
-        field = MutableStateFlow("Karachi")
-            .onStart {
-                fetchNewVerse()
-            }.stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
-                initialValue = "Karachi"
-            )
-
 
     fun fetchNewVerse() {
 

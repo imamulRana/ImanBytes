@@ -10,20 +10,19 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme.colorScheme
-import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,30 +50,30 @@ fun KnowledgeSectionItem(
     @StringRes descriptionRes: Int = R.string.desc_quran,
     onItemClick: () -> Unit = {}
 ) {
-    ElevatedCard(
-        onClick = onItemClick,
-        modifier = modifier.heightIn(160.dp, 250.dp),
-        shape = shapes.extraLarge,
-    ) {
-        Column(
-            modifier = Modifier.padding(
-                vertical = 16.dp, horizontal = 12.dp
-            ), verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ListItem(
+        modifier = modifier.clickable { onItemClick() },
+        leadingContent = {
+            Box(
+                Modifier
+                    .size(56.dp)
+                    .background(colorScheme.primary, MaterialShapes.Clover4Leaf.toShape()),
+                contentAlignment = Alignment.Center
             ) {
-                Icon(imageVector = ImageVector.vectorResource(id = leadingIcon), null)
-                Text(
-                    text = stringResource(id = titleRes), style = typography.titleLarge
-                )
+                Icon(imageVector = ImageVector.vectorResource(id = leadingIcon), null,
+                    tint = colorScheme.onPrimary)
             }
+        },
+        headlineContent = {
             Text(
-                text = stringResource(id = descriptionRes), style = typography.labelLarge
+                text = stringResource(id = titleRes)
             )
-        }
-    }
+        },
+        supportingContent = {
+            Text(
+                text = stringResource(id = descriptionRes)
+            )
+        },
+    )
 }
 
 @Composable
@@ -86,12 +85,13 @@ fun AudioPlayerInfoItem(
     onPlayPauseClick: () -> Unit = {},
     onItemClick: () -> Unit = {}
 ) {
-    Row(modifier = modifier
-        .clickable {
-            onItemClick()
-        }
-        .fillMaxWidth()
-        .padding(horizontal = 16.dp, vertical = 8.dp),
+    Row(
+        modifier = modifier
+            .clickable {
+                onItemClick()
+            }
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically) {
         OutlinedIconButton(onClick = onPlayPauseClick) {
             Icon(
