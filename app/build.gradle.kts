@@ -41,7 +41,8 @@ android {
             )
         }
         release {
-            isMinifyEnabled = true
+            signingConfig = signingConfigs.getByName("debug")
+            isMinifyEnabled = false
             isDebuggable = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -52,6 +53,11 @@ android {
                 type = "String",
                 name = "BASE_URL",
                 value = "\"https://jsonplaceholder.typicode.com/\""
+            )
+            buildConfigField(
+                "String",
+                "AUDIO_BASE_URL",
+                "\"https://cdn.islamic.network/quran/audio-surah/128/%s/%s.mp3\""
             )
         }
     }

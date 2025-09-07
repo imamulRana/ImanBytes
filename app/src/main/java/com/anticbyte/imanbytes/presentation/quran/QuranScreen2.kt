@@ -88,7 +88,7 @@ fun QuranScreen2(
                 isBackVisible = true,
                 actions = {
                     IconButton(onClick = {
-                        if (!isPlaying) quranViewModel.playQuranAudio(audioUrl) else quranViewModel.pauseQuranAudio()
+//                        if (!isPlaying) quranViewModel.playQuranAudio(audioUrl) else quranViewModel.pauseQuranAudio()
                     }) {
                         Box(Modifier, contentAlignment = Alignment.Center) {
                             CircularWavyProgressIndicator(

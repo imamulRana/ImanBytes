@@ -3,7 +3,9 @@ package com.anticbyte.imanbytes.presentation.screens.recitation
 import com.anticbyte.imanbytes.domain.model.Surah
 
 data class RecitationState(
-    val surahList: List<Surah> = emptyList(),
+    val isLoading: Boolean = false,
     val recitationType: RecitationType = RecitationType.ARABIC,
-    val nowPlayingSurah: Surah? = null
+    val surahList: List<Surah> = emptyList(),
+    val nowPlayingSurah: Surah? = null,
+    val errorMessages: String? = null
 )

@@ -57,15 +57,14 @@ class RecitationViewModel @Inject constructor(
         initialValue = ""
     )
 
-    fun playSurah(surah: Surah, recitationType: RecitationType) {
+    fun playSurah(surahID: String, recitationType: RecitationType) {
         viewModelScope.launch {
             _recitationUiState.update { screenUiState ->
                 screenUiState.copy(
-                    nowPlayingSurah = surah,
                     recitationType = recitationType
                 )
             }
-            quranAudioManager.playOrToggle(surah, recitationType)
+            quranAudioManager.playOrToggle(surahID, recitationType)
         }
     }
 }
