@@ -15,9 +15,4 @@ class RecitationUnitTest {
     fun setup() {
         viewModel = RecitationViewModel(repo, audioManager)
     }
-
-    @Test
-    fun testGetAllSurah() {
-        val x = audioManager.playQuranAudio("audioUrl")
-    }
 }

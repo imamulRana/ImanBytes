@@ -18,7 +18,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -69,15 +68,11 @@ class QuranViewModel @Inject constructor(
         initialValue = false
     )
 
-    fun playQuranAudio(audioUrl: String) {
-        viewModelScope.launch {
-            audioManager.playQuranAudio(audioUrl)
-        }
-    }
+
 
     fun pauseQuranAudio() {
         viewModelScope.launch {
-            audioManager.pauseQuranAudio()
+            audioManager.pauseAudio()
         }
     }
 

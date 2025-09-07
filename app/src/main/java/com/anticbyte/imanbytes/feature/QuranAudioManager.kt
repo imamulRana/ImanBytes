@@ -1,12 +1,9 @@
 package com.anticbyte.imanbytes.feature
 
-import android.util.Log
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
-import androidx.media3.common.Player.MEDIA_ITEM_TRANSITION_REASON_AUTO
 import androidx.media3.exoplayer.ExoPlayer
 import com.anticbyte.imanbytes.BuildConfig
-import com.anticbyte.imanbytes.domain.model.Surah
 import com.anticbyte.imanbytes.presentation.screens.recitation.RecitationType
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.currentCoroutineContext
@@ -21,7 +18,6 @@ import javax.inject.Inject
 class QuranAudioManager @Inject constructor(
     private val exoPlayer: ExoPlayer
 ) {
-    private var isMediaSet = false
     val isPlayingFlow: Flow<Boolean> = callbackFlow {
         val listener = object : Player.Listener {
             override fun onIsPlayingChanged(isPlaying: Boolean) {
@@ -45,30 +41,10 @@ class QuranAudioManager @Inject constructor(
         awaitClose { exoPlayer.removeListener(listener) }
     }.distinctUntilChanged()
 
-    val audioListener = object : Player.Listener {
-        override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
-            super.onMediaItemTransition(mediaItem, MEDIA_ITEM_TRANSITION_REASON_AUTO)
-            Log.d("AudioManager", "onMediaItemTransition: $mediaItem")
-        }
-    }
-
-    fun playQuranAudio(audioUrl: String) {
-        exoPlayer.apply {
-            if (!isMediaSet) {
-                setMediaItem(MediaItem.fromUri(audioUrl))
-                prepare()
-                isMediaSet = true
-            } else if (playbackState == Player.STATE_ENDED) {
-                seekTo(0L)
-            }
-            play()
-        }
-    }
-
-    fun playOrToggle(surah: Surah, recitationType: RecitationType) {
+    fun playOrToggle(surahID: String, recitationType: RecitationType) {
         exoPlayer.apply {
             //checks if the media id is == to the surah number
-            if (currentMediaItem?.mediaId == surah.number) {
+            if (currentMediaItem?.mediaId == surahID.plus(".${recitationType.recitationId}")) {
                 // if is player is active then pause else play
                 if (isPlaying) pause()
                 else if (playbackState == Player.STATE_ENDED) {
@@ -77,8 +53,8 @@ class QuranAudioManager @Inject constructor(
             } else {
                 //if different surah play new surah
                 val mediaItem = MediaItem.Builder()
-                    .setMediaId(surah.number)
-                    .setUri(BuildConfig.AUDIO_BASE_URL.format(recitationType.recitationId,surah.number))
+                    .setMediaId(surahID.plus(".${recitationType.recitationId}"))
+                    .setUri(BuildConfig.AUDIO_BASE_URL.format(recitationType.recitationId, surahID))
                     .build()
                 //
                 setMediaItem(mediaItem)
@@ -88,22 +64,7 @@ class QuranAudioManager @Inject constructor(
         }
     }
 
-    fun playOrPauseAudio(audioUrl: String) {
-        exoPlayer.apply {
-
-            if (!isPlaying) {
-                playQuranAudio(audioUrl)
-            } else {
-                pauseQuranAudio()
-            }
-            Log.d(
-                "AudioManager",
-                "playOrPauseAudio: State $playbackState, Command${Player.COMMAND_PLAY_PAUSE}, IsPlaying $isPlaying"
-            )
-        }
-    }
-
-    fun pauseQuranAudio() = exoPlayer.pause()
+    fun pauseAudio() = exoPlayer.pause()
     fun stopAudio() = exoPlayer.stop()
     fun releasePlayer() {
         exoPlayer.release()

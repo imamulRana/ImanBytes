@@ -25,4 +25,8 @@ class RecitationRepoImpl(private val httpClient: HttpClient) : RecitationRepo {
             }
         }
     }
+
+    override suspend fun getTranslatedRecitation(): Result<List<Surah>> {
+        TODO("Not yet implemented")
+    }
 }
