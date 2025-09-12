@@ -10,6 +10,6 @@
     <path
         android:pathData="M18,18h72v72h-72z"
         android:strokeWidth="0"
-        android:fillColor="#faf9fc"/>
+        android:fillColor="#f7f7f7"/>
   </group>
 </vector>

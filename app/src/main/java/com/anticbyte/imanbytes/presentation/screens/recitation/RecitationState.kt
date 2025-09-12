@@ -9,3 +9,10 @@ data class RecitationState(
     val nowPlayingSurah: Surah? = null,
     val errorMessages: String? = null
 )
+/*
+
+sealed interface RecitationScreenState{
+    object Loading: RecitationScreenState
+    data class Error(val message: String): RecitationScreenState
+    data class Success(val data: RecitationState): RecitationScreenState
+}*/

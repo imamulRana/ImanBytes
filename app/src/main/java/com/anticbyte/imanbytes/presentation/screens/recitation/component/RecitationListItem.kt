@@ -9,19 +9,17 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledIconToggleButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
-import androidx.compose.material3.LocalMinimumInteractiveComponentSize
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.anticbyte.imanbytes.R
 import com.anticbyte.imanbytes.domain.model.Surah
@@ -39,7 +37,7 @@ fun RecitationListItem(
             Box(
                 modifier = Modifier
                     .background(color = colorScheme.secondaryContainer, CircleShape)
-                    .size(size = 56.dp),
+                    .size(size = 40.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -53,21 +51,25 @@ fun RecitationListItem(
         overlineContent = { Text(surah.name) },
         supportingContent = { Text(surah.englishNameTranslation) },
         trailingContent = {
-            CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides Dp.Unspecified) {
-                Column(horizontalAlignment = Alignment.End) {
-                    Text(text = "${surah.numberOfAyahs} Ayahs")
-                    Spacer(Modifier.size(56.dp))
-                    FilledIconToggleButton(
-                        checked = isPlaying,
-                        onCheckedChange = { playAudio(surah.number) }
-                    ) {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(
-                                id = if (isPlaying) R.drawable.pause_24px else R.drawable.play_arrow_24px
-                            ),
-                            contentDescription = null,
+            Column(horizontalAlignment = Alignment.End) {
+                Text(text = "${surah.numberOfAyahs} Ayahs")
+                Spacer(Modifier.size(56.dp))
+                FilledIconToggleButton(
+                    modifier = Modifier.size(
+                        IconButtonDefaults.smallContainerSize(
+                            widthOption = IconButtonDefaults.IconButtonWidthOption.Wide
                         )
-                    }
+                    ),
+                    checked = isPlaying,
+                    onCheckedChange = { playAudio(surah.number) },
+                    shapes = IconButtonDefaults.toggleableShapes()
+                ) {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(
+                            id = if (isPlaying) R.drawable.pause_24px else R.drawable.play_arrow_24px
+                        ),
+                        contentDescription = null,
+                    )
                 }
             }
         },
