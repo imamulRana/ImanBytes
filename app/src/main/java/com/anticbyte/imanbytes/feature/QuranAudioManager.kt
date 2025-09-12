@@ -1,10 +1,12 @@
 package com.anticbyte.imanbytes.feature
 
+import androidx.media3.common.AudioAttributes
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.anticbyte.imanbytes.BuildConfig
 import com.anticbyte.imanbytes.presentation.screens.recitation.RecitationType
+import com.anticbyte.imanbytes.presentation.screens.recitation.component.PlayerSeekType
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
@@ -64,6 +66,22 @@ class QuranAudioManager @Inject constructor(
         }
     }
 
+    fun seekAudio(seekType: PlayerSeekType) {
+        exoPlayer.apply {
+            if (playbackState == Player.STATE_READY) {
+                seekTo(
+                    currentMediaItemIndex,
+                    if (currentMediaItem == null) 0L
+                    else {
+                        if (seekType == PlayerSeekType.BACKWARD)
+                            currentPosition - seekType.seekDuration
+                        else currentPosition + seekType.seekDuration
+                    }
+                )
+            }
+        }
+    }
+
     fun pauseAudio() = exoPlayer.pause()
     fun stopAudio() = exoPlayer.stop()
     fun releasePlayer() {
@@ -76,6 +94,15 @@ class QuranAudioManager @Inject constructor(
             val contentDuration = exoPlayer.contentDuration.takeIf { it > 0 } ?: 1L
             val currentPosition = exoPlayer.currentPosition
             emit(value = (currentPosition / contentDuration.toFloat()).coerceIn(0f, 1f))
+            delay(100L)
+        }
+    }.distinctUntilChanged()
+
+    val audioTimeline: Flow<Pair<Long, Long>> = flow {
+        while (currentCoroutineContext().isActive) {
+            val contentDuration = exoPlayer.contentDuration.takeIf { it > 0 } ?: 1L
+            val currentPosition = exoPlayer.currentPosition
+            emit(value = Pair(currentPosition, contentDuration))
             delay(100L)
         }
     }.distinctUntilChanged()

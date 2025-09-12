@@ -2,10 +2,9 @@ package com.anticbyte.imanbytes.presentation.screens.recitation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.anticbyte.imanbytes.domain.model.Surah
 import com.anticbyte.imanbytes.domain.repo.RecitationRepo
 import com.anticbyte.imanbytes.feature.QuranAudioManager
-import com.anticbyte.imanbytes.utils.ScreenUiState
+import com.anticbyte.imanbytes.presentation.screens.recitation.component.PlayerSeekType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -34,6 +33,12 @@ class RecitationViewModel @Inject constructor(
         initialValue = RecitationState()
     )
 
+    val recitationTimeline = quranAudioManager.audioTimeline.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = Pair(0L, 0L)
+    )
+
     fun getAllSurah() {
         viewModelScope.launch {
             recitationRepo.getAllSurah().fold(onSuccess = { surahs ->
@@ -41,7 +46,6 @@ class RecitationViewModel @Inject constructor(
                     screenUiState.copy(surahList = surahs)
                 }
             }, onFailure = {
-                ScreenUiState.Error(it.localizedMessage.orEmpty())
             })
         }
     }
@@ -57,14 +61,28 @@ class RecitationViewModel @Inject constructor(
         initialValue = ""
     )
 
-    fun playSurah(surahID: String, recitationType: RecitationType) {
+    val currentProgress = quranAudioManager.currentProgress.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = 0f
+    )
+
+    fun playSurah(surahNumber: String, recitationType: RecitationType) {
         viewModelScope.launch {
             _recitationUiState.update { screenUiState ->
                 screenUiState.copy(
-                    recitationType = recitationType
+                    recitationType = recitationType,
+                    nowPlayingSurah = screenUiState.surahList.find { it.number == surahNumber }
                 )
             }
-            quranAudioManager.playOrToggle(surahID, recitationType)
+            quranAudioManager.playOrToggle(surahNumber, recitationType)
         }
     }
+
+    fun seekAudio(seekType: PlayerSeekType) {
+        viewModelScope.launch {
+            quranAudioManager.seekAudio(seekType)
+        }
+    }
+
 }

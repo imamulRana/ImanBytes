@@ -8,6 +8,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.anticbyte.imanbytes.presentation.component.navigateOnClick
 import com.anticbyte.imanbytes.presentation.screens.recitation.component.RecitationListItem
 
 @Composable
@@ -40,6 +41,7 @@ fun LazyListScope.translationRecitation(
         val isThisPlaying =
             (surah.number.plus(".${RecitationType.TRANSLATION.recitationId}") == currentMediaId) and isPlaying
         RecitationListItem(
+            modifier = modifier,
             surah = surah,
             isPlaying = isThisPlaying,
             playAudio = playAudio
