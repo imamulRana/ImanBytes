@@ -1,29 +1,29 @@
 [versions]
 agp = "8.13.0"
-kotlin = "2.2.0"
+kotlin = "2.2.20"
 coreKtx = "1.17.0"
 junit = "4.13.2"
 junitVersion = "1.3.0"
 espressoCore = "3.7.0"
-lifecycleRuntimeKtx = "2.9.2"
-activityCompose = "1.10.1"
-composeBom = "2025.08.00"
-material3 = "1.5.0-alpha01"
+lifecycleRuntimeKtx = "2.9.3"
+activityCompose = "1.11.0"
+composeBom = "2025.09.00"
+material3 = "1.5.0-alpha04"
 splash = "1.0.1"
 kotlinxSerializationJson = "1.9.0"
-navigationComponse = "2.9.3"
+navigationComponse = "2.9.4"
 
 #google trusted time
 trustedTimeApi = "16.0.1"
 
 #network
-ktor = "3.2.3"
+ktor = "3.3.0"
 slf4jAndroid = "1.7.36"
 
 #hilt ksp
-hilt-android = "2.57"
-kotlin-ksp = "2.2.0-2.0.2"
-hiltNavigation = "1.2.0"
+hilt-android = "2.57.1"
+kotlin-ksp = "2.2.20-2.0.3"
+hiltNavigation = "1.3.0"
 
 #datastore
 pref-dataStore = "1.1.7"
