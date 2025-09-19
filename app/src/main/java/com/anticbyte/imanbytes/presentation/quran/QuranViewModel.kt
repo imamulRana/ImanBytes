@@ -62,7 +62,7 @@ class QuranViewModel @Inject constructor(
         }
     }
 
-    val isPlaying = audioManager.isPlayingFlow.stateIn(
+    val isPlaying = audioManager.playerStateFlow.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
         initialValue = false

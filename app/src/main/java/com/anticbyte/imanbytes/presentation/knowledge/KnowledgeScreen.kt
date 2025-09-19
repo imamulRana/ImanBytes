@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.anticbyte.imanbytes.presentation.component.AppTopBar
 import com.anticbyte.imanbytes.presentation.component.KnowledgeSectionItem
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
@@ -28,7 +28,7 @@ import com.anticbyte.imanbytes.theme.ImanBytesTheme
  *                  It is typically provided by Hilt.
  */
 @Composable
-fun KnowledgeScreenRoot(
+fun KnowledgeScreenRoute(
     modifier: Modifier = Modifier,
     viewModel: KnowledgeViewModel = hiltViewModel(),
     navigateToQuran: () -> Unit

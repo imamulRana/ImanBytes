@@ -8,7 +8,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.anticbyte.imanbytes.presentation.component.navigateOnClick
 import com.anticbyte.imanbytes.presentation.screens.recitation.component.RecitationListItem
 
 @Composable
@@ -43,8 +42,8 @@ fun LazyListScope.translationRecitation(
         RecitationListItem(
             modifier = modifier,
             surah = surah,
-            isPlaying = isThisPlaying,
-            playAudio = playAudio
+//            isPlaying = isThisPlaying,
+            playSurah = playAudio
         )
         if (surah != state.surahList.last()) HorizontalDivider(
             modifier = Modifier.padding(

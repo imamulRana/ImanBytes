@@ -98,7 +98,7 @@ fun QuranScreen2(
                             )
                             Icon(
                                 imageVector = ImageVector.vectorResource(
-                                    if (isPlaying) R.drawable.pause_24px else
+                                    if (true) R.drawable.pause_24px else
                                         R.drawable.play_arrow_24px
                                 ),
                                 null

@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme.colorScheme
@@ -26,7 +27,6 @@ import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -55,12 +55,15 @@ fun KnowledgeSectionItem(
         leadingContent = {
             Box(
                 Modifier
-                    .size(56.dp)
-                    .background(colorScheme.primary, MaterialShapes.Clover4Leaf.toShape()),
+                    .size(40.dp)
+                    .background(colorScheme.primaryContainer, MaterialShapes.Clover4Leaf.toShape()),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(imageVector = ImageVector.vectorResource(id = leadingIcon), null,
-                    tint = colorScheme.onPrimary)
+                Icon(
+                    imageVector = ImageVector.vectorResource(id = leadingIcon), null,
+                    tint = colorScheme.onPrimaryContainer,
+                    modifier = Modifier.size(IconButtonDefaults.extraSmallIconSize)
+                )
             }
         },
         headlineContent = {

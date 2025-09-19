@@ -16,3 +16,12 @@ sealed interface RecitationScreenState{
     data class Error(val message: String): RecitationScreenState
     data class Success(val data: RecitationState): RecitationScreenState
 }*/
+
+sealed class PlayerState {
+    data object PlayerIdle : PlayerState()
+    data object PlayerLoading : PlayerState()
+    data object PlayerBuffering : PlayerState()
+    data object PlayerPaused : PlayerState()
+    data object PlayerStopped : PlayerState()
+    data class PlayerPlaying(val progress: Float) : PlayerState()
+}

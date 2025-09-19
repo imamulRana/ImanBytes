@@ -1,6 +1,7 @@
 package com.anticbyte.imanbytes.presentation.component
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularWavyProgressIndicator
 import androidx.compose.material3.ContainedLoadingIndicator
@@ -33,6 +34,20 @@ fun AppLoader(modifier: Modifier = Modifier) {
             )
         )
     }
+}
+
+@ExperimentalMaterial3ExpressiveApi
+@ExperimentalMaterial3Api
+@Composable
+fun BoxScope.AppLoader(modifier: Modifier = Modifier) {
+    ContainedLoadingIndicator(
+        modifier = modifier.align(Alignment.Center),
+        polygons = listOf(
+            MaterialShapes.Pill,
+            MaterialShapes.Oval,
+            MaterialShapes.Clover4Leaf
+        )
+    )
 }
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)

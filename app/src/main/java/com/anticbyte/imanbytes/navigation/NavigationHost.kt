@@ -11,9 +11,11 @@ fun NavigationHost(
     navController: NavHostController,
 ) {
     NavHost(
+        modifier = modifier,
         navController = navController,
-        startDestination = KnowledgeRoute
+        startDestination = KnowledgeBaseRoute
     ) {
         knowledgeNavGraph(navController = navController)
+        recitationNavGraph(navController = navController)
     }
 }

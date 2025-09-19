@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.ContainedLoadingIndicator
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledIconToggleButton
 import androidx.compose.material3.Icon
@@ -23,15 +24,17 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.anticbyte.imanbytes.R
 import com.anticbyte.imanbytes.domain.model.Surah
+import com.anticbyte.imanbytes.presentation.screens.recitation.PlayerState
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun RecitationListItem(
     modifier: Modifier = Modifier,
     surah: Surah,
-    isPlaying: Boolean,
-    playAudio: (surahID: String) -> Unit
+    playerState: PlayerState = PlayerState.PlayerIdle,
+    playSurah: (surahID: String) -> Unit
 ) {
+    val isPlaying = playerState is PlayerState.PlayerPlaying
     ListItem(
         modifier = modifier, leadingContent = {
             Box(
@@ -61,15 +64,18 @@ fun RecitationListItem(
                         )
                     ),
                     checked = isPlaying,
-                    onCheckedChange = { playAudio(surah.number) },
+                    onCheckedChange = { playSurah(surah.number) },
                     shapes = IconButtonDefaults.toggleableShapes()
                 ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(
-                            id = if (isPlaying) R.drawable.pause_24px else R.drawable.play_arrow_24px
-                        ),
-                        contentDescription = null,
-                    )
+                    if (playerState is PlayerState.PlayerLoading)
+                        ContainedLoadingIndicator()
+                    else
+                        Icon(
+                            imageVector = ImageVector.vectorResource(
+                                id = if (isPlaying) R.drawable.pause_24px else R.drawable.play_arrow_24px
+                            ),
+                            contentDescription = null,
+                        )
                 }
             }
         },

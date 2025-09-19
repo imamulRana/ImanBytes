@@ -1,10 +1,10 @@
 package com.anticbyte.imanbytes.feature
 
-import androidx.media3.common.AudioAttributes
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.anticbyte.imanbytes.BuildConfig
+import com.anticbyte.imanbytes.presentation.screens.recitation.PlayerState
 import com.anticbyte.imanbytes.presentation.screens.recitation.RecitationType
 import com.anticbyte.imanbytes.presentation.screens.recitation.component.PlayerSeekType
 import kotlinx.coroutines.channels.awaitClose
@@ -20,14 +20,19 @@ import javax.inject.Inject
 class QuranAudioManager @Inject constructor(
     private val exoPlayer: ExoPlayer
 ) {
-    val isPlayingFlow: Flow<Boolean> = callbackFlow {
+    val playerStateFlow: Flow<PlayerState> = callbackFlow {
         val listener = object : Player.Listener {
-            override fun onIsPlayingChanged(isPlaying: Boolean) {
-                trySend(isPlaying).isSuccess
+            override fun onEvents(player: Player, events: Player.Events) {
+                trySend(
+                    element = if (player.isPlaying) PlayerState.PlayerPlaying(0f)
+                    else PlayerState.PlayerPaused
+                )
             }
         }
         exoPlayer.addListener(listener)
-        trySend(exoPlayer.isPlaying).isSuccess
+        trySend(
+            PlayerState.PlayerIdle
+        ).isSuccess
         awaitClose { exoPlayer.removeListener(listener) }
     }.distinctUntilChanged()
 
@@ -54,10 +59,14 @@ class QuranAudioManager @Inject constructor(
                 } else play()
             } else {
                 //if different surah play new surah
-                val mediaItem = MediaItem.Builder()
-                    .setMediaId(surahID.plus(".${recitationType.recitationId}"))
-                    .setUri(BuildConfig.AUDIO_BASE_URL.format(recitationType.recitationId, surahID))
-                    .build()
+                val mediaItem =
+                    MediaItem.Builder().setMediaId(surahID.plus(".${recitationType.recitationId}"))
+                        .setUri(
+                            BuildConfig.AUDIO_BASE_URL.format(
+                                recitationType.recitationId,
+                                surahID
+                            )
+                        ).build()
                 //
                 setMediaItem(mediaItem)
                 prepare()
@@ -70,11 +79,9 @@ class QuranAudioManager @Inject constructor(
         exoPlayer.apply {
             if (playbackState == Player.STATE_READY) {
                 seekTo(
-                    currentMediaItemIndex,
-                    if (currentMediaItem == null) 0L
+                    currentMediaItemIndex, if (currentMediaItem == null) 0L
                     else {
-                        if (seekType == PlayerSeekType.BACKWARD)
-                            currentPosition - seekType.seekDuration
+                        if (seekType == PlayerSeekType.BACKWARD) currentPosition - seekType.seekDuration
                         else currentPosition + seekType.seekDuration
                     }
                 )
@@ -85,8 +92,8 @@ class QuranAudioManager @Inject constructor(
     fun pauseAudio() = exoPlayer.pause()
     fun stopAudio() = exoPlayer.stop()
     fun releasePlayer() {
-        exoPlayer.release()
         exoPlayer.clearMediaItems()
+        exoPlayer.release()
     }
 
     val currentProgress: Flow<Float> = flow {

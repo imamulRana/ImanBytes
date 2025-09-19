@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -24,6 +25,7 @@ import androidx.compose.material3.FloatingToolbarDefaults.ScreenOffset
 import androidx.compose.material3.HorizontalFloatingToolbar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.material3.MaterialTheme.typography
@@ -36,11 +38,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.anticbyte.imanbytes.R
-import com.anticbyte.imanbytes.presentation.screens.recitation.RecitationState
+import com.anticbyte.imanbytes.domain.model.Surah
+import com.anticbyte.imanbytes.presentation.screens.recitation.PlayerState
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun RecitationFloatingToolbar(modifier: Modifier = Modifier) {
+fun BoxScope.RecitationFloatingToolbar(modifier: Modifier = Modifier) {
     HorizontalFloatingToolbar(
         expanded = true,
         floatingActionButton = {
@@ -50,6 +53,7 @@ fun RecitationFloatingToolbar(modifier: Modifier = Modifier) {
             ) { }
         },
         modifier = modifier
+            .align(Alignment.BottomCenter)
             .offset(
                 y = -(WindowInsets.navigationBars.asPaddingValues()
                     .calculateBottomPadding()).plus(ScreenOffset)
@@ -71,15 +75,18 @@ fun RecitationFloatingToolbar(modifier: Modifier = Modifier) {
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun RecitationFloatingBar(
+fun BoxScope.RecitationFloatingBar(
     modifier: Modifier = Modifier,
-    isPlaying: Boolean = false,
+    playerState: PlayerState = PlayerState.PlayerLoading,
     onExpand: () -> Unit = {},
     onClick: () -> Unit = {},
-    state: RecitationState
+    surah: Surah = Surah()
 ) {
     HorizontalFloatingToolbar(
         expanded = true, modifier = modifier
+            .padding(horizontal = 16.dp)
+            .offset(y = -ScreenOffset)
+            .align(Alignment.BottomCenter)
             .clip(shape = shapes.extraExtraLarge)
             .clickable(onClick = onExpand)
             .height(
@@ -100,18 +107,18 @@ fun RecitationFloatingBar(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = state.nowPlayingSurah?.number.orEmpty(),
+                    text = surah.number,
                     color = colorScheme.onSurface,
                     style = typography.titleMedium
                 )
             }
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Text(
-                    text = state.nowPlayingSurah?.englishName.orEmpty(),
+                    text = surah.englishName,
                     style = typography.bodyLarge
                 )
                 Text(
-                    text = state.nowPlayingSurah?.englishNameTranslation.orEmpty(),
+                    text = surah.englishNameTranslation,
                     style = typography.bodyMedium
                 )
             }
@@ -124,13 +131,17 @@ fun RecitationFloatingBar(
                 shape = IconButtonDefaults.mediumRoundShape
             )
         ) {
-            Icon(
-                imageVector = ImageVector.vectorResource(
-                    id = if (isPlaying) R.drawable.pause_24px
-                    else R.drawable.play_arrow_24px
-                ),
-                null
-            )
+            if (playerState is PlayerState.PlayerLoading)
+                LoadingIndicator()
+            else
+                Icon(
+                    imageVector = ImageVector.vectorResource(
+                        id = if (playerState is PlayerState.PlayerPlaying) R.drawable.pause_24px
+                        else R.drawable.play_arrow_24px
+                    ),
+                    contentDescription = null,
+                    modifier = Modifier.size(IconButtonDefaults.mediumIconSize),
+                )
         }
     }
 }

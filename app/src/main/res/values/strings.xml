@@ -35,7 +35,7 @@ This present world of ours is illuminated by the light of the sun, which is able
     <string name="title_translation_recitation">Recitation with Translation</string>
     <string name="desc_translation_recitation">Arabic Recitation of the Quran with Realtime Translation.</string>
     <string name="translation_recitation_spl">Best for Understanding</string>
-    <string name="recitation_description">“(it is) a Book (the Quran) which We have sent down to you, full of blessings, that they may ponder over its Verses, and that men of understanding may remember.” [Sad 38:29],
-</string>
-
+    <string name="recitation_description">, but to Allāh belongs the affair entirely.</string>
+    <string name="recitation_description_arabic">And if there was any Qur’ān [i.e., recitation] by which the mountains would be removed or the earth would be broken apart or the dead would be made to speak,1 [it would be this Qur’ān], but to Allāh belongs the affair entirely. [Ar-Ra\'d 31] </string>
+    <string name="recitation_description_translation">(it is) a Book (the Quran) which We have sent down to you, full of blessings, that they may ponder over its Verses, and that men of understanding may remember. [Sad 38:29]</string>
 </resources>

@@ -13,7 +13,6 @@ import androidx.compose.ui.unit.dp
 import java.util.concurrent.TimeUnit
 
 fun Modifier.paddingWithoutTop(paddingValues: Dp): Modifier = composed {
-
     padding(
         start = paddingValues, end = paddingValues, bottom = paddingValues
     )
@@ -23,7 +22,7 @@ fun PaddingValues.customInnerPadding() = PaddingValues(
     top = this.calculateTopPadding(),
     start = this.calculateStartPadding(LayoutDirection.Ltr),
     end = this.calculateEndPadding(LayoutDirection.Ltr),
-    bottom = this.calculateBottomPadding().plus(72.dp)
+    bottom = this.calculateBottomPadding().plus(144.dp)
 )
 
 @SuppressLint("DefaultLocale")

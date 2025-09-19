@@ -50,7 +50,7 @@ class RecitationViewModel @Inject constructor(
         }
     }
 
-    val isPlaying = quranAudioManager.isPlayingFlow.stateIn(
+    val isPlaying = quranAudioManager.playerStateFlow.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = false
