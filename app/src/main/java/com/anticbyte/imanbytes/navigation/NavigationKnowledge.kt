@@ -1,9 +1,8 @@
 package com.anticbyte.imanbytes.navigation
 
-import androidx.compose.runtime.getValue
+//import com.anticbyte.imanbytes.presentation.screens.recitation.CombineRecitationScreen
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -11,8 +10,6 @@ import androidx.navigation.compose.navigation
 import com.anticbyte.imanbytes.presentation.knowledge.KnowledgeScreenRoute
 import com.anticbyte.imanbytes.presentation.knowledge.KnowledgeViewModel
 import com.anticbyte.imanbytes.presentation.screens.hadith.HadithScreen
-//import com.anticbyte.imanbytes.presentation.screens.recitation.CombineRecitationScreen
-import com.anticbyte.imanbytes.presentation.screens.recitation.RecitationViewModel
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -21,11 +18,14 @@ data object KnowledgeBaseRoute
 @Serializable
 data object KnowledgeRoute
 
-@Serializable
-data object RecitationRoute2
+/*@Serializable
+data object RecitationRoute2*/
 
 @Serializable
 data object HadithRoute
+
+@Serializable
+data object PillarRoute
 
 
 fun NavGraphBuilder.knowledgeNavGraph(
@@ -37,15 +37,15 @@ fun NavGraphBuilder.knowledgeNavGraph(
             KnowledgeScreenRoute(
                 modifier = Modifier,
                 viewModel = viewModel,
-                navigateToQuran = { navController.navigate(RecitationBaseRoute) }
+                navigateToQuran = { navController.navigate(RecitationBaseRoute) },
+                navigateToHadith = { navController.navigate(HadithRoute) },
+                navigateToPillar = { navController.navigate(PillarRoute) }
             )
         }
-        composable<RecitationRoute2> {
-            val viewModel = hiltViewModel<RecitationViewModel>()
-            val state by viewModel.recitationUiState.collectAsStateWithLifecycle()
-//            CombineRecitationScreen()
-        }
         composable<HadithRoute> {
+            HadithScreen()
+        }
+        composable<PillarRoute> {
             HadithScreen()
         }
     }

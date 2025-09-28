@@ -37,7 +37,7 @@ fun NavGraphBuilder.recitationNavGraph(navController: NavHostController) {
             val viewModel = hiltViewModel<RecitationArViewModel>()
             RecitationArRoute(
                 viewModel = viewModel,
-                onNavigateBack = { navController.navigateUp() })
+                navigateBack = { navController.navigateUp() })
         }
         composable<RecitationTrRoute> {
             val viewModel = hiltViewModel<RecitationTrViewModel>()

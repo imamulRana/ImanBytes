@@ -21,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun BoxScope.RecitationFloatingButton(
     modifier: Modifier = Modifier,
@@ -42,7 +41,7 @@ fun BoxScope.RecitationFloatingButton(
     ) {
         Button(onClick = {
             coroutineScope.launch {
-                listState.animateScrollToItem(0)
+                listState.animateScrollToItem(1)
             }
         }) {
             Text("Scroll to top")

@@ -7,5 +7,5 @@ interface UserPrefsRepo {
     suspend fun retrieveLoginResponse()
 
     suspend fun persistNavigationState(isNavigationOnBoarded: Boolean)
-    suspend fun retrieveNavigationState(): Boolean
+    fun retrieveNavigationState(): Flow<Boolean>
 }

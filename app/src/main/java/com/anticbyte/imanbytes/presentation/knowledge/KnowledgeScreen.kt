@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.anticbyte.imanbytes.presentation.component.AppTopBar
 import com.anticbyte.imanbytes.presentation.component.KnowledgeSectionItem
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
@@ -30,12 +29,16 @@ import com.anticbyte.imanbytes.theme.ImanBytesTheme
 @Composable
 fun KnowledgeScreenRoute(
     modifier: Modifier = Modifier,
-    viewModel: KnowledgeViewModel = hiltViewModel(),
-    navigateToQuran: () -> Unit
+    viewModel: KnowledgeViewModel,
+    navigateToQuran: () -> Unit,
+    navigateToHadith: () -> Unit,
+    navigateToPillar: () -> Unit
 ) {
-    KnowledgeScreen(navigateToQuran = {}, onItemClick = {
-        navigateToQuran()
-    })
+    KnowledgeScreen(
+        onNavigateToQuran = navigateToQuran,
+        onNavigateToHadith = navigateToHadith,
+        onNavigateToPillar = navigateToPillar
+    )
 }
 
 /**
@@ -52,15 +55,15 @@ fun KnowledgeScreenRoute(
 @Composable
 fun KnowledgeScreen(
     modifier: Modifier = Modifier,
-    navigateToQuran: () -> Unit = {},
-    onItemClick: (KnowledgeItem) -> Unit = {}
+    onNavigateToQuran: () -> Unit = {},
+    onNavigateToHadith: () -> Unit = {},
+    onNavigateToPillar: () -> Unit = {}
 ) {
     Scaffold(topBar = {
         AppTopBar(
             title = "Knowledge",
-            isBackVisible = true,
-            subtitle = null,
-            onNavigationIconClick = {}
+            isBackVisible = false,
+//            onNavigationIconClick = {}
         )
     }) { innerPadding ->
         Column(
@@ -68,11 +71,11 @@ fun KnowledgeScreen(
                 .fillMaxSize()
                 .padding(innerPadding),
             verticalArrangement = Arrangement.spacedBy(12.dp),
-
-            ) {
+        ) {
             KnowledgeItems(
-                //todo implement the click functions properly
-                onItemClick = onItemClick
+                onNavigateToQuran = onNavigateToQuran,
+                onNavigateToHadith = onNavigateToHadith,
+                onNavigateToPillar = onNavigateToPillar
             )
         }
     }
@@ -86,14 +89,22 @@ fun KnowledgeScreen(
  */
 @Composable
 fun KnowledgeItems(
-    onItemClick: (KnowledgeItem) -> Unit
+    onNavigateToQuran: () -> Unit = {},
+    onNavigateToHadith: () -> Unit = {},
+    onNavigateToPillar: () -> Unit = {}
 ) {
     KnowledgeItem.entries.fastForEach { item ->
         KnowledgeSectionItem(
             leadingIcon = item.iconRes,
             titleRes = item.titleRes,
             descriptionRes = item.descriptionRes,
-            onItemClick = { onItemClick(item) }
+            onItemClick = {
+                when (item) {
+                    KnowledgeItem.QURAN -> onNavigateToQuran()
+                    KnowledgeItem.HADITH -> onNavigateToHadith()
+                    KnowledgeItem.PILLARS -> onNavigateToPillar()
+                }
+            }
         )
     }
 }
@@ -102,6 +113,6 @@ fun KnowledgeItems(
 @Composable
 private fun HomeScreenPreview() {
     ImanBytesTheme(dynamicColor = false) {
-        KnowledgeScreen(navigateToQuran = {})
+        KnowledgeScreen()
     }
 }

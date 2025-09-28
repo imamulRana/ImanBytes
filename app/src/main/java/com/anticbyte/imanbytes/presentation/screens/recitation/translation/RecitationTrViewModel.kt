@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anticbyte.imanbytes.domain.repo.RecitationRepo
 import com.anticbyte.imanbytes.feature.QuranAudioManager
+import com.anticbyte.imanbytes.presentation.screens.recitation.RecitationType
+import com.anticbyte.imanbytes.presentation.screens.recitation.component.PlayerSeekType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -44,6 +46,24 @@ class RecitationTrViewModel @Inject constructor(
                         state.copy(errorMessages = it.localizedMessage)
                     }
                 })
+        }
+    }
+
+    fun seekAudio(
+        seekType: PlayerSeekType,
+        seekToPosition: Long
+    ) {
+        viewModelScope.launch {
+            audioManager.seekAudio(seekType, seekToPosition)
+        }
+    }
+
+    fun playSurah(surahNumber: String) {
+        viewModelScope.launch {
+            audioManager.playOrToggle(
+                surahNumber,
+                RecitationType.ARABIC
+            )
         }
     }
 }

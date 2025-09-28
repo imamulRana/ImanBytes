@@ -31,5 +31,4 @@ object DatastoreModule {
     fun provideUserDatastore(
         @ApplicationContext context: Context,
     ): UserPrefsRepo = UserPrefsRepoImpl(userDataStorePrefs = context.userDataStore)
-
 }

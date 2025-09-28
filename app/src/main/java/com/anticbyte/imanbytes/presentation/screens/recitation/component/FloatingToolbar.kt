@@ -41,7 +41,6 @@ import com.anticbyte.imanbytes.R
 import com.anticbyte.imanbytes.domain.model.Surah
 import com.anticbyte.imanbytes.presentation.screens.recitation.PlayerState
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun BoxScope.RecitationFloatingToolbar(modifier: Modifier = Modifier) {
     HorizontalFloatingToolbar(
@@ -73,7 +72,6 @@ fun BoxScope.RecitationFloatingToolbar(modifier: Modifier = Modifier) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun BoxScope.RecitationFloatingBar(
     modifier: Modifier = Modifier,

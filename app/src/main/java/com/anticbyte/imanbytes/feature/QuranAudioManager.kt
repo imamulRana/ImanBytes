@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.isActive
 import javax.inject.Inject
 
@@ -24,14 +25,23 @@ class QuranAudioManager @Inject constructor(
         val listener = object : Player.Listener {
             override fun onEvents(player: Player, events: Player.Events) {
                 trySend(
-                    element = if (player.isPlaying) PlayerState.PlayerPlaying(0f)
-                    else PlayerState.PlayerPaused
+                    element = when {
+                        player.isPlaying -> PlayerState.PlayerPlaying
+                        player.currentMediaItem == null -> PlayerState.PlayerIdle
+                        player.isLoading -> PlayerState.PlayerLoading
+                        else -> PlayerState.PlayerPaused
+                    }
                 )
             }
         }
         exoPlayer.addListener(listener)
         trySend(
-            PlayerState.PlayerIdle
+            element = when {
+                exoPlayer.isPlaying -> PlayerState.PlayerPlaying
+                exoPlayer.currentMediaItem == null -> PlayerState.PlayerIdle
+                exoPlayer.isLoading -> PlayerState.PlayerLoading
+                else -> PlayerState.PlayerPaused
+            }
         ).isSuccess
         awaitClose { exoPlayer.removeListener(listener) }
     }.distinctUntilChanged()
@@ -75,15 +85,27 @@ class QuranAudioManager @Inject constructor(
         }
     }
 
-    fun seekAudio(seekType: PlayerSeekType) {
+    fun seekAudio(seekType: PlayerSeekType?, seekToPosition: Long) {
         exoPlayer.apply {
             if (playbackState == Player.STATE_READY) {
                 seekTo(
                     currentMediaItemIndex, if (currentMediaItem == null) 0L
+                    else if (seekType == null) seekToPosition
                     else {
                         if (seekType == PlayerSeekType.BACKWARD) currentPosition - seekType.seekDuration
                         else currentPosition + seekType.seekDuration
                     }
+                )
+            }
+        }
+    }
+
+    fun seekAudioP(seekToPosition: Long) {
+        exoPlayer.apply {
+            if (playbackState == Player.STATE_READY) {
+                seekTo(
+                    currentMediaItemIndex, if (currentMediaItem == null) 0L
+                    else seekToPosition
                 )
             }
         }
@@ -96,21 +118,16 @@ class QuranAudioManager @Inject constructor(
         exoPlayer.release()
     }
 
-    val currentProgress: Flow<Float> = flow {
-        while (currentCoroutineContext().isActive) {
-            val contentDuration = exoPlayer.contentDuration.takeIf { it > 0 } ?: 1L
-            val currentPosition = exoPlayer.currentPosition
-            emit(value = (currentPosition / contentDuration.toFloat()).coerceIn(0f, 1f))
-            delay(100L)
-        }
-    }.distinctUntilChanged()
-
     val audioTimeline: Flow<Pair<Long, Long>> = flow {
         while (currentCoroutineContext().isActive) {
             val contentDuration = exoPlayer.contentDuration.takeIf { it > 0 } ?: 1L
             val currentPosition = exoPlayer.currentPosition
-            emit(value = Pair(currentPosition, contentDuration))
+            emit(currentPosition to contentDuration)
             delay(100L)
         }
     }.distinctUntilChanged()
+    val currentProgress: Flow<Float> = audioTimeline.map { (position, duration) ->
+        (position / duration.toFloat()).coerceIn(0f, 1f)
+    }.distinctUntilChanged()
+
 }

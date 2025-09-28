@@ -19,7 +19,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val navController = rememberNavController()
-            ImanBytesTheme(dynamicColor = false) {
+            ImanBytesTheme {
                 NavigationScaffold(modifier = Modifier, navController = navController)
             }
         }

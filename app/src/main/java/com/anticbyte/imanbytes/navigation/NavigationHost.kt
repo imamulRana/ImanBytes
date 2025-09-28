@@ -9,12 +9,14 @@ import androidx.navigation.compose.NavHost
 fun NavigationHost(
     modifier: Modifier = Modifier,
     navController: NavHostController,
+    startDestination: Any
 ) {
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = KnowledgeBaseRoute
+        startDestination = startDestination,
     ) {
+        onboardingGraph(navController = navController)
         knowledgeNavGraph(navController = navController)
         recitationNavGraph(navController = navController)
     }

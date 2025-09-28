@@ -7,7 +7,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.anticbyte.imanbytes.di.DatastoreModule.userNavigationPrefs
 import com.anticbyte.imanbytes.domain.repo.UserPrefsRepo
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -16,7 +16,6 @@ class UserPrefsRepoImpl @Inject constructor(
 ) : UserPrefsRepo {
     override suspend fun persistLoginResponse() {
         userDataStorePrefs.edit {
-
             it.clear()
             it[stringPreferencesKey("")]
         }
@@ -34,11 +33,7 @@ class UserPrefsRepoImpl @Inject constructor(
         }
     }
 
-    override suspend fun retrieveNavigationState(): Boolean {
-
-
-        val x = userDataStorePrefs.data.map { it[userNavigationPrefs] }.first() ?: false
-        Log.d("Retrieve", "retrieveNavigationState: $x")
-        return x
+    override fun retrieveNavigationState(): Flow<Boolean> {
+        return userDataStorePrefs.data.map { it[userNavigationPrefs] ?: false }
     }
 }

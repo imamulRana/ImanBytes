@@ -43,7 +43,6 @@ fun RecitationScreenRoute(
     )
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun RecitationScreen(

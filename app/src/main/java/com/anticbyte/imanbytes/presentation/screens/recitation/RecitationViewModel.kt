@@ -81,7 +81,7 @@ class RecitationViewModel @Inject constructor(
 
     fun seekAudio(seekType: PlayerSeekType) {
         viewModelScope.launch {
-            quranAudioManager.seekAudio(seekType)
+            quranAudioManager.seekAudio(seekType,0)
         }
     }
 

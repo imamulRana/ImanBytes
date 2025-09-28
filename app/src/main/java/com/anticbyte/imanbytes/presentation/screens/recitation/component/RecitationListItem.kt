@@ -1,18 +1,18 @@
 package com.anticbyte.imanbytes.presentation.screens.recitation.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.ContainedLoadingIndicator
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledIconToggleButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
@@ -26,17 +26,18 @@ import com.anticbyte.imanbytes.R
 import com.anticbyte.imanbytes.domain.model.Surah
 import com.anticbyte.imanbytes.presentation.screens.recitation.PlayerState
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun RecitationListItem(
     modifier: Modifier = Modifier,
     surah: Surah,
     playerState: PlayerState = PlayerState.PlayerIdle,
-    playSurah: (surahID: String) -> Unit
+    onItemClick: (surahNumber: String) -> Unit = {},
+    playSurah: (surahNumber: String) -> Unit,
 ) {
     val isPlaying = playerState is PlayerState.PlayerPlaying
     ListItem(
-        modifier = modifier, leadingContent = {
+        modifier = modifier
+            .clickable(onClick = { onItemClick(surah.number) }), leadingContent = {
             Box(
                 modifier = Modifier
                     .background(color = colorScheme.secondaryContainer, CircleShape)
@@ -56,7 +57,7 @@ fun RecitationListItem(
         trailingContent = {
             Column(horizontalAlignment = Alignment.End) {
                 Text(text = "${surah.numberOfAyahs} Ayahs")
-                Spacer(Modifier.size(56.dp))
+                Spacer(Modifier.size(48.dp))
                 FilledIconToggleButton(
                     modifier = Modifier.size(
                         IconButtonDefaults.smallContainerSize(
@@ -67,8 +68,8 @@ fun RecitationListItem(
                     onCheckedChange = { playSurah(surah.number) },
                     shapes = IconButtonDefaults.toggleableShapes()
                 ) {
-                    if (playerState is PlayerState.PlayerLoading)
-                        ContainedLoadingIndicator()
+                    if ((playerState is PlayerState.PlayerLoading || playerState is PlayerState.PlayerBuffering))
+                        LoadingIndicator()
                     else
                         Icon(
                             imageVector = ImageVector.vectorResource(

@@ -23,5 +23,5 @@ sealed class PlayerState {
     data object PlayerBuffering : PlayerState()
     data object PlayerPaused : PlayerState()
     data object PlayerStopped : PlayerState()
-    data class PlayerPlaying(val progress: Float) : PlayerState()
+    data object PlayerPlaying : PlayerState()
 }

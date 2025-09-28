@@ -1,5 +1,9 @@
 package com.anticbyte.imanbytes.presentation.screens.recitation.component
 
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.draggable
+import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,30 +16,67 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LinearWavyProgressIndicator
+import androidx.compose.material3.LoadingIndicator
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.anticbyte.imanbytes.R
+import com.anticbyte.imanbytes.presentation.screens.recitation.PlayerState
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Immutable
+data class RecitationPlayBackState(
+    val surahNumber: String = "",
+    val currentTime: Long = 0L,
+    val duration: Long = 0L,
+    val playerState: PlayerState = PlayerState.PlayerIdle,
+    val progress: Float = 0F
+)
+
+interface RecitationPlayBackActions {
+    fun onPlayPause(surahNumber: String)
+    fun onSeekForward()
+    fun onSeekBackward()
+    fun onSeek(seekTo: Float)
+}
+
+val sampleActions = object : RecitationPlayBackActions {
+    override fun onPlayPause(surahNumber: String) {}
+    override fun onSeekForward() {}
+    override fun onSeekBackward() {}
+    override fun onSeek(seekTo: Float) {}
+}
+
 @Composable
 fun RecitationPlayBack(
     modifier: Modifier = Modifier,
-    audioTimeLine: Pair<Long, Long> = Pair(11, 12),
-    isPlaying: Boolean = false,
-    onPlayPause: () -> Unit = {},
-    onSeekForward: () -> Unit = {},
-    onSeekBackward: () -> Unit = {},
-    progress: () -> Float = { 0f }
+    playBackState: RecitationPlayBackState = RecitationPlayBackState(),
+    actions: RecitationPlayBackActions = sampleActions
 ) {
+    var sliderWidth by remember { mutableFloatStateOf(0f) }
+    var dragPosition by remember { mutableFloatStateOf(0f) }
+    var isDragging by remember { mutableStateOf(false) }
+
+    LaunchedEffect(playBackState.progress) {
+        if (!isDragging) dragPosition = playBackState.progress
+    }
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -43,9 +84,36 @@ fun RecitationPlayBack(
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             LinearWavyProgressIndicator(
-                progress, modifier = Modifier
+                progress = { dragPosition },
+                modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
+                    .onGloballyPositioned {
+                        sliderWidth = it.size.width.toFloat()
+                    }
+                    .pointerInput(Unit) {
+                        // Handle tap gestures for immediate seeking.
+                        detectTapGestures(onTap = { offset ->
+                            val newProgress = (offset.x / sliderWidth).coerceIn(0f, 1f)
+                            // Notify the caller to seek the player.
+                            actions.onSeek(newProgress)
+                        })
+                    }
+                    .draggable(
+                        orientation = Orientation.Horizontal,
+                        state = rememberDraggableState { delta ->
+//                          During a drag, update our local state directly. This is fast and smooth.
+                            dragPosition = (dragPosition + (delta / sliderWidth)).coerceIn(0f, 1f)
+                        },
+                        onDragStarted = {
+                            isDragging = true
+                        },
+                        onDragStopped = {
+                            // When dragging stops, notify the caller to seek the player.
+                            actions.onSeek(dragPosition)
+                            isDragging = false
+                        }
+                    )
             )
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -54,11 +122,11 @@ fun RecitationPlayBack(
                     .padding(horizontal = 16.dp)
             ) {
                 Text(
-                    text = audioTimeLine.first.toTimeLine(),
+                    text = playBackState.currentTime.toTimeLine(),
                     style = typography.labelSmall
                 )
                 Text(
-                    text = audioTimeLine.second.toTimeLine(),
+                    text = playBackState.duration.toTimeLine(),
                     style = typography.labelSmall
                 )
             }
@@ -72,18 +140,34 @@ fun RecitationPlayBack(
                 alignment = Alignment.CenterHorizontally
             )
         ) {
-            SeekAudio(onClick = onSeekBackward, seekType = PlayerSeekType.BACKWARD)
-            PlayPauseAudio(isPlaying = isPlaying, onClick = onPlayPause)
-            SeekAudio(onClick = onSeekForward, seekType = PlayerSeekType.FORWARD)
+            SeekAudio(
+                actions = actions,
+                playBackState = playBackState,
+                seekType = PlayerSeekType.BACKWARD
+            )
+            PlayPauseAudio(
+                playerState = PlayerState.PlayerLoading,
+                playBackState = playBackState,
+                actions = actions
+            )
+            SeekAudio(
+                actions = actions,
+                playBackState = playBackState,
+                seekType = PlayerSeekType.FORWARD
+            )
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun SeekAudio(modifier: Modifier = Modifier, onClick: () -> Unit, seekType: PlayerSeekType) {
+fun SeekAudio(
+    modifier: Modifier = Modifier,
+    actions: RecitationPlayBackActions,
+    seekType: PlayerSeekType,
+    playBackState: RecitationPlayBackState
+) {
     IconButton(
-        onClick = onClick,
+        onClick = { actions.onPlayPause(playBackState.surahNumber) },
         shapes = IconButtonDefaults.shapes(
             shape = IconButtonDefaults.mediumSquareShape
         ),
@@ -98,28 +182,34 @@ fun SeekAudio(modifier: Modifier = Modifier, onClick: () -> Unit, seekType: Play
     }
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun PlayPauseAudio(
-    modifier: Modifier = Modifier, isPlaying: Boolean, onClick: () -> Unit
+    modifier: Modifier = Modifier, playerState: PlayerState,
+    playBackState: RecitationPlayBackState,
+    actions: RecitationPlayBackActions
 ) {
     FilledIconButton(
-        onClick = onClick,
+        onClick = { actions.onPlayPause(playBackState.surahNumber) },
         shapes = IconButtonDefaults.shapes(
             shape = IconButtonDefaults.largeSquareShape
         ),
         modifier = modifier.size(IconButtonDefaults.largeContainerSize(widthOption = IconButtonDefaults.IconButtonWidthOption.Wide)),
     ) {
-        Icon(
-            imageVector = ImageVector.vectorResource(
-                id = if (isPlaying) R.drawable.pause_24px
-                else R.drawable.play_arrow_24px
-            ), contentDescription = null, modifier = modifier.size(IconButtonDefaults.largeIconSize)
-        )
+        if (playerState is PlayerState.PlayerLoading)
+            LoadingIndicator(color = colorScheme.onPrimary)
+        else
+            Icon(
+                imageVector = ImageVector.vectorResource(
+                    id = if ((playerState is PlayerState.PlayerPlaying) or
+                        (playerState is PlayerState.PlayerIdle)
+                    ) R.drawable.pause_24px
+                    else R.drawable.play_arrow_24px
+                ),
+                contentDescription = null,
+                modifier = modifier.size(IconButtonDefaults.largeIconSize)
+            )
     }
 }
-
-
 enum class PlayerSeekType(val seekDuration: Long) {
     FORWARD(seekDuration = 10000L),
     BACKWARD(seekDuration = 10000L)
@@ -131,7 +221,34 @@ private fun DefPrev() {
     ImanBytesTheme {
         Scaffold {
             it
-            RecitationPlayBack(modifier = Modifier)
+            var state by remember { mutableFloatStateOf(0f) }
+            RecitationPlayBack(
+                modifier = Modifier,
+                playBackState = RecitationPlayBackState(
+                    surahNumber = "",
+                    2023L, 23249L,
+                    PlayerState.PlayerLoading,
+                    progress = state
+                ),
+                actions = object : RecitationPlayBackActions {
+                    override fun onPlayPause(surahNumber: String) {
+                        TODO("Not yet implemented")
+                    }
+
+                    override fun onSeekForward() {
+                        TODO("Not yet implemented")
+                    }
+
+                    override fun onSeekBackward() {
+                        TODO("Not yet implemented")
+                    }
+
+                    override fun onSeek(seekTo: Float) {
+                        state = seekTo
+                    }
+
+                }
+            )
         }
     }
 }

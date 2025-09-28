@@ -22,7 +22,7 @@ fun PaddingValues.customInnerPadding() = PaddingValues(
     top = this.calculateTopPadding(),
     start = this.calculateStartPadding(LayoutDirection.Ltr),
     end = this.calculateEndPadding(LayoutDirection.Ltr),
-    bottom = this.calculateBottomPadding().plus(144.dp)
+    bottom = this.calculateBottomPadding().plus(88.dp)
 )
 
 @SuppressLint("DefaultLocale")
