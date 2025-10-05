@@ -1,4 +1,4 @@
-package com.anticbyte.imanbytes.presentation.screens.recitation.component
+package com.anticbyte.imanbytes.presentation.screens.audioRecitation.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -24,20 +24,20 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.anticbyte.imanbytes.R
 import com.anticbyte.imanbytes.domain.model.Surah
-import com.anticbyte.imanbytes.presentation.screens.recitation.PlayerState
+import com.anticbyte.imanbytes.presentation.screens.audioRecitation.PlayerState
 
 @Composable
 fun RecitationListItem(
     modifier: Modifier = Modifier,
     surah: Surah,
     playerState: PlayerState = PlayerState.PlayerIdle,
-    onItemClick: (surahNumber: String) -> Unit = {},
-    playSurah: (surahNumber: String) -> Unit,
+    onSurahClick: (surahNumber: String) -> Unit = {},
+    onPlaySurah: (surahNumber: String) -> Unit,
 ) {
     val isPlaying = playerState is PlayerState.PlayerPlaying
     ListItem(
         modifier = modifier
-            .clickable(onClick = { onItemClick(surah.number) }), leadingContent = {
+            .clickable(onClick = { onSurahClick(surah.number) }), leadingContent = {
             Box(
                 modifier = Modifier
                     .background(color = colorScheme.secondaryContainer, CircleShape)
@@ -65,10 +65,10 @@ fun RecitationListItem(
                         )
                     ),
                     checked = isPlaying,
-                    onCheckedChange = { playSurah(surah.number) },
+                    onCheckedChange = { onPlaySurah(surah.number) },
                     shapes = IconButtonDefaults.toggleableShapes()
                 ) {
-                    if ((playerState is PlayerState.PlayerLoading || playerState is PlayerState.PlayerBuffering))
+                    if (playerState is PlayerState.PlayerLoading)
                         LoadingIndicator()
                     else
                         Icon(

@@ -1,15 +1,12 @@
-package com.anticbyte.imanbytes.presentation.screens.recitation.translation
+package com.anticbyte.imanbytes.presentation.screens.audioRecitation.translation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
@@ -25,11 +22,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.anticbyte.imanbytes.R
 import com.anticbyte.imanbytes.domain.model.Surah
 import com.anticbyte.imanbytes.presentation.component.AppTopBar
-import com.anticbyte.imanbytes.presentation.screens.recitation.PlayerState
-import com.anticbyte.imanbytes.presentation.screens.recitation.arabic.recitationItemDescription
-import com.anticbyte.imanbytes.presentation.screens.recitation.component.RecitationFloatingBar
-import com.anticbyte.imanbytes.presentation.screens.recitation.component.RecitationFloatingButton
-import com.anticbyte.imanbytes.presentation.screens.recitation.component.RecitationListItem
+import com.anticbyte.imanbytes.presentation.screens.audioRecitation.PlayerState
+import com.anticbyte.imanbytes.presentation.screens.audioRecitation.arabic.recitationItemDescription
+import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationFloatingBar
+import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationFloatingButton
+import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationListItem
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
 import com.anticbyte.imanbytes.utils.loadingItem
 
@@ -97,8 +94,8 @@ fun LazyListScope.recitationItemsTr(surahList: List<Surah>) {
             modifier = Modifier,
             surah = surah,
             playerState = PlayerState.PlayerPaused,
-            playSurah = {},
-            onItemClick = {},
+            onPlaySurah = {},
+            onSurahClick = {},
         )
         if (index != surahList.lastIndex)
             HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))

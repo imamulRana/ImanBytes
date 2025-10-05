@@ -1,4 +1,4 @@
-package com.anticbyte.imanbytes.presentation.screens.recitation.component
+package com.anticbyte.imanbytes.presentation.screens.audioRecitation.component
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.PaddingValues

@@ -1,4 +1,4 @@
-package com.anticbyte.imanbytes.presentation.screens.recitation
+package com.anticbyte.imanbytes.presentation.screens.audioRecitation
 
 import com.anticbyte.imanbytes.domain.model.Surah
 
@@ -20,8 +20,6 @@ sealed interface RecitationScreenState{
 sealed class PlayerState {
     data object PlayerIdle : PlayerState()
     data object PlayerLoading : PlayerState()
-    data object PlayerBuffering : PlayerState()
     data object PlayerPaused : PlayerState()
-    data object PlayerStopped : PlayerState()
     data object PlayerPlaying : PlayerState()
 }

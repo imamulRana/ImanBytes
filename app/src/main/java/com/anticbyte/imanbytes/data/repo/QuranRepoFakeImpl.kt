@@ -9,12 +9,3 @@ import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 
-class QuranRepoFakeImpl  : QuranRepo {
-    override suspend fun getQuranData(): Result<Quran> {
-        return runCatching {
-            delay(2000)
-            quranData
-//            throw Exception("Time is not valid")
-        }
-    }
-}

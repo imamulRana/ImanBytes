@@ -1,4 +1,4 @@
-package com.anticbyte.imanbytes.presentation.screens.recitation.component
+package com.anticbyte.imanbytes.presentation.screens.audioRecitation.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,8 +16,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.FloatingToolbarDefaults
@@ -39,7 +37,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.anticbyte.imanbytes.R
 import com.anticbyte.imanbytes.domain.model.Surah
-import com.anticbyte.imanbytes.presentation.screens.recitation.PlayerState
+import com.anticbyte.imanbytes.presentation.screens.audioRecitation.PlayerState
 
 @Composable
 fun BoxScope.RecitationFloatingToolbar(modifier: Modifier = Modifier) {

@@ -1,11 +1,11 @@
-package com.anticbyte.imanbytes.presentation.screens.recitation.translation
+package com.anticbyte.imanbytes.presentation.screens.audioRecitation.translation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anticbyte.imanbytes.domain.repo.RecitationRepo
 import com.anticbyte.imanbytes.feature.QuranAudioManager
-import com.anticbyte.imanbytes.presentation.screens.recitation.RecitationType
-import com.anticbyte.imanbytes.presentation.screens.recitation.component.PlayerSeekType
+import com.anticbyte.imanbytes.presentation.screens.audioRecitation.RecitationType
+import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.PlayerSeekType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

@@ -1,9 +1,9 @@
-package com.anticbyte.imanbytes.presentation.screens.recitation.arabic
+package com.anticbyte.imanbytes.presentation.screens.audioRecitation.translation
 
 import com.anticbyte.imanbytes.domain.model.Surah
-import com.anticbyte.imanbytes.presentation.screens.recitation.PlayerState
+import com.anticbyte.imanbytes.presentation.screens.audioRecitation.PlayerState
 
-data class RecitationArScreenState(
+data class RecitationTrScreenState(
     val isLoading: Boolean = false,
     val surahList: List<Surah> = emptyList(),
     val nowPlayingSurah: Surah? = null,

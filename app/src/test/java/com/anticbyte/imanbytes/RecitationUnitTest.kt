@@ -2,9 +2,8 @@ package com.anticbyte.imanbytes
 
 import com.anticbyte.imanbytes.data.repo.RecitationRepoImpl
 import com.anticbyte.imanbytes.feature.QuranAudioManager
-import com.anticbyte.imanbytes.presentation.screens.recitation.RecitationViewModel
+import com.anticbyte.imanbytes.presentation.screens.audioRecitation.RecitationViewModel
 import org.junit.Before
-import org.junit.Test
 
 class RecitationUnitTest {
     private lateinit var viewModel: RecitationViewModel

@@ -1,4 +1,4 @@
-package com.anticbyte.imanbytes.presentation.screens.recitation.component
+package com.anticbyte.imanbytes.presentation.screens.audioRecitation.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,7 +10,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.anticbyte.imanbytes.R
-import com.anticbyte.imanbytes.presentation.screens.recitation.RecitationType
+import com.anticbyte.imanbytes.presentation.screens.audioRecitation.RecitationType
 
 fun LazyListScope.recitationSectionHeader(
     modifier: Modifier = Modifier,

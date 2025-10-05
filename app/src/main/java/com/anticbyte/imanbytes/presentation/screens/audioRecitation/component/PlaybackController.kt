@@ -1,5 +1,6 @@
-package com.anticbyte.imanbytes.presentation.screens.recitation.component
+package com.anticbyte.imanbytes.presentation.screens.audioRecitation.component
 
+import android.util.Log
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.draggable
@@ -10,7 +11,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -38,7 +38,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.anticbyte.imanbytes.R
-import com.anticbyte.imanbytes.presentation.screens.recitation.PlayerState
+import com.anticbyte.imanbytes.presentation.screens.audioRecitation.PlayerState
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
 
 @Immutable
@@ -55,6 +55,8 @@ interface RecitationPlayBackActions {
     fun onSeekForward()
     fun onSeekBackward()
     fun onSeek(seekTo: Float)
+    fun persistCurrentSurah(surahNumber: String?)
+    fun onSurahClick(surahNumber: String)
 }
 
 val sampleActions = object : RecitationPlayBackActions {
@@ -62,12 +64,16 @@ val sampleActions = object : RecitationPlayBackActions {
     override fun onSeekForward() {}
     override fun onSeekBackward() {}
     override fun onSeek(seekTo: Float) {}
+    override fun persistCurrentSurah(surahNumber: String?) {}
+    override fun onSurahClick(surahNumber: String) {
+        TODO("Not yet implemented")
+    }
 }
 
 @Composable
 fun RecitationPlayBack(
     modifier: Modifier = Modifier,
-    playBackState: RecitationPlayBackState = RecitationPlayBackState(),
+    playBackState: RecitationPlayBackState,
     actions: RecitationPlayBackActions = sampleActions
 ) {
     var sliderWidth by remember { mutableFloatStateOf(0f) }
@@ -141,18 +147,15 @@ fun RecitationPlayBack(
             )
         ) {
             SeekAudio(
-                actions = actions,
-                playBackState = playBackState,
+                onSeek = actions::onSeekBackward,
                 seekType = PlayerSeekType.BACKWARD
             )
             PlayPauseAudio(
-                playerState = PlayerState.PlayerLoading,
                 playBackState = playBackState,
                 actions = actions
             )
             SeekAudio(
-                actions = actions,
-                playBackState = playBackState,
+                onSeek = actions::onSeekForward,
                 seekType = PlayerSeekType.FORWARD
             )
         }
@@ -162,12 +165,11 @@ fun RecitationPlayBack(
 @Composable
 fun SeekAudio(
     modifier: Modifier = Modifier,
-    actions: RecitationPlayBackActions,
+    onSeek: () -> Unit,
     seekType: PlayerSeekType,
-    playBackState: RecitationPlayBackState
 ) {
     IconButton(
-        onClick = { actions.onPlayPause(playBackState.surahNumber) },
+        onClick = onSeek,
         shapes = IconButtonDefaults.shapes(
             shape = IconButtonDefaults.mediumSquareShape
         ),
@@ -184,10 +186,11 @@ fun SeekAudio(
 
 @Composable
 fun PlayPauseAudio(
-    modifier: Modifier = Modifier, playerState: PlayerState,
+    modifier: Modifier = Modifier,
     playBackState: RecitationPlayBackState,
     actions: RecitationPlayBackActions
 ) {
+    Log.d("PlayerState", "PlayPauseAudio: ${playBackState.playerState}")
     FilledIconButton(
         onClick = { actions.onPlayPause(playBackState.surahNumber) },
         shapes = IconButtonDefaults.shapes(
@@ -195,14 +198,12 @@ fun PlayPauseAudio(
         ),
         modifier = modifier.size(IconButtonDefaults.largeContainerSize(widthOption = IconButtonDefaults.IconButtonWidthOption.Wide)),
     ) {
-        if (playerState is PlayerState.PlayerLoading)
+        if (playBackState.playerState is PlayerState.PlayerLoading)
             LoadingIndicator(color = colorScheme.onPrimary)
         else
             Icon(
                 imageVector = ImageVector.vectorResource(
-                    id = if ((playerState is PlayerState.PlayerPlaying) or
-                        (playerState is PlayerState.PlayerIdle)
-                    ) R.drawable.pause_24px
+                    id = if (playBackState.playerState is PlayerState.PlayerPlaying) R.drawable.pause_24px
                     else R.drawable.play_arrow_24px
                 ),
                 contentDescription = null,
@@ -210,6 +211,7 @@ fun PlayPauseAudio(
             )
     }
 }
+
 enum class PlayerSeekType(val seekDuration: Long) {
     FORWARD(seekDuration = 10000L),
     BACKWARD(seekDuration = 10000L)
@@ -247,6 +249,10 @@ private fun DefPrev() {
                         state = seekTo
                     }
 
+                    override fun persistCurrentSurah(surahNumber: String?) {}
+                    override fun onSurahClick(surahNumber: String) {
+                        TODO("Not yet implemented")
+                    }
                 }
             )
         }

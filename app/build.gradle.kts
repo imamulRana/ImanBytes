@@ -1,3 +1,4 @@
+import io.netty.util.internal.UnstableApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -68,13 +69,13 @@ android {
     kotlin.compilerOptions {
         optIn.addAll(
             "androidx.compose.material3.ExperimentalMaterial3ExpressiveApi",
-            "androidx.compose.material3.ExperimentalMaterial3Api"
-        )
+            "androidx.compose.material3.ExperimentalMaterial3Api",
+            "androidx.media3.common.util.UnstableApi.class"
+            )
         jvmTarget.set(JvmTarget.JVM_21)
         freeCompilerArgs.addAll(
             "-Xannotation-default-target=param-property",
-            "-XXLanguage:+ExplicitBackingFields"
-        )
+            "-XXLanguage:+ExplicitBackingFields")
     }
     buildFeatures {
         buildConfig = true

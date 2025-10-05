@@ -1,13 +1,14 @@
-package com.anticbyte.imanbytes.presentation.screens.recitation.arabic
+package com.anticbyte.imanbytes.presentation.screens.audioRecitation.arabic
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.anticbyte.imanbytes.domain.repo.RecitationPrefsRepo
 import com.anticbyte.imanbytes.domain.repo.RecitationRepo
 import com.anticbyte.imanbytes.feature.QuranAudioManager
-import com.anticbyte.imanbytes.presentation.screens.recitation.PlayerState
-import com.anticbyte.imanbytes.presentation.screens.recitation.RecitationType
-import com.anticbyte.imanbytes.presentation.screens.recitation.component.PlayerSeekType
-import com.anticbyte.imanbytes.presentation.screens.recitation.component.RecitationPlayBackActions
+import com.anticbyte.imanbytes.presentation.screens.audioRecitation.PlayerState
+import com.anticbyte.imanbytes.presentation.screens.audioRecitation.RecitationType
+import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.PlayerSeekType
+import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationPlayBackActions
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -20,9 +21,11 @@ import javax.inject.Inject
 import kotlin.math.roundToLong
 
 @HiltViewModel
-class RecitationArViewModel @Inject constructor(
+class RecitationArViewModel
+@Inject constructor(
     private val recitationRepo: RecitationRepo,
-    private val audioManager: QuranAudioManager
+    private val audioManager: QuranAudioManager,
+    private val recitationPrefsRepo: RecitationPrefsRepo
 ) : ViewModel(), RecitationPlayBackActions {
     private val _recitationUiState = MutableStateFlow(RecitationArScreenState(isLoading = true))
     val recitationUiState: StateFlow<RecitationArScreenState> = _recitationUiState
@@ -31,13 +34,19 @@ class RecitationArViewModel @Inject constructor(
         }.stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000L),
-            RecitationArScreenState(isLoading = true)
+            _recitationUiState.value
         )
 
     val playerState = audioManager.playerStateFlow.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000L),
         PlayerState.PlayerIdle
+    )
+
+    val retrieveCurrentSurahNumber = recitationPrefsRepo.retrieveCurrentSurah().stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000L),
+        ""
     )
 
     fun fetchAllSurah() {
@@ -47,7 +56,9 @@ class RecitationArViewModel @Inject constructor(
                 onSuccess =
                     { surahs ->
                         _recitationUiState.update { state ->
-                            state.copy(surahList = surahs, isLoading = false)
+                            state.copy(
+                                surahList = surahs, isLoading = false,
+                                nowPlayingSurah = surahs.find { it.number == retrieveCurrentSurahNumber.value })
                         }
                     },
                 onFailure = {
@@ -67,14 +78,6 @@ class RecitationArViewModel @Inject constructor(
         }
     }
 
-    fun seekAudioP(
-        seekToPosition: Long
-    ) {
-        viewModelScope.launch {
-            audioManager.seekAudioP(seekToPosition)
-        }
-    }
-
     val audioTimeline = audioManager.audioTimeline.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000L),
@@ -91,11 +94,18 @@ class RecitationArViewModel @Inject constructor(
         viewModelScope.launch {
             audioManager.playOrToggle(
                 surahNumber,
-                RecitationType.ARABIC
+                RecitationType.TRANSLATION
             )
         }
     }
 
+    fun persistCurrentSurahNumber(surahNumber: String?) {
+        viewModelScope.launch {
+            recitationPrefsRepo.persistCurrentSurah(surahNumber.orEmpty())
+        }
+    }
+
+    // actions implementation
     override fun onPlayPause(surahNumber: String) {
         _recitationUiState.update { state ->
             state.copy(
@@ -113,6 +123,17 @@ class RecitationArViewModel @Inject constructor(
     }
 
     override fun onSeek(seekTo: Float) {
-        seekAudioP((audioTimeline.value.second * seekTo).roundToLong())
+        seekAudio(null, (audioTimeline.value.second * seekTo).roundToLong())
+    }
+
+    override fun persistCurrentSurah(surahNumber: String?) {
+        persistCurrentSurahNumber(surahNumber)
+    }
+
+    override fun onSurahClick(surahNumber: String) {
+        _recitationUiState.update { state ->
+            state.copy(
+                nowPlayingSurah = state.surahList.find { it.number == surahNumber })
+        }
     }
 }

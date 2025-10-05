@@ -2,9 +2,12 @@ package com.anticbyte.imanbytes.di
 
 import android.content.Context
 import androidx.media3.common.AudioAttributes
+import androidx.media3.common.C.WAKE_MODE_NETWORK
 import androidx.media3.exoplayer.ExoPlayer
-import com.anticbyte.imanbytes.data.repo.QuranRepoFakeImpl
+import com.anticbyte.imanbytes.data.repo.QuranRepoImpl
+import com.anticbyte.imanbytes.data.repo.RecitationRepoImpl
 import com.anticbyte.imanbytes.domain.repo.QuranRepo
+import com.anticbyte.imanbytes.domain.repo.RecitationRepo
 import com.anticbyte.imanbytes.feature.QuranAudioManager
 import com.anticbyte.imanbytes.utils.jsonConfig
 import com.anticbyte.imanbytes.utils.loggingConfig
@@ -32,15 +35,23 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideQuranRepo(): QuranRepo = QuranRepoFakeImpl()
+    fun provideQuranRepo(httpClient: HttpClient): QuranRepo = QuranRepoImpl(ktorClient = httpClient)
 
     @Provides
     @Singleton
     fun providePlayer(@ApplicationContext context: Context): ExoPlayer =
-        ExoPlayer.Builder(context).setAudioAttributes(AudioAttributes.DEFAULT, true).build()
+        ExoPlayer.Builder(context)
+            .setWakeMode(WAKE_MODE_NETWORK).setAudioAttributes(AudioAttributes.DEFAULT, true)
+            .build()
 
     @Provides
     @Singleton
-    fun provideQuranAudioManager(exoPlayer: ExoPlayer): QuranAudioManager =
-        QuranAudioManager(exoPlayer)
+    fun provideQuranAudioManager(
+        exoPlayer: ExoPlayer
+    ): QuranAudioManager = QuranAudioManager(exoPlayer)
+
+    @Provides
+    @Singleton
+    fun provideRecitationRepo(httpClient: HttpClient): RecitationRepo =
+        RecitationRepoImpl(httpClient)
 }

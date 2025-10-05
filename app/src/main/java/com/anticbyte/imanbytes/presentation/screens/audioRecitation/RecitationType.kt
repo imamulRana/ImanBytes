@@ -1,4 +1,4 @@
-package com.anticbyte.imanbytes.presentation.screens.recitation
+package com.anticbyte.imanbytes.presentation.screens.audioRecitation
 
 enum class RecitationType(
     val label: String,

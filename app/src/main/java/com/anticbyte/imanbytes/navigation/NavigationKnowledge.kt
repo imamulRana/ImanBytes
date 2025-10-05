@@ -10,6 +10,8 @@ import androidx.navigation.compose.navigation
 import com.anticbyte.imanbytes.presentation.knowledge.KnowledgeScreenRoute
 import com.anticbyte.imanbytes.presentation.knowledge.KnowledgeViewModel
 import com.anticbyte.imanbytes.presentation.screens.hadith.HadithScreen
+import com.anticbyte.imanbytes.presentation.screens.hadith.PillarScreen
+import com.anticbyte.imanbytes.presentation.screens.hadith.PillarViewModel
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -46,7 +48,8 @@ fun NavGraphBuilder.knowledgeNavGraph(
             HadithScreen()
         }
         composable<PillarRoute> {
-            HadithScreen()
+            val viewModel = hiltViewModel<PillarViewModel>()
+            PillarScreen(pillarViewModel = viewModel)
         }
     }
 }

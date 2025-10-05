@@ -1,10 +1,10 @@
-package com.anticbyte.imanbytes.presentation.screens.recitation
+package com.anticbyte.imanbytes.presentation.screens.audioRecitation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anticbyte.imanbytes.domain.repo.RecitationRepo
 import com.anticbyte.imanbytes.feature.QuranAudioManager
-import com.anticbyte.imanbytes.presentation.screens.recitation.component.PlayerSeekType
+import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.PlayerSeekType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

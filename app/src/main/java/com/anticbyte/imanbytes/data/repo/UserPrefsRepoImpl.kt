@@ -19,11 +19,9 @@ class UserPrefsRepoImpl @Inject constructor(
             it.clear()
             it[stringPreferencesKey("")]
         }
-        //TODO
     }
 
     override suspend fun retrieveLoginResponse() {
-        //TODO
     }
 
     override suspend fun persistNavigationState(isNavigationOnBoarded: Boolean) {

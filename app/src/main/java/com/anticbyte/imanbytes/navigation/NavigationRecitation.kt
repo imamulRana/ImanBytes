@@ -5,11 +5,11 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import com.anticbyte.imanbytes.presentation.screens.recitation.RecitationScreenRoute
-import com.anticbyte.imanbytes.presentation.screens.recitation.arabic.RecitationArRoute
-import com.anticbyte.imanbytes.presentation.screens.recitation.arabic.RecitationArViewModel
-import com.anticbyte.imanbytes.presentation.screens.recitation.translation.RecitationTrRoute
-import com.anticbyte.imanbytes.presentation.screens.recitation.translation.RecitationTrViewModel
+import com.anticbyte.imanbytes.presentation.screens.audioRecitation.RecitationScreenRoute
+import com.anticbyte.imanbytes.presentation.screens.audioRecitation.arabic.RecitationArRoute
+import com.anticbyte.imanbytes.presentation.screens.audioRecitation.arabic.RecitationArViewModel
+import com.anticbyte.imanbytes.presentation.screens.audioRecitation.translation.RecitationTrRoute
+import com.anticbyte.imanbytes.presentation.screens.audioRecitation.translation.RecitationTrViewModel
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -37,7 +37,8 @@ fun NavGraphBuilder.recitationNavGraph(navController: NavHostController) {
             val viewModel = hiltViewModel<RecitationArViewModel>()
             RecitationArRoute(
                 viewModel = viewModel,
-                navigateBack = { navController.navigateUp() })
+                navigateBack = { navController.navigateUp() },
+                navigateToReadSurah = {})
         }
         composable<RecitationTrRoute> {
             val viewModel = hiltViewModel<RecitationTrViewModel>()
