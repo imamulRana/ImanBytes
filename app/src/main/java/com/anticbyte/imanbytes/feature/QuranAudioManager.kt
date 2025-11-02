@@ -58,18 +58,6 @@ class QuranAudioManager @Inject constructor(
         awaitClose { exoPlayer.removeListener(listener) }
     }.distinctUntilChanged()
 
-    val audioTrackFlow: Flow<String> = callbackFlow {
-        val listener = object : Player.Listener {
-            override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
-                trySend(element = mediaItem?.mediaId.orEmpty())
-            }
-        }
-        exoPlayer.addListener(listener)
-        val currentMediaItem = exoPlayer.currentMediaItem
-        trySend(currentMediaItem?.mediaId.orEmpty()).isSuccess
-        awaitClose { exoPlayer.removeListener(listener) }
-    }.distinctUntilChanged()
-
     fun playOrToggle(surahNumber: String, recitationType: RecitationType) {
         exoPlayer.apply {
             //checks if the media id is == to the surah number
@@ -102,7 +90,6 @@ class QuranAudioManager @Inject constructor(
         }
     }
     fun pauseAudio() = exoPlayer.pause()
-    fun stopAudio() = exoPlayer.stop()
     fun releasePlayer() {
         exoPlayer.clearMediaItems()
         exoPlayer.release()

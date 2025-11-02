@@ -2,11 +2,13 @@ package com.anticbyte.imanbytes.presentation.screens.audioRecitation
 
 import com.anticbyte.imanbytes.domain.model.Surah
 
-data class RecitationState(
+data class RecitationScreenState(
     val isLoading: Boolean = false,
     val recitationType: RecitationType = RecitationType.ARABIC,
     val surahList: List<Surah> = emptyList(),
     val nowPlayingSurah: Surah? = null,
+    val playerState: PlayerState = PlayerState.PlayerIdle,
+    val audioProgress: Float = 0f,
     val errorMessages: String? = null
 )
 /*

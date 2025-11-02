@@ -27,7 +27,7 @@ import com.anticbyte.imanbytes.domain.model.Surah
 fun RecitationBottomSheetContent(
     modifier: Modifier = Modifier,
     playBackState: RecitationPlayBackState,
-    actions: RecitationPlayBackActions,
+    actions: RecitationPlaybackAction,
     nowPlayingSurah: Surah? = null,
     onReadSurahClick: (String) -> Unit
 ) {

@@ -11,7 +11,7 @@ import com.anticbyte.imanbytes.domain.model.Surah
 fun RecitationBottomSheet(
     modifier: Modifier = Modifier,
     playBackState: RecitationPlayBackState,
-    actions: RecitationPlayBackActions,
+    actions: RecitationPlaybackAction,
     sheetState: SheetState,
     showSheet: Boolean,
     onSheetHide: (Boolean) -> Unit = {},

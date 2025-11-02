@@ -34,10 +34,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.anticbyte.imanbytes.R
 import com.anticbyte.imanbytes.domain.model.Surah
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.PlayerState
+import com.anticbyte.imanbytes.theme.ImanBytesTheme
 
 @Composable
 fun BoxScope.RecitationFloatingToolbar(modifier: Modifier = Modifier) {
@@ -83,11 +85,12 @@ fun BoxScope.RecitationFloatingBar(
             .padding(horizontal = 16.dp)
             .offset(y = -ScreenOffset)
             .align(Alignment.BottomCenter)
-            .clip(shape = shapes.extraExtraLarge)
+            .clip(shape = shapes.extraLarge)
             .clickable(onClick = onExpand)
             .height(
                 IntrinsicSize.Min
-            )
+            ),
+        shape = shapes.extraLarge
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -98,7 +101,7 @@ fun BoxScope.RecitationFloatingBar(
         ) {
             Box(
                 modifier = Modifier
-                    .size(56.dp)
+                    .size(40.dp)
                     .background(color = colorScheme.surface, CircleShape),
                 contentAlignment = Alignment.Center
             ) {
@@ -122,7 +125,7 @@ fun BoxScope.RecitationFloatingBar(
         FilledTonalIconButton(
             onClick = onClick,
             modifier = Modifier
-                .size(IconButtonDefaults.mediumContainerSize(widthOption = IconButtonDefaults.IconButtonWidthOption.Wide)),
+                .size(IconButtonDefaults.mediumContainerSize(widthOption = IconButtonDefaults.IconButtonWidthOption.Uniform)),
             shapes = IconButtonDefaults.shapes(
                 shape = IconButtonDefaults.mediumRoundShape
             )
@@ -138,6 +141,16 @@ fun BoxScope.RecitationFloatingBar(
                     contentDescription = null,
                     modifier = Modifier.size(IconButtonDefaults.mediumIconSize),
                 )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun DefPrev() {
+    ImanBytesTheme { 
+        Box(Modifier){
+            RecitationFloatingBar()
         }
     }
 }

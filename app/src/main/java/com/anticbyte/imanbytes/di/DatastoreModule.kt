@@ -27,10 +27,8 @@ object DatastoreModule {
     val Context.recitationDataStore: DataStore<Preferences>
             by preferencesDataStore(name = "${BuildConfig.APPLICATION_ID}_recitation_preferences")
     val userNavigationPrefs = booleanPreferencesKey("user_navigation_prefs")
-
-    val recitationPrefs = stringPreferencesKey("recitation_prefs_key")
-
     val recitationCurrentSurah = stringPreferencesKey("recitation_current_surah")
+    val recitationCurrentSurahTr = stringPreferencesKey("recitation_current_surah_tr")
 
     @Provides
     @Singleton

@@ -32,13 +32,15 @@ fun RecitationScreenRoute(
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit,
     navToArRecitation: () -> Unit,
-    navToTrRecitation: () -> Unit
+    navToTrRecitation: () -> Unit,
+    navToSelfRecitation: () -> Unit
 ) {
     RecitationScreen(
         modifier = modifier,
         onNavigateBack = onNavigateBack,
         onNavToArRecitation = navToArRecitation,
-        onNavToTrRecitation = navToTrRecitation
+        onNavToTrRecitation = navToTrRecitation,
+        onNavToSelfRecitation = navToSelfRecitation
     )
 }
 
@@ -48,7 +50,8 @@ fun RecitationScreen(
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit = {},
     onNavToArRecitation: () -> Unit = {},
-    onNavToTrRecitation: () -> Unit = {}
+    onNavToTrRecitation: () -> Unit = {},
+    onNavToSelfRecitation: () -> Unit = {}
 ) {
     Scaffold(topBar = {
         AppTopBar(
@@ -76,6 +79,14 @@ fun RecitationScreen(
                 subtitle = "Recitation in the voice of Mishary Rashid Alafasy in Arabic with English translation in the Voice of Ibrahim Walk",
                 itemShape = MaterialShapes.Square.toShape(),
                 onRecitationItemClick = onNavToTrRecitation
+            )
+            RecitationSelectionItem(
+                modifier = modifier,
+                iconRes = R.drawable.ic_self_recitation,
+                title = "Arabic Recitation with English Translation",
+                subtitle = "Recitation in the voice of Mishary Rashid Alafasy in Arabic with English translation in the Voice of Ibrahim Walk",
+                itemShape = MaterialShapes.Cookie6Sided.toShape(),
+                onRecitationItemClick = onNavToSelfRecitation
             )
         }
     }

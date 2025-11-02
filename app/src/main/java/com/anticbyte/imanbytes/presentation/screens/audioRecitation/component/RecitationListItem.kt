@@ -60,7 +60,7 @@ fun RecitationListItem(
                 Spacer(Modifier.size(48.dp))
                 FilledIconToggleButton(
                     modifier = Modifier.size(
-                        IconButtonDefaults.smallContainerSize(
+                        IconButtonDefaults.mediumContainerSize(
                             widthOption = IconButtonDefaults.IconButtonWidthOption.Wide
                         )
                     ),

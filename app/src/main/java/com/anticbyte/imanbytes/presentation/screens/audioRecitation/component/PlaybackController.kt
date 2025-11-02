@@ -50,6 +50,15 @@ data class RecitationPlayBackState(
     val progress: Float = 0F
 )
 
+data class RecitationPlaybackAction(
+    val playPause: (surahNumber: String) -> Unit = {},
+    val seekForward: () -> Unit = {},
+    val seekBackward: () -> Unit = {},
+    val seek: (Float) -> Unit = {},
+    val persistCurrentSurah: (String?) -> Unit = {},
+    val onSurahClick: (String) -> Unit = {}
+)
+
 interface RecitationPlayBackActions {
     fun onPlayPause(surahNumber: String)
     fun onSeekForward()
@@ -59,22 +68,11 @@ interface RecitationPlayBackActions {
     fun onSurahClick(surahNumber: String)
 }
 
-val sampleActions = object : RecitationPlayBackActions {
-    override fun onPlayPause(surahNumber: String) {}
-    override fun onSeekForward() {}
-    override fun onSeekBackward() {}
-    override fun onSeek(seekTo: Float) {}
-    override fun persistCurrentSurah(surahNumber: String?) {}
-    override fun onSurahClick(surahNumber: String) {
-        TODO("Not yet implemented")
-    }
-}
-
 @Composable
 fun RecitationPlayBack(
     modifier: Modifier = Modifier,
     playBackState: RecitationPlayBackState,
-    actions: RecitationPlayBackActions = sampleActions
+    actions: RecitationPlaybackAction = RecitationPlaybackAction()
 ) {
     var sliderWidth by remember { mutableFloatStateOf(0f) }
     var dragPosition by remember { mutableFloatStateOf(0f) }
@@ -102,7 +100,7 @@ fun RecitationPlayBack(
                         detectTapGestures(onTap = { offset ->
                             val newProgress = (offset.x / sliderWidth).coerceIn(0f, 1f)
                             // Notify the caller to seek the player.
-                            actions.onSeek(newProgress)
+                            actions.seek(newProgress)
                         })
                     }
                     .draggable(
@@ -116,7 +114,7 @@ fun RecitationPlayBack(
                         },
                         onDragStopped = {
                             // When dragging stops, notify the caller to seek the player.
-                            actions.onSeek(dragPosition)
+                            actions.seek(dragPosition)
                             isDragging = false
                         }
                     )
@@ -147,7 +145,7 @@ fun RecitationPlayBack(
             )
         ) {
             SeekAudio(
-                onSeek = actions::onSeekBackward,
+                onSeek = actions.seekBackward,
                 seekType = PlayerSeekType.BACKWARD
             )
             PlayPauseAudio(
@@ -155,7 +153,7 @@ fun RecitationPlayBack(
                 actions = actions
             )
             SeekAudio(
-                onSeek = actions::onSeekForward,
+                onSeek = actions.seekForward,
                 seekType = PlayerSeekType.FORWARD
             )
         }
@@ -177,7 +175,7 @@ fun SeekAudio(
     ) {
         Icon(
             imageVector = ImageVector.vectorResource(
-                id = if (seekType.name == PlayerSeekType.FORWARD.name) R.drawable.ic_forward_10
+                id = if (seekType == PlayerSeekType.FORWARD) R.drawable.ic_forward_10
                 else R.drawable.ic_replay_10
             ), contentDescription = null, modifier = modifier.size(IconButtonDefaults.largeIconSize)
         )
@@ -188,11 +186,10 @@ fun SeekAudio(
 fun PlayPauseAudio(
     modifier: Modifier = Modifier,
     playBackState: RecitationPlayBackState,
-    actions: RecitationPlayBackActions
+    actions: RecitationPlaybackAction = RecitationPlaybackAction()
 ) {
-    Log.d("PlayerState", "PlayPauseAudio: ${playBackState.playerState}")
     FilledIconButton(
-        onClick = { actions.onPlayPause(playBackState.surahNumber) },
+        onClick = { actions.playPause(playBackState.surahNumber) },
         shapes = IconButtonDefaults.shapes(
             shape = IconButtonDefaults.largeSquareShape
         ),
@@ -232,28 +229,6 @@ private fun DefPrev() {
                     PlayerState.PlayerLoading,
                     progress = state
                 ),
-                actions = object : RecitationPlayBackActions {
-                    override fun onPlayPause(surahNumber: String) {
-                        TODO("Not yet implemented")
-                    }
-
-                    override fun onSeekForward() {
-                        TODO("Not yet implemented")
-                    }
-
-                    override fun onSeekBackward() {
-                        TODO("Not yet implemented")
-                    }
-
-                    override fun onSeek(seekTo: Float) {
-                        state = seekTo
-                    }
-
-                    override fun persistCurrentSurah(surahNumber: String?) {}
-                    override fun onSurahClick(surahNumber: String) {
-                        TODO("Not yet implemented")
-                    }
-                }
             )
         }
     }

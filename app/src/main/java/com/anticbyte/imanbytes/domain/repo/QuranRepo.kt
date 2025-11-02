@@ -7,5 +7,5 @@ import com.anticbyte.imanbytes.domain.model.SurahText
 interface QuranRepo {
     suspend fun getQuranData(): Result<Quran>
     suspend fun getAllSurah(): Result<List<Surah>>
-    suspend fun readSurahWithTranslation(surahNumber: String): Result<Pair<List<SurahText>, List<SurahText>>>
+    suspend fun getTxtSurahAndTranslation(surahNumber: String): Result<Pair<List<SurahText>, List<SurahText>>>
 }

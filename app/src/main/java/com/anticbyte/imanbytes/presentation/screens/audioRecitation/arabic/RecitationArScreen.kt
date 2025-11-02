@@ -31,22 +31,24 @@ import com.anticbyte.imanbytes.R
 import com.anticbyte.imanbytes.domain.model.Surah
 import com.anticbyte.imanbytes.presentation.component.AppTopBar
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.PlayerState
+import com.anticbyte.imanbytes.presentation.screens.audioRecitation.RecitationScreenState
+import com.anticbyte.imanbytes.presentation.screens.audioRecitation.RecitationType
+import com.anticbyte.imanbytes.presentation.screens.audioRecitation.RecitationViewModel
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationBottomSheet
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationFloatingBar
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationFloatingButton
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationListItem
-import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationPlayBackActions
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationPlayBackState
+import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationPlaybackAction
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.customInnerPadding
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.paddingWithoutTop
-import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.sampleActions
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
 import com.anticbyte.imanbytes.utils.loadingItem
 
 @Composable
 fun RecitationArRoute(
     modifier: Modifier = Modifier,
-    viewModel: RecitationArViewModel,
+    viewModel: RecitationViewModel,
     navigateBack: () -> Unit,
     navigateToReadSurah: (String) -> Unit
 ) {
@@ -56,9 +58,9 @@ fun RecitationArRoute(
     val playerState by viewModel.playerState.collectAsStateWithLifecycle()
     val currentSurahNumber by viewModel.retrieveCurrentSurahNumber.collectAsStateWithLifecycle()
 
-    DisposableEffect(Unit) {
+    /*DisposableEffect(Unit) {
         onDispose { viewModel.persistCurrentSurah(currentSurahNumber) }
-    }
+    }*/
 
     RecitationArScreen(
         modifier = modifier,
@@ -72,7 +74,7 @@ fun RecitationArRoute(
             progress = currentProgress,
             playerState = playerState
         ),
-        actions = viewModel
+        actions = viewModel.playerActions
     )
 }
 
@@ -81,9 +83,9 @@ fun RecitationArScreen(
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit = {},
     onNavigateToReadSurah: (String) -> Unit = {},
-    screenState: RecitationArScreenState = RecitationArScreenState(),
+    screenState: RecitationScreenState = RecitationScreenState(recitationType = RecitationType.ARABIC),
     recitationPlayBackState: RecitationPlayBackState,
-    actions: RecitationPlayBackActions,
+    actions: RecitationPlaybackAction = RecitationPlaybackAction(),
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val listState = rememberLazyListState()
@@ -118,12 +120,12 @@ fun RecitationArScreen(
                         playerState = recitationPlayBackState.playerState,
                         surahList = screenState.surahList,
                         playSurah = { surahNumber ->
-                            actions.onPlayPause(surahNumber)
+                            actions.playPause(surahNumber)
                             actions.persistCurrentSurah(surahNumber)
                         },
                         onSurahClick = { surahNumber ->
                             showSheet = true
-                            actions.onPlayPause(surahNumber = surahNumber)
+                            actions.playPause(surahNumber)
                             actions.persistCurrentSurah(surahNumber)
                         },
                         currentSurah = screenState.nowPlayingSurah ?: Surah()
@@ -131,7 +133,6 @@ fun RecitationArScreen(
                 }
             }
             RecitationFloatingButton(
-                modifier = Modifier,
                 innerPadding = innerPadding,
                 listState = listState,
                 showScrollToTop = showScrollToTop,
@@ -141,7 +142,7 @@ fun RecitationArScreen(
                 onExpand = { showSheet = !showSheet },
                 surah = screenState.nowPlayingSurah ?: Surah(),
                 onClick = {
-                    actions.onPlayPause(screenState.nowPlayingSurah?.number.orEmpty())
+                    actions.playPause(screenState.nowPlayingSurah?.number.orEmpty())
                 },
                 playerState = recitationPlayBackState.playerState
             )
@@ -199,11 +200,10 @@ fun LazyListScope.recitationItemDescription(@StringRes descriptionRes: Int) {
 private fun DefPrev() {
     ImanBytesTheme {
         RecitationArScreen(
-            screenState = RecitationArScreenState(
+            screenState = RecitationScreenState(
                 surahList = listOf(Surah())
             ),
-            recitationPlayBackState = RecitationPlayBackState(),
-            actions = sampleActions
+            recitationPlayBackState = RecitationPlayBackState()
         )
     }
 }

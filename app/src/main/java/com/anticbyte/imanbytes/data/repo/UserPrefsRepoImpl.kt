@@ -14,16 +14,6 @@ import javax.inject.Inject
 class UserPrefsRepoImpl @Inject constructor(
     private val userDataStorePrefs: DataStore<Preferences>
 ) : UserPrefsRepo {
-    override suspend fun persistLoginResponse() {
-        userDataStorePrefs.edit {
-            it.clear()
-            it[stringPreferencesKey("")]
-        }
-    }
-
-    override suspend fun retrieveLoginResponse() {
-    }
-
     override suspend fun persistNavigationState(isNavigationOnBoarded: Boolean) {
         userDataStorePrefs.edit {
             it[userNavigationPrefs] = isNavigationOnBoarded

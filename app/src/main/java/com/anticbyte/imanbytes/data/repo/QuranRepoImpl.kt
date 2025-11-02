@@ -25,7 +25,7 @@ class QuranRepoImpl(
         TODO("Not yet implemented")
     }
 
-    override suspend fun readSurahWithTranslation(surahNumber: String): Result<Pair<List<SurahText>, List<SurahText>>> {
+    override suspend fun getTxtSurahAndTranslation(surahNumber: String): Result<Pair<List<SurahText>, List<SurahText>>> {
         return withContext(Dispatchers.IO) {
             safeApiCall {
                 val response =

@@ -36,14 +36,6 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideQuranRepo(httpClient: HttpClient): QuranRepo = QuranRepoImpl(ktorClient = httpClient)
-
-    @Provides
-    @Singleton
-    fun providePlayer(@ApplicationContext context: Context): ExoPlayer =
-        ExoPlayer.Builder(context)
-            .setWakeMode(WAKE_MODE_NETWORK).setAudioAttributes(AudioAttributes.DEFAULT, true)
-            .build()
-
     @Provides
     @Singleton
     fun provideQuranAudioManager(
