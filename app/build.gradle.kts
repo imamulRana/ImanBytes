@@ -1,4 +1,3 @@
-import io.netty.util.internal.UnstableApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -8,6 +7,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.serialization)
     alias(libs.plugins.dagger.hilt.android) // dagger hilt android plugin
     alias(libs.plugins.kotlin.ksp) // kotlin ksp plugin
+    alias(libs.plugins.google.services)
 }
 
 android {
@@ -27,7 +27,6 @@ android {
         debug {
             isMinifyEnabled = false
             isDebuggable = true
-            applicationIdSuffix = ".debug"
             versionNameSuffix = "-debug"
             buildConfigField(type = "Boolean", name = "LOGGING", value = "true")
             buildConfigField(
@@ -71,11 +70,12 @@ android {
             "androidx.compose.material3.ExperimentalMaterial3ExpressiveApi",
             "androidx.compose.material3.ExperimentalMaterial3Api",
             "androidx.media3.common.util.UnstableApi.class"
-            )
+        )
         jvmTarget.set(JvmTarget.JVM_21)
         freeCompilerArgs.addAll(
             "-Xannotation-default-target=param-property",
-            "-XXLanguage:+ExplicitBackingFields")
+            "-XXLanguage:+ExplicitBackingFields"
+        )
     }
     buildFeatures {
         buildConfig = true
@@ -106,6 +106,9 @@ dependencies {
     //dagger hilt android
     implementation(libs.dagger.hilt.android)
     implementation(libs.dagger.hilt.navigation.compose)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.config)
+    implementation(libs.firebase.analytics)
     ksp(libs.dagger.hilt.compiler)
 
     //pref datastore

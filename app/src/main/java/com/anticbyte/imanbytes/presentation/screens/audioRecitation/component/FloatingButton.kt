@@ -9,12 +9,15 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FloatingToolbarDefaults.ScreenOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 
@@ -24,6 +27,7 @@ fun BoxScope.RecitationFloatingButton(
     innerPadding: PaddingValues,
     listState: LazyListState,
     showScrollToTop: Boolean,
+    color: ButtonColors = ButtonDefaults.buttonColors()
 ) {
     val coroutineScope = rememberCoroutineScope()
     AnimatedVisibility(
@@ -36,7 +40,7 @@ fun BoxScope.RecitationFloatingButton(
         enter = fadeIn(),
         exit = fadeOut()
     ) {
-        Button(onClick = {
+        Button(colors = color,onClick = {
             coroutineScope.launch {
                 listState.animateScrollToItem(1)
             }

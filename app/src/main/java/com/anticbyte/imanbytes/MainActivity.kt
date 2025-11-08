@@ -49,7 +49,7 @@ class MainActivity : ComponentActivity() {
         }
         setContent {
             val navController = rememberNavController()
-            ImanBytesTheme {
+            ImanBytesTheme(dynamicColor = false) {
                 startDestination?.let { destination ->
                     NavigationScaffold(
                         modifier = Modifier,

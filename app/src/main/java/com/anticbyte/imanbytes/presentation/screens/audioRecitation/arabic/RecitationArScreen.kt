@@ -8,7 +8,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -136,6 +139,9 @@ fun RecitationArScreen(
                 innerPadding = innerPadding,
                 listState = listState,
                 showScrollToTop = showScrollToTop,
+                color = ButtonDefaults.buttonColors(
+                    if (screenState.sectionColor) colorScheme.error else colorScheme.secondary
+                )
             )
             RecitationFloatingBar(
                 modifier = Modifier.padding(innerPadding),

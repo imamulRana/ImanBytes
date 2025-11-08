@@ -1,12 +1,17 @@
 package com.anticbyte.imanbytes.presentation.screens.audioRecitation
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.anticbyte.imanbytes.R
 import com.anticbyte.imanbytes.domain.repo.RecitationPrefsRepo
 import com.anticbyte.imanbytes.domain.repo.RecitationRepo
 import com.anticbyte.imanbytes.feature.QuranAudioManager
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.PlayerSeekType
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationPlaybackAction
+import com.google.firebase.Firebase
+import com.google.firebase.remoteconfig.remoteConfig
+import com.google.firebase.remoteconfig.remoteConfigSettings
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -24,8 +29,49 @@ class RecitationViewModel @Inject constructor(
     private val audioManager: QuranAudioManager,
     private val recitationPrefsRepo: RecitationPrefsRepo
 ) : ViewModel() {
+    val remoteConfig = Firebase.remoteConfig
+    val configSettings = remoteConfigSettings {
+        minimumFetchIntervalInSeconds = 0
+    }
     private val _recitationUiState =
         MutableStateFlow(RecitationScreenState())
+
+    init {
+
+        viewModelScope.launch {
+            /*try {
+                remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults).await()
+                remoteConfig.setConfigSettingsAsync(configSettings).await()
+
+                val updated = remoteConfig.fetchAndActivate().await()
+                Log.d("RemoteConfig", "Config params updated: $updated")
+
+                val friday = remoteConfig.getBoolean("friday_special")
+                val values = remoteConfig.getValue("friday_special")
+                _recitationUiState.update { state ->
+                    state.copy(sectionColor = friday)
+                }
+                Log.d("FridayTag", "${values.source}")
+                Log.d("FridayTag", "$friday")
+            } catch (e: Exception) {
+                Log.d("RemoteConfig", "Config params update failed: ${e.message}")
+            }*/
+            remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults)
+            remoteConfig.setConfigSettingsAsync(configSettings)
+            remoteConfig.fetchAndActivate().addOnCompleteListener {
+                if (it.isSuccessful) {
+                    Log.d("RemoteConfig", "Config params updated: ${it.isSuccessful}")
+                    val friday = remoteConfig.getBoolean("friday_special")
+                    val values = remoteConfig.getValue("friday_special")
+                    Log.d("FridayTag", "${values.source}")
+                    Log.d("FridayTag", "$friday")
+                    _recitationUiState.update { state ->
+                        state.copy(sectionColor = friday)
+                    }
+                }
+            }
+        }
+    }
 
     val recitationUiState: StateFlow<RecitationScreenState> = _recitationUiState.onStart {
         fetchAllSurah()
