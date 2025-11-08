@@ -39,7 +39,7 @@ fun RecitationBottomSheetContent(
                 .align(Alignment.TopStart)
         ) {
             Button(
-                onClick = { onReadSurahClick(nowPlayingSurah?.englishName.orEmpty()) },
+                onClick = { onReadSurahClick(nowPlayingSurah?.number.orEmpty()) },
                 modifier = Modifier.align(Alignment.End)
             ) {
                 Text(stringResource(R.string.read_surah))

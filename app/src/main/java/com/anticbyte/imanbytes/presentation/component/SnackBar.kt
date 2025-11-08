@@ -25,7 +25,7 @@ fun AppSnackBar(snackBarData: SnackbarData, isError: Boolean) {
                 val labelColor = if (isError)
                     colorScheme.error
                 else
-                    colorScheme.primaryContainer
+                    colorScheme.onPrimaryContainer
                 Text(
                     snackBarVisual.actionLabel,
                     color = labelColor

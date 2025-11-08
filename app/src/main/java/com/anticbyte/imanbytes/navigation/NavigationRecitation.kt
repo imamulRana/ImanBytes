@@ -10,8 +10,8 @@ import com.anticbyte.imanbytes.presentation.screens.audioRecitation.RecitationSc
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.RecitationViewModel
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.arabic.RecitationArRoute
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.translation.RecitationTrRoute
-import com.anticbyte.imanbytes.presentation.screens.selfRecitation.RecitationSelfDetailViewModel
 import com.anticbyte.imanbytes.presentation.screens.selfRecitation.RecitationSelfDetailRoute
+import com.anticbyte.imanbytes.presentation.screens.selfRecitation.RecitationSelfDetailViewModel
 import com.anticbyte.imanbytes.presentation.screens.selfRecitation.RecitationSelfRoute
 import com.anticbyte.imanbytes.presentation.screens.selfRecitation.RecitationSelfViewModel
 import kotlinx.serialization.Serializable
@@ -54,7 +54,11 @@ fun NavGraphBuilder.recitationNavGraph(navController: NavHostController) {
             RecitationArRoute(
                 viewModel = viewModel,
                 navigateBack = { navController.navigateUp() },
-                navigateToReadSurah = { surah -> surah })
+                navigateToReadSurah = { surahNumber ->
+                    navController.navigate(
+                        RecitationSelfDetailRoute(surahNumber = surahNumber)
+                    )
+                })
         }
         /* section for translation recitation */
         composable<RecitationTrRoute> { backStack ->
@@ -65,7 +69,11 @@ fun NavGraphBuilder.recitationNavGraph(navController: NavHostController) {
             RecitationTrRoute(
                 viewModel = viewModel,
                 onNavigateBack = { navController.navigateUp() },
-                navigateToReadSurah = { it })
+                navigateToReadSurah = { surahNumber ->
+                    navController.navigate(
+                        RecitationSelfDetailRoute(surahNumber = surahNumber)
+                    )
+                })
         }
         /* section for self recitation */
         composable<RecitationSelfRoute> {

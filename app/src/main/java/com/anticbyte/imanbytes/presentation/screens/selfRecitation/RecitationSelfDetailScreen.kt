@@ -11,6 +11,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -22,15 +23,18 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.anticbyte.imanbytes.R
-import com.anticbyte.imanbytes.domain.model.SurahText
+import com.anticbyte.imanbytes.domain.model.SelfRecitation
 import com.anticbyte.imanbytes.presentation.component.AppTopBar
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.customInnerPadding
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.paddingWithoutTop
@@ -45,11 +49,8 @@ fun RecitationSelfDetailRoute(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     RecitationSelfDetailScreen(
-        modifier = modifier,
-        uiState = uiState,
-        onNavigateBack = navigateBack
+        modifier = modifier, uiState = uiState, onNavigateBack = navigateBack
     )
-
 }
 
 @Composable
@@ -60,11 +61,10 @@ fun RecitationSelfDetailScreen(
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(
-        modifier = modifier
-            .nestedScroll(scrollBehavior.nestedScrollConnection),
-        topBar = {
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection), topBar = {
             AppTopBar(
-                title = "Recite Quran",
+                title = uiState.surahName,
+                subtitle = uiState.surahEnglishTranslation,
                 onNavigationIconClick = onNavigateBack,
                 isBackVisible = true,
                 scrollBehavior = scrollBehavior,
@@ -75,35 +75,33 @@ fun RecitationSelfDetailScreen(
                             contentDescription = null
                         )
                     }
-                }
-            )
-        }
-    ) { innerPadding ->
+                })
+        }) { innerPadding ->
         LazyColumn(
             contentPadding = innerPadding.customInnerPadding(),
         ) {
             if (uiState.isLoading) loadingItem()
             else {
-                txtRecitationItemDesc(descriptionRes = R.string.recitation_description_arabic)
-                recitationItemsSelfDetail(surahNumber = uiState.surahNumber,uiState.txtRecitation,)
+                txtRecitationItemDesc2(
+                    revelationType = uiState.revelationType,
+                    totalVerse = uiState.totalVerse,
+                    surahInfo = uiState.surahInfo
+                )
+                recitationItemsSelfDetail(uiState.txtRecitation)
             }
         }
     }
 }
 
-fun LazyListScope.recitationItemsSelfDetail(
-    surahNumber: String,
-    surahTextList: Pair<List<SurahText>, List<SurahText>>
-) {
-    items(surahTextList.first.size) { surahText ->
+fun LazyListScope.recitationItemsSelfDetail(surahTextList: List<SelfRecitation>) {
+    if (surahTextList.isNotEmpty()) items(surahTextList.first().ayahs.size) { surahText ->
         RecitationSelfDetailListItem(
             modifier = Modifier.fillMaxWidth(),
-            arSurahText = surahTextList.first[surahText],
-            trSurahText = surahTextList.second[surahText],
-            surahNumber = surahNumber
+            arSurahText = surahTextList.first().ayahs[surahText],
+            trSurahText = surahTextList.last().ayahs[surahText],
+            surahNumber = surahTextList.first().numberInQuran
         )
-        if (surahTextList.first.size - 1 != surahText)
-            HorizontalDivider()
+        if (surahTextList.first().ayahs.size - 1 != surahText) HorizontalDivider()
     }
 }
 
@@ -117,50 +115,85 @@ fun LazyListScope.txtRecitationItemDesc(@StringRes descriptionRes: Int) {
     }
 }
 
+fun LazyListScope.txtRecitationItemDesc2(
+    revelationType: String, totalVerse: String, surahInfo: String
+) {
+    item {
+        Column(modifier = Modifier.paddingWithoutTop(16.dp)) {
+            Text(buildAnnotatedString {
+                withStyle(
+                    style = typography.labelSmall.toSpanStyle()
+                        .copy(color = colorScheme.onBackground.copy(.5f))
+                ) {
+                    append("revelation type".uppercase())
+                    append("\n")
+                }
+                append(revelationType)
+                append("\n")
+                withStyle(
+                    style = typography.labelSmall.toSpanStyle()
+                        .copy(color = colorScheme.onBackground.copy(.5f))
+                ) {
+                    append("total verse".uppercase())
+                    append("\n")
+                }
+                append(totalVerse)
+                append("\n\n")
+                /*withStyle(
+                    style = typography.labelSmall.toSpanStyle()
+                        .copy(color = colorScheme.onBackground.copy(.5f))
+                ) {
+                    append("surah info".uppercase())
+                    append("\n")
+                }*/
+                append(surahInfo)
+            }, textAlign = TextAlign.Justify)
+        }
+    }
+}
+
 @Composable
 fun RecitationSelfDetailListItem(
     modifier: Modifier = Modifier,
     surahNumber: String,
-    arSurahText: SurahText,
-    trSurahText: SurahText
+    arSurahText: SelfRecitation.Ayah,
+    trSurahText: SelfRecitation.Ayah
 ) {
-    ListItem(
-        modifier = modifier,
-        overlineContent = {
-            Row(modifier.fillMaxWidth()) {
-                Text(text = surahNumber)
-                Text(":${arSurahText.numberInSurah}")
-                Spacer(Modifier.weight(1f))
-                if (arSurahText.sajda) {
-                    Text(
-                        text = stringResource(R.string.sajda),
-                        textDecoration = TextDecoration.Underline
-                    )
-                }
-            }
-        }, headlineContent = {
-            Text(
-                modifier = modifier,
-                text = arSurahText.text.trim('۞'),
-                textAlign = TextAlign.Right,
-                style = typography.headlineLarge.copy(
-                    fontFamily = FontFamily(Font(R.font.lateef))
-                )
-            )
-        }, supportingContent = {
-            Column {
+    ListItem(modifier = modifier, overlineContent = {
+        Row(modifier.fillMaxWidth()) {
+            Text(text = surahNumber)
+            Text(":${arSurahText.numberInSurah}")
+            Spacer(Modifier.weight(1f))
+            if (arSurahText.sajda) {
                 Text(
-                    text = trSurahText.text,
-                    textAlign = TextAlign.Justify,
+                    text = stringResource(R.string.sajda),
+                    textDecoration = TextDecoration.Underline
                 )
             }
-        })
+        }
+    }, headlineContent = {
+        Text(
+            modifier = modifier,
+            text = arSurahText.text,
+            textAlign = TextAlign.Right,
+            style = typography.headlineLarge.copy(
+                fontFamily = FontFamily(Font(R.font.lateef))
+            )
+        )
+    }, supportingContent = {
+        Column {
+            Text(
+                text = trSurahText.text,
+                textAlign = TextAlign.Justify,
+            )
+        }
+    })
 }
 
 @Preview
 @Composable
 private fun DefPrev() {
-    ImanBytesTheme {
+    ImanBytesTheme() {
         RecitationSelfDetailScreen()
     }
 }

@@ -1,11 +1,12 @@
 package com.anticbyte.imanbytes.data.repo
 
 import com.anticbyte.imanbytes.data.remote.SurahEditionDto
+import com.anticbyte.imanbytes.data.remote.SurahInfoDto
 import com.anticbyte.imanbytes.domain.model.Quran
+import com.anticbyte.imanbytes.domain.model.SelfRecitation
 import com.anticbyte.imanbytes.domain.model.Surah
-import com.anticbyte.imanbytes.domain.model.SurahText
 import com.anticbyte.imanbytes.domain.repo.QuranRepo
-import com.anticbyte.imanbytes.domain.toSurahText
+import com.anticbyte.imanbytes.domain.toSelfRecitation
 import com.anticbyte.imanbytes.utils.safeApiCall
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -25,16 +26,28 @@ class QuranRepoImpl(
         TODO("Not yet implemented")
     }
 
-    override suspend fun getTxtSurahAndTranslation(surahNumber: String): Result<Pair<List<SurahText>, List<SurahText>>> {
+    override suspend fun getTxtSurahAndTranslation(surahNumber: String): Result<List<SelfRecitation>> {
         return withContext(Dispatchers.IO) {
             safeApiCall {
                 val response =
-                    ktorClient.get("https://api.alquran.cloud/v1/surah/$surahNumber/editions/quran-uthmani,en.sahih")
+                    ktorClient.get("https://api.alquran.cloud/v1/surah/$surahNumber/editions/quran-unicode,en.sahih")
                 val data = response.body<SurahEditionDto>().responseData
                 if (response.status.isSuccess()) {
-                    val arabic = data.first().ayahs.asSequence().map { it.toSurahText() }.toList()
-                    val english = data.last().ayahs.asSequence().map { it.toSurahText() }.toList()
-                    arabic to english
+                    data.map { it.toSelfRecitation() }
+                } else {
+                    throw Exception(response.status.description)
+                }
+            }
+        }
+    }
+
+    override suspend fun getSurahInfoByNumber(surahNumber: String): Result<SurahInfoDto> {
+        return withContext(Dispatchers.IO) {
+            safeApiCall {
+                val response =
+                    ktorClient.get("https://api.quran.com/api/v4/chapters/$surahNumber/info")
+                if (response.status.isSuccess()) {
+                    response.body<SurahInfoDto>()
                 } else {
                     throw Exception(response.status.description)
                 }
