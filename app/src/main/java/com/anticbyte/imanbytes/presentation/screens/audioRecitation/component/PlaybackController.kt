@@ -1,16 +1,25 @@
 package com.anticbyte.imanbytes.presentation.screens.audioRecitation.component
 
-import android.util.Log
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.gestures.draggable
-import androidx.compose.foundation.gestures.rememberDraggableState
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.TwoWayConverter
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateIntSizeAsState
+import androidx.compose.animation.core.animateSizeAsState
+import androidx.compose.animation.core.animateValueAsState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -20,9 +29,12 @@ import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.SliderState
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberSliderState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -31,17 +43,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.anticbyte.imanbytes.R
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.PlayerState
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
 
-@Immutable
 data class RecitationPlayBackState(
     val surahNumber: String = "",
     val currentTime: Long = 0L,
@@ -59,66 +70,42 @@ data class RecitationPlaybackAction(
     val onSurahClick: (String) -> Unit = {}
 )
 
-interface RecitationPlayBackActions {
-    fun onPlayPause(surahNumber: String)
-    fun onSeekForward()
-    fun onSeekBackward()
-    fun onSeek(seekTo: Float)
-    fun persistCurrentSurah(surahNumber: String?)
-    fun onSurahClick(surahNumber: String)
-}
-
 @Composable
 fun RecitationPlayBack(
     modifier: Modifier = Modifier,
     playBackState: RecitationPlayBackState,
     actions: RecitationPlaybackAction = RecitationPlaybackAction()
 ) {
-    var sliderWidth by remember { mutableFloatStateOf(0f) }
     var dragPosition by remember { mutableFloatStateOf(0f) }
     var isDragging by remember { mutableStateOf(false) }
 
     LaunchedEffect(playBackState.progress) {
         if (!isDragging) dragPosition = playBackState.progress
     }
+
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            LinearWavyProgressIndicator(
-                progress = { dragPosition },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .onGloballyPositioned {
-                        sliderWidth = it.size.width.toFloat()
-                    }
-                    .pointerInput(Unit) {
-                        // Handle tap gestures for immediate seeking.
-                        detectTapGestures(onTap = { offset ->
-                            val newProgress = (offset.x / sliderWidth).coerceIn(0f, 1f)
-                            // Notify the caller to seek the player.
-                            actions.seek(newProgress)
-                        })
-                    }
-                    .draggable(
-                        orientation = Orientation.Horizontal,
-                        state = rememberDraggableState { delta ->
-//                          During a drag, update our local state directly. This is fast and smooth.
-                            dragPosition = (dragPosition + (delta / sliderWidth)).coerceIn(0f, 1f)
-                        },
-                        onDragStarted = {
-                            isDragging = true
-                        },
-                        onDragStopped = {
-                            // When dragging stops, notify the caller to seek the player.
-                            actions.seek(dragPosition)
-                            isDragging = false
-                        }
+            Slider(
+                value = dragPosition, onValueChange = { newValue ->
+                    isDragging = true
+                    dragPosition = newValue
+                },
+                onValueChangeFinished = {
+                    isDragging = false
+                    actions.seek(dragPosition)
+                }, track = {
+                    LinearWavyProgressIndicator(
+                        progress = { dragPosition },
+                        modifier = Modifier.fillMaxWidth()
                     )
-            )
+                },
+                thumb = {
+                    SliderDefaults.Thumb(thumbSize = DpSize(10.dp,15.dp), interactionSource = MutableInteractionSource())
+                })
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
