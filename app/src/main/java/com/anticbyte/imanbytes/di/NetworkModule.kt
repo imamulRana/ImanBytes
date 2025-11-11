@@ -1,13 +1,12 @@
 package com.anticbyte.imanbytes.di
 
 import android.content.Context
-import androidx.media3.common.AudioAttributes
-import androidx.media3.common.C.WAKE_MODE_NETWORK
 import androidx.media3.exoplayer.ExoPlayer
 import com.anticbyte.imanbytes.data.repo.QuranRepoImpl
 import com.anticbyte.imanbytes.data.repo.RecitationRepoImpl
 import com.anticbyte.imanbytes.domain.repo.QuranRepo
 import com.anticbyte.imanbytes.domain.repo.RecitationRepo
+import com.anticbyte.imanbytes.feature.AudioPlaybackController
 import com.anticbyte.imanbytes.feature.QuranAudioManager
 import com.anticbyte.imanbytes.utils.jsonConfig
 import com.anticbyte.imanbytes.utils.loggingConfig
@@ -32,8 +31,8 @@ object NetworkModule {
         HttpClient(CIO) {
             install(plugin = ContentNegotiation, configure = jsonConfig)
             install(plugin = Logging, configure = loggingConfig)
-            install(HttpRequestRetry){
-                retryOnException(5,true)
+            install(HttpRequestRetry) {
+                retryOnException(5, true)
                 exponentialDelay()
             }
         }
@@ -41,11 +40,18 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideQuranRepo(httpClient: HttpClient): QuranRepo = QuranRepoImpl(ktorClient = httpClient)
+
     @Provides
     @Singleton
     fun provideQuranAudioManager(
         exoPlayer: ExoPlayer
     ): QuranAudioManager = QuranAudioManager(exoPlayer)
+
+    @Provides
+    @Singleton
+    fun provideAudioController(@ApplicationContext context: Context): AudioPlaybackController =
+        AudioPlaybackController(context = context)
+
 
     @Provides
     @Singleton

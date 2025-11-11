@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.anticbyte.imanbytes.R
 import com.anticbyte.imanbytes.domain.repo.RecitationPrefsRepo
 import com.anticbyte.imanbytes.domain.repo.RecitationRepo
+import com.anticbyte.imanbytes.feature.AudioPlaybackController
 import com.anticbyte.imanbytes.feature.QuranAudioManager
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.PlayerSeekType
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationPlaybackAction
@@ -27,7 +28,8 @@ import kotlin.math.roundToLong
 class RecitationViewModel @Inject constructor(
     private val recitationRepo: RecitationRepo,
     private val audioManager: QuranAudioManager,
-    private val recitationPrefsRepo: RecitationPrefsRepo
+    private val recitationPrefsRepo: RecitationPrefsRepo,
+    private val audioController : AudioPlaybackController
 ) : ViewModel() {
     val remoteConfig = Firebase.remoteConfig
     val configSettings = remoteConfigSettings {
@@ -140,7 +142,7 @@ class RecitationViewModel @Inject constructor(
 
     fun playSurah(surahNumber: String, recitationType: RecitationType) {
         viewModelScope.launch {
-            audioManager.playOrToggle(
+            audioController.playPauseMedia(
                 surahNumber,
                 recitationType
             )

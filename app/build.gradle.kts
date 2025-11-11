@@ -27,6 +27,7 @@ android {
         debug {
             isMinifyEnabled = false
             isDebuggable = true
+            applicationIdSuffix = ".debug"
             versionNameSuffix = "-debug"
             buildConfigField(type = "Boolean", name = "LOGGING", value = "true")
             buildConfigField(
