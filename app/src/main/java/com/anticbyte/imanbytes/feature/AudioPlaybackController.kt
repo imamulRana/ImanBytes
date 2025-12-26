@@ -1,6 +1,5 @@
 package com.anticbyte.imanbytes.feature
 
-import android.content.ComponentName
 import android.content.Context
 import androidx.core.content.ContextCompat
 import androidx.media3.common.MediaItem
@@ -8,43 +7,72 @@ import androidx.media3.common.Player
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.anticbyte.imanbytes.BuildConfig
+import com.anticbyte.imanbytes.presentation.screens.audioRecitation.PlayerState
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.RecitationType
-import com.google.common.util.concurrent.ListenableFuture
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class AudioPlaybackController @Inject constructor(@ApplicationContext val context: Context) {
-    private var mediaController: MediaController? = null
-    private var controllerFuture: ListenableFuture<MediaController>
+class AudioPlaybackController @Inject constructor(
+    @ApplicationContext val context: Context,
+    private val sessionToken: SessionToken
+) {
+    val mediaController: MediaController?
+        get() = _mediaControllerFlow.value
+
+    private val _mediaControllerFlow = MutableStateFlow<MediaController?>(null)
+    val mediaControllerFlow = _mediaControllerFlow.asStateFlow()
+    private val _playerState = MutableStateFlow<PlayerState>(PlayerState.PlayerIdle)
+    val playerStateFlow = _playerState.asStateFlow()
+
+
+    private val _currentIndex = MutableStateFlow(0)
+    val currentIndex = _currentIndex.asStateFlow()
 
     init {
-        val sessionToken =
-            SessionToken(context, ComponentName(context, AudioPlaybackService::class.java))
+        initController()
+    }
 
-        controllerFuture = MediaController.Builder(context, sessionToken).buildAsync()
-
+    private fun initController() {
+        // The sessionToken is now injected, no need to create it here.
+        val controllerFuture = MediaController.Builder(context, sessionToken).buildAsync()
         controllerFuture.addListener(
-            { mediaController = controllerFuture.get() },
+            {
+                // When the connection is successful, update the StateFlow
+                _mediaControllerFlow.value = controllerFuture.get().apply {
+                    prepare()
+                }
+                observePlayerState()
+            },
             ContextCompat.getMainExecutor(context)
         )
     }
 
-    fun playPauseMedia(surahNumber: String, recitationType: RecitationType) {
-        val mediaId = surahNumber.plus(".${recitationType.recitationId}")
-        val uri = BuildConfig.AUDIO_BASE_URL.format(recitationType.recitationId, surahNumber)
-        mediaController?.apply {
-            if (currentMediaItem?.mediaId == mediaId) {
-                if (isPlaying) pause()
-                else if (playbackState == Player.STATE_ENDED) {
-                    seekTo(0L); play()
-                } else play()
-            } else {
-                setMediaItem(MediaItem.Builder().setMediaId(mediaId).setUri(uri).build())
-                prepare()
-                play()
+    private fun observePlayerState() {
+        val listener = object : Player.Listener {
+            override fun onEvents(player: Player, events: Player.Events) {
+                _playerState.value = when {
+                    player.isPlaying -> PlayerState.PlayerPlaying
+                    player.currentMediaItem == null -> PlayerState.PlayerIdle
+                    player.isLoading -> PlayerState.PlayerLoading
+                    else -> PlayerState.PlayerPaused
+                }
+                _currentIndex.value = player.currentMediaItemIndex
             }
         }
+        mediaController?.addListener(listener)
+    }
+
+    fun setMediaItem(recitationType: RecitationType) {
+        val items = (0..114).map { surahNumber ->
+            val uri = BuildConfig.AUDIO_BASE_URL.format(
+                recitationType.recitationId,
+                surahNumber
+            )
+            MediaItem.fromUri(uri)
+        }
+
+        mediaController?.setMediaItems(items)
     }
 }

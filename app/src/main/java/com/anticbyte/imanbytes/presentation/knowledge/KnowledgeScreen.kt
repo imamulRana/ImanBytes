@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.ListItemShapes
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -70,8 +72,7 @@ fun KnowledgeScreen(
             modifier = modifier
                 .fillMaxSize()
                 .padding(innerPadding),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
+            verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap),        ) {
             KnowledgeItems(
                 onNavigateToQuran = onNavigateToQuran,
                 onNavigateToHadith = onNavigateToHadith,
@@ -95,6 +96,7 @@ fun KnowledgeItems(
 ) {
     KnowledgeItem.entries.fastForEach { item ->
         KnowledgeSectionItem(
+            modifier = Modifier.padding(horizontal = 16.dp),
             leadingIcon = item.iconRes,
             titleRes = item.titleRes,
             descriptionRes = item.descriptionRes,
@@ -104,7 +106,8 @@ fun KnowledgeItems(
                     KnowledgeItem.HADITH -> onNavigateToHadith()
                     KnowledgeItem.PILLARS -> onNavigateToPillar()
                 }
-            }
+            },
+            shapes = ListItemDefaults.segmentedShapes(item.ordinal,KnowledgeItem.entries.size)
         )
     }
 }

@@ -90,7 +90,6 @@ private val darkScheme = darkColorScheme(
     surfaceContainerHighest = surfaceContainerHighestDark,
 )
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun ImanBytesTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),

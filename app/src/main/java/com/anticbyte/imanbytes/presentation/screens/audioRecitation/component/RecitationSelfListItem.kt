@@ -1,13 +1,14 @@
 package com.anticbyte.imanbytes.presentation.screens.audioRecitation.component
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.ListItemShapes
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
+import androidx.compose.material3.SegmentedListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,11 +22,14 @@ import com.anticbyte.imanbytes.theme.ImanBytesTheme
 fun RecitationSelfListItem(
     modifier: Modifier = Modifier,
     surah: Surah,
-    onItemClick: (String) -> Unit = {}
+    onItemClick: (String) -> Unit = {},
+    shapes: ListItemShapes = ListItemDefaults.shapes()
 ) {
-    ListItem(
-        modifier = modifier
-            .clickable(onClick = { onItemClick(surah.number) }),
+    SegmentedListItem(
+        onClick = {
+            onItemClick(surah.number)
+        },
+        modifier = modifier,
         leadingContent = {
             Box(
                 modifier = Modifier
@@ -41,12 +45,17 @@ fun RecitationSelfListItem(
             }
         },
         overlineContent = { Text(surah.name) },
-        headlineContent = { Text(text = surah.englishName) },
         supportingContent = { Text(text = surah.englishNameTranslation) },
         trailingContent = {
             Text(text = "${surah.numberOfAyahs} Ayahs")
-        }
-    )
+        },
+        shapes = shapes,
+        colors = ListItemDefaults.segmentedColors(
+            containerColor = colorScheme.surfaceContainerLow
+        )
+    ) {
+        Text(text = surah.englishName)
+    }
 }
 
 @Preview(showBackground = true)
@@ -61,7 +70,8 @@ private fun DefPrev() {
                 englishNameTranslation = "The Opening",
                 revelationType = "Meccan",
                 numberOfAyahs = "7"
-            )
+            ),
+            shapes = ListItemDefaults.shapes()
         )
     }
 }

@@ -1,5 +1,7 @@
 package com.anticbyte.imanbytes.presentation.screens.audioRecitation.translation
 
+import android.annotation.SuppressLint
+import androidx.annotation.OptIn
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -22,6 +24,9 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.ui.compose.state.rememberPresentationState
 import com.anticbyte.imanbytes.R
 import com.anticbyte.imanbytes.domain.model.Surah
 import com.anticbyte.imanbytes.presentation.component.AppTopBar
@@ -30,16 +35,15 @@ import com.anticbyte.imanbytes.presentation.screens.audioRecitation.RecitationSc
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.RecitationType
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.RecitationViewModel
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.arabic.recitationItemDescription
-import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationBottomSheet
-import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationFloatingBar
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationFloatingButton
-import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationListItem
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationPlayBackState
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationPlaybackAction
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.customInnerPadding
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
 import com.anticbyte.imanbytes.utils.loadingItem
 
+@SuppressLint("VisibleForTests")
+@OptIn(UnstableApi::class)
 @Composable
 fun RecitationTrRoute(
     modifier: Modifier = Modifier,
@@ -48,27 +52,25 @@ fun RecitationTrRoute(
     navigateToReadSurah: (String) -> Unit
 ) {
     val screenState by viewModel.recitationUiState.collectAsStateWithLifecycle()
-    val currentProgress by viewModel.currentProgress.collectAsStateWithLifecycle()
-    val currentTimeline by viewModel.audioTimeline.collectAsStateWithLifecycle()
-    val playerState by viewModel.playerState.collectAsStateWithLifecycle()
-    val currentSurahNumber by viewModel.retrieveCurrentSurahNumber.collectAsStateWithLifecycle()
+//    val currentProgress by viewModel.currentProgress.collectAsStateWithLifecycle()
+//    val currentTimeline by viewModel.audioTimeline.collectAsStateWithLifecycle()
+//    val playerState by viewModel.playerState.collectAsStateWithLifecycle()
+//    val currentSurahNumber by viewModel.retrieveCurrentSurahNumber.collectAsStateWithLifecycle()
 
     /*DisposableEffect(Unit) {
         onDispose { viewModel.persistCurrentSurah(currentSurahNumber) }
     }*/
+//    val mc by viewModel.mediaController.collectAsStateWithLifecycle()
+    val controller by viewModel.player.collectAsStateWithLifecycle()
+    val player = rememberPresentationState(player = controller)
 
     RecitationTrScreen(
         modifier = modifier,
         screenState = screenState,
         onNavigateBack = onNavigateBack,
         onNavigateToReadSurah = navigateToReadSurah,
-        recitationPlayBackState = RecitationPlayBackState(
-            surahNumber = currentSurahNumber,
-            currentTime = currentTimeline.first,
-            duration = currentTimeline.second,
-            progress = currentProgress,
-            playerState = playerState
-        )
+        recitationPlayBackState = RecitationPlayBackState(),
+        player = player.player
     )
 }
 
@@ -80,6 +82,7 @@ fun RecitationTrScreen(
     screenState: RecitationScreenState = RecitationScreenState(recitationType = RecitationType.TRANSLATION),
     recitationPlayBackState: RecitationPlayBackState,
     actions: RecitationPlaybackAction = RecitationPlaybackAction(),
+    player: Player? = null
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val listState = rememberLazyListState()
@@ -127,7 +130,7 @@ fun RecitationTrScreen(
                 listState = listState,
                 showScrollToTop = showScrollToTop
             )
-            RecitationFloatingBar(
+            /*RecitationFloatingBar(
                 modifier = Modifier.padding(innerPadding),
                 onExpand = { showSheet = !showSheet },
                 surah = screenState.nowPlayingSurah ?: Surah(),
@@ -135,16 +138,17 @@ fun RecitationTrScreen(
                     actions.playPause(screenState.nowPlayingSurah?.number.orEmpty())
                 },
                 playerState = recitationPlayBackState.playerState
-            )
-            RecitationBottomSheet(
+            )*/
+            /*RecitationBottomSheet(
                 sheetState = sheetState,
                 showSheet = showSheet,
                 onSheetHide = { showSheet = false },
                 playBackState = recitationPlayBackState,
                 actions = actions,
                 nowPlayingSurah = screenState.nowPlayingSurah,
-                onReadSurahClick = onNavigateToReadSurah
-            )
+                onReadSurahClick = onNavigateToReadSurah,
+                player = player
+            )*/
         }
     }
 }
@@ -163,13 +167,13 @@ fun LazyListScope.recitationItemsTr(
             isCurrent -> playerState
             else -> PlayerState.PlayerIdle
         }
-        RecitationListItem(
+        /*RecitationListItem(
             modifier = Modifier,
             surah = surah,
             onPlaySurah = playSurah,
             onSurahClick = onSurahClick,
             playerState = itemPlayerState
-        )
+        )*/
         if (index != surahList.lastIndex)
             HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
     }

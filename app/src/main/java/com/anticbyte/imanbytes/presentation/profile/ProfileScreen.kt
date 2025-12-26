@@ -105,7 +105,7 @@ fun ProfileScreen(
             ) {
                 Text("More")
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    KnowledgeSectionItem()
+//                    KnowledgeSectionItem()
                 }
             }
         }

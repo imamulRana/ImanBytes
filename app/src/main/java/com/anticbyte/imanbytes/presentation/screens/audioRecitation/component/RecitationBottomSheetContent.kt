@@ -1,5 +1,6 @@
 package com.anticbyte.imanbytes.presentation.screens.audioRecitation.component
 
+import androidx.annotation.OptIn
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -19,17 +20,19 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
 import com.anticbyte.imanbytes.R
 import com.anticbyte.imanbytes.domain.model.Surah
 
 
+@OptIn(UnstableApi::class)
 @Composable
 fun RecitationBottomSheetContent(
     modifier: Modifier = Modifier,
-    playBackState: RecitationPlayBackState,
-    actions: RecitationPlaybackAction,
+    player: Player,
     nowPlayingSurah: Surah? = null,
-    onReadSurahClick: (String) -> Unit
+    onReadSurahClick: (String) -> Unit,
 ) {
     Box(modifier = modifier.fillMaxSize()) {
         Column(
@@ -52,12 +55,11 @@ fun RecitationBottomSheetContent(
                 style = typography.bodyLarge
             )
         }
-        RecitationPlayBack(
+        AudioControlSection(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 16.dp),
-            playBackState = playBackState,
-            actions = actions
+            player = player
         )
     }
 }

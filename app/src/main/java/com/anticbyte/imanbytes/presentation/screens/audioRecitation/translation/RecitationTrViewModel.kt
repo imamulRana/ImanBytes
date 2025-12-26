@@ -2,8 +2,8 @@ package com.anticbyte.imanbytes.presentation.screens.audioRecitation.translation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.anticbyte.imanbytes.domain.repo.QuranRepo
 import com.anticbyte.imanbytes.domain.repo.RecitationPrefsRepo
-import com.anticbyte.imanbytes.domain.repo.RecitationRepo
 import com.anticbyte.imanbytes.feature.QuranAudioManager
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.PlayerState
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.RecitationType
@@ -22,7 +22,7 @@ import kotlin.math.roundToLong
 
 @HiltViewModel
 class RecitationTrViewModel @Inject constructor(
-    private val recitationRepo: RecitationRepo,
+    private val quranRepo: QuranRepo,
     private val audioManager: QuranAudioManager,
     private val recitationPrefsRepo: RecitationPrefsRepo
 ) : ViewModel() {
@@ -59,7 +59,7 @@ class RecitationTrViewModel @Inject constructor(
 
     fun fetchAllSurah() {
         viewModelScope.launch {
-            val response = recitationRepo.getAllSurah()
+            val response = quranRepo.getAllSurah()
             response.fold(
                 onSuccess =
                     { surahs ->

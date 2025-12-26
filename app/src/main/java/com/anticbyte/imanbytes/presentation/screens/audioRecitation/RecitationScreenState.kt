@@ -8,7 +8,6 @@ data class RecitationScreenState(
     val surahList: List<Surah> = emptyList(),
     val nowPlayingSurah: Surah? = null,
     val playerState: PlayerState = PlayerState.PlayerIdle,
-    val sectionColor : Boolean = false,
     val audioProgress: Float = 0f,
     val errorMessages: String? = null
 )

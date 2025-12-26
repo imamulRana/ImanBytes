@@ -1,6 +1,8 @@
 package com.anticbyte.imanbytes.presentation.screens.audioRecitation.arabic
 
+import androidx.annotation.OptIn
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -8,9 +10,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -28,19 +28,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
+import com.anticbyte.imanbytes.BuildConfig
 import com.anticbyte.imanbytes.R
 import com.anticbyte.imanbytes.domain.model.Surah
+import com.anticbyte.imanbytes.presentation.component.AppIconButton
 import com.anticbyte.imanbytes.presentation.component.AppTopBar
-import com.anticbyte.imanbytes.presentation.screens.audioRecitation.PlayerState
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.RecitationScreenState
-import com.anticbyte.imanbytes.presentation.screens.audioRecitation.RecitationType
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.RecitationViewModel
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationBottomSheet
-import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationFloatingBar
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationFloatingButton
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationListItem
-import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationPlayBackState
-import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationPlaybackAction
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.customInnerPadding
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.paddingWithoutTop
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
@@ -54,39 +54,32 @@ fun RecitationArRoute(
     navigateToReadSurah: (String) -> Unit
 ) {
     val screenState by viewModel.recitationUiState.collectAsStateWithLifecycle()
-    val currentProgress by viewModel.currentProgress.collectAsStateWithLifecycle()
-    val currentTimeline by viewModel.audioTimeline.collectAsStateWithLifecycle()
-    val playerState by viewModel.playerState.collectAsStateWithLifecycle()
-    val currentSurahNumber by viewModel.retrieveCurrentSurahNumber.collectAsStateWithLifecycle()
-
-    /*DisposableEffect(Unit) {
-        onDispose { viewModel.persistCurrentSurah(currentSurahNumber) }
-    }*/
+    val player by viewModel.player.collectAsStateWithLifecycle()
 
     RecitationArScreen(
         modifier = modifier,
         screenState = screenState,
         onNavigateBack = navigateBack,
         onNavigateToReadSurah = navigateToReadSurah,
-        recitationPlayBackState = RecitationPlayBackState(
-            surahNumber = currentSurahNumber,
-            currentTime = currentTimeline.first,
-            duration = currentTimeline.second,
-            progress = currentProgress,
-            playerState = playerState
-        ),
-        actions = viewModel.playerActions
+        /* recitationPlayBackState = RecitationPlayBackState(
+             surahNumber = currentSurahNumber,
+             currentTime = currentTimeline.first,
+             duration = currentTimeline.second,
+             progress = currentProgress,
+             playerState = playerState
+         ),*/
+        player = player
     )
 }
 
+@OptIn(UnstableApi::class)
 @Composable
 fun RecitationArScreen(
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit = {},
     onNavigateToReadSurah: (String) -> Unit = {},
-    screenState: RecitationScreenState = RecitationScreenState(recitationType = RecitationType.ARABIC),
-    recitationPlayBackState: RecitationPlayBackState,
-    actions: RecitationPlaybackAction = RecitationPlaybackAction(),
+    player: Player?,
+    screenState: RecitationScreenState = RecitationScreenState()
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val listState = rememberLazyListState()
@@ -106,86 +99,81 @@ fun RecitationArScreen(
                 title = "Arabic Recitation",
                 onNavigationIconClick = onNavigateBack,
                 isBackVisible = true,
-                scrollBehavior = scrollBehavior
+                scrollBehavior = scrollBehavior,
+                actions = {
+                    AppIconButton(
+                        onClick = { TODO("Add search") },
+                        iconRes = R.drawable.ic_search
+                    )
+                }
             )
         }) { innerPadding ->
         Box(modifier = Modifier.fillMaxSize()) {
             LazyColumn(
                 state = listState,
-                contentPadding = innerPadding.customInnerPadding()
+                contentPadding = innerPadding.customInnerPadding(),
+                verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap)
             ) {
                 if (screenState.isLoading) loadingItem()
                 else {
                     recitationItemDescription(descriptionRes = R.string.recitation_description_arabic)
-                    recitationItemsAr(
-                        playerState = recitationPlayBackState.playerState,
-                        surahList = screenState.surahList,
-                        playSurah = { surahNumber ->
-                            actions.playPause(surahNumber)
-                            actions.persistCurrentSurah(surahNumber)
-                        },
-                        onSurahClick = { surahNumber ->
-                            showSheet = true
-                            actions.playPause(surahNumber)
-                            actions.persistCurrentSurah(surahNumber)
-                        },
-                        currentSurah = screenState.nowPlayingSurah ?: Surah()
-                    )
+                    player?.let { audioPlayer ->
+                        recitationItemsAr(
+                            modifier = Modifier.padding(horizontal = 16.dp),
+                            surahList = screenState.surahList,
+                            onSurahClick = { surahNumber ->
+                                showSheet = true
+                                audioPlayer.setMediaItem(MediaItem.fromUri("https://cdn.islamic.network/quran/audio/128/ar.alafasy/4125.mp3"))
+                            },
+                            player = audioPlayer
+                        )
+                    }
                 }
             }
             RecitationFloatingButton(
                 innerPadding = innerPadding,
                 listState = listState,
-                showScrollToTop = showScrollToTop,
-                color = ButtonDefaults.buttonColors(
-                    if (screenState.sectionColor) colorScheme.error else colorScheme.secondary
-                )
+                showScrollToTop = showScrollToTop
             )
-            RecitationFloatingBar(
+            /*RecitationFloatingBar(
                 modifier = Modifier.padding(innerPadding),
                 onExpand = { showSheet = !showSheet },
                 surah = screenState.nowPlayingSurah ?: Surah(),
                 onClick = {
                     actions.playPause(screenState.nowPlayingSurah?.number.orEmpty())
                 },
-                playerState = recitationPlayBackState.playerState
-            )
-            RecitationBottomSheet(
-                sheetState = sheetState,
-                showSheet = showSheet,
-                onSheetHide = { showSheet = false },
-                playBackState = recitationPlayBackState,
-                actions = actions,
-                nowPlayingSurah = screenState.nowPlayingSurah,
-                onReadSurahClick = onNavigateToReadSurah
-            )
+                playerState = playerState
+            )*/
+            if (player != null)
+                RecitationBottomSheet(
+                    modifier = Modifier,
+                    sheetState = sheetState,
+                    showSheet = showSheet,
+                    onSheetHide = { showSheet = false },
+                    nowPlayingSurah = screenState.nowPlayingSurah,
+                    onReadSurahClick = onNavigateToReadSurah,
+                    player = player
+                )
         }
     }
 }
 
 // FIXME: - Implement and onclick to surah properly
+@OptIn(UnstableApi::class)
 fun LazyListScope.recitationItemsAr(
+    modifier: Modifier,
     surahList: List<Surah>,
-    playSurah: (surahNumber: String) -> Unit = {},
-    playerState: PlayerState = PlayerState.PlayerIdle,
     onSurahClick: (surahNumber: String) -> Unit = {},
-    currentSurah: Surah,
+    player: Player
 ) {
     itemsIndexed(surahList) { index, surah ->
-        val isCurrent = currentSurah.number == surah.number
-        val itemPlayerState = when {
-            isCurrent -> playerState
-            else -> PlayerState.PlayerIdle
-        }
         RecitationListItem(
-            modifier = Modifier,
+            modifier = modifier,
             surah = surah,
-            onPlaySurah = playSurah,
-            onSurahClick = onSurahClick,
-            playerState = itemPlayerState
+            onSurahClick = { onSurahClick(surah.number) },
+            player = player,
+            shapes = ListItemDefaults.segmentedShapes(index, surahList.size)
         )
-        if (index != surahList.lastIndex)
-            HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
     }
 }
 
@@ -203,11 +191,17 @@ fun LazyListScope.recitationItemDescription(@StringRes descriptionRes: Int) {
 @Composable
 private fun DefPrev() {
     ImanBytesTheme {
-        RecitationArScreen(
-            screenState = RecitationScreenState(
-                surahList = listOf(Surah())
-            ),
-            recitationPlayBackState = RecitationPlayBackState()
-        )
+//        RecitationArScreen(
+//            screenState = RecitationArScreenState(
+//                surahList = listOf(
+//                    Surah(
+//                        number = "1",
+//                        name = "Al Fatiha",
+//                        englishName = "Al Fatiha",
+//                    )
+//                )
+//            ),
+//            player = null
+//        )
     }
 }

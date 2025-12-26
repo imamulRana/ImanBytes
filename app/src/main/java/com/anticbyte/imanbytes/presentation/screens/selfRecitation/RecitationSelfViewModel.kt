@@ -2,7 +2,7 @@ package com.anticbyte.imanbytes.presentation.screens.selfRecitation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.anticbyte.imanbytes.domain.repo.RecitationRepo
+import com.anticbyte.imanbytes.domain.repo.QuranRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class RecitationSelfViewModel @Inject constructor(private val recitationRepo: RecitationRepo) : ViewModel() {
+class RecitationSelfViewModel @Inject constructor(private val quranRepo: QuranRepo) : ViewModel() {
     private val _recitationSelfUiState = MutableStateFlow(RecitationSelfUiState())
     val selfRecitationUiState = _recitationSelfUiState
         .onStart {
@@ -26,7 +26,7 @@ class RecitationSelfViewModel @Inject constructor(private val recitationRepo: Re
 
     fun fetchAllSurah() {
         viewModelScope.launch {
-            val response = recitationRepo.getAllSurah()
+            val response = quranRepo.getAllSurah()
             response.fold(
                 onSuccess = { surahs ->
                     _recitationSelfUiState.update { uiState ->

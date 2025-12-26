@@ -9,6 +9,7 @@ import androidx.navigation.compose.navigation
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.RecitationScreenRoute
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.RecitationViewModel
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.arabic.RecitationArRoute
+import com.anticbyte.imanbytes.presentation.screens.audioRecitation.arabic.RecitationArViewModel
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.translation.RecitationTrRoute
 import com.anticbyte.imanbytes.presentation.screens.selfRecitation.RecitationSelfDetailRoute
 import com.anticbyte.imanbytes.presentation.screens.selfRecitation.RecitationSelfDetailViewModel

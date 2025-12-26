@@ -1,5 +1,6 @@
 package com.anticbyte.imanbytes.presentation.screens.selfRecitation
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
@@ -7,6 +8,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -71,6 +73,7 @@ fun RecitationSelfScreen(
     ) { innerPadding ->
         LazyColumn(
             contentPadding = innerPadding.customInnerPadding(),
+            verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap)
         ) {
             if (uiState.isLoading) loadingItem()
             else {
@@ -87,12 +90,11 @@ fun LazyListScope.recitationItemsSelf(
 ) {
     itemsIndexed(surahList) { index, surah ->
         RecitationSelfListItem(
-            modifier = Modifier,
+            modifier = Modifier.padding(horizontal = 16.dp),
             surah = surah,
+            shapes = ListItemDefaults.segmentedShapes(index,surahList.size),
             onItemClick = onSurahClick
         )
-        if (index != surahList.lastIndex)
-            HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
     }
 }
 

@@ -16,12 +16,12 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.FloatingToolbarDefaults
 import androidx.compose.material3.FloatingToolbarDefaults.ScreenOffset
 import androidx.compose.material3.HorizontalFloatingToolbar
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme.colorScheme
@@ -29,6 +29,8 @@ import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,6 +38,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.media3.common.Player
+import androidx.media3.ui.compose.state.PlayPauseButtonState
+import androidx.media3.ui.compose.state.rememberPlayPauseButtonState
 import com.anticbyte.imanbytes.R
 import com.anticbyte.imanbytes.domain.model.Surah
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.PlayerState
@@ -75,22 +80,22 @@ fun BoxScope.RecitationFloatingToolbar(modifier: Modifier = Modifier) {
 @Composable
 fun BoxScope.RecitationFloatingBar(
     modifier: Modifier = Modifier,
-    playerState: PlayerState = PlayerState.PlayerLoading,
     onExpand: () -> Unit = {},
     onClick: () -> Unit = {},
-    surah: Surah = Surah()
+    surah: Surah = Surah(),
+    player: Player
 ) {
     HorizontalFloatingToolbar(
         expanded = true, modifier = modifier
             .padding(horizontal = 16.dp)
             .offset(y = -ScreenOffset)
             .align(Alignment.BottomCenter)
-            .clip(shape = shapes.extraLarge)
+            .clip(shape = CircleShape)
             .clickable(onClick = onExpand)
             .height(
                 IntrinsicSize.Min
             ),
-        shape = shapes.extraLarge
+        shape = CircleShape
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -101,7 +106,7 @@ fun BoxScope.RecitationFloatingBar(
         ) {
             Box(
                 modifier = Modifier
-                    .size(40.dp)
+                    .size(56.dp)
                     .background(color = colorScheme.surface, CircleShape),
                 contentAlignment = Alignment.Center
             ) {
@@ -122,7 +127,7 @@ fun BoxScope.RecitationFloatingBar(
                 )
             }
         }
-        FilledTonalIconButton(
+        IconButton(
             onClick = onClick,
             modifier = Modifier
                 .size(IconButtonDefaults.mediumContainerSize(widthOption = IconButtonDefaults.IconButtonWidthOption.Uniform)),
@@ -130,12 +135,12 @@ fun BoxScope.RecitationFloatingBar(
                 shape = IconButtonDefaults.mediumRoundShape
             )
         ) {
-            if (playerState is PlayerState.PlayerLoading)
+            if (player.isLoading)
                 LoadingIndicator()
             else
                 Icon(
                     imageVector = ImageVector.vectorResource(
-                        id = if (playerState is PlayerState.PlayerPlaying) R.drawable.pause_24px
+                        id = if (player.isPlaying) R.drawable.pause_24px
                         else R.drawable.play_arrow_24px
                     ),
                     contentDescription = null,
@@ -148,9 +153,10 @@ fun BoxScope.RecitationFloatingBar(
 @Preview
 @Composable
 private fun DefPrev() {
-    ImanBytesTheme { 
-        Box(Modifier){
-            RecitationFloatingBar()
+    ImanBytesTheme {
+        Box(Modifier) {
+            val player = remember { mutableStateOf<Player?>(null) }
+            RecitationFloatingBar(player = player.value!!)
         }
     }
 }

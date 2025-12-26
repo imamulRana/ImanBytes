@@ -69,13 +69,13 @@ android {
     kotlin.compilerOptions {
         optIn.addAll(
             "androidx.compose.material3.ExperimentalMaterial3ExpressiveApi",
-            "androidx.compose.material3.ExperimentalMaterial3Api",
-            "androidx.media3.common.util.UnstableApi.class"
+            "androidx.compose.material3.ExperimentalMaterial3Api"
         )
         jvmTarget.set(JvmTarget.JVM_21)
         freeCompilerArgs.addAll(
             "-Xannotation-default-target=param-property",
-            "-XXLanguage:+ExplicitBackingFields"
+            "-XXLanguage:+ExplicitBackingFields",
+            "-opt-in=androidx.media3.common.util.UnstableApi"
         )
     }
     buildFeatures {
