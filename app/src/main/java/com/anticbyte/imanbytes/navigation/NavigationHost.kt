@@ -14,8 +14,9 @@ fun NavigationHost(
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = startDestination,
+        startDestination = AuthBaseRoute,
     ) {
+        authGraph(navController = navController)
         onboardingGraph(navController = navController)
         knowledgeNavGraph(navController = navController)
         recitationNavGraph(navController = navController)
