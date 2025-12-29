@@ -75,7 +75,7 @@ fun RecitationListItem(
                             widthOption = IconButtonDefaults.IconButtonWidthOption.Uniform
                         )
                     ),
-                    checked = !playerState.showPlay,
+                    checked = player.isPlaying && player.currentMediaItem?.mediaId == surah.number,
                     onCheckedChange = {
                         if (!player.isPlaying) {
                             player.setMediaItems(List(114) {
@@ -90,7 +90,7 @@ fun RecitationListItem(
                             player.prepare()
                             player.play()
                         } else
-                            playerState.onClick()
+                            player.pause()
                     },
                     shapes = IconButtonDefaults.toggleableShapes(),
                     colors = IconButtonDefaults.iconToggleButtonColors(
@@ -100,7 +100,9 @@ fun RecitationListItem(
                 ) {
                     Icon(
                         imageVector = ImageVector.vectorResource(
-                            id = if (!playerState.showPlay) R.drawable.pause_24px else R.drawable.play_arrow_24px
+                            id = if (
+                                player.isPlaying && player.currentMediaItem?.mediaId == surah.number
+                            ) R.drawable.pause_24px else R.drawable.play_arrow_24px
                         ),
                         contentDescription = null,
                     )
@@ -109,7 +111,8 @@ fun RecitationListItem(
         },
         colors = ListItemDefaults.segmentedColors(
             containerColor = colorScheme.surfaceContainerLow,
-            leadingContentColor = colorScheme.primaryContainer
+            leadingContentColor = colorScheme.primaryContainer,
+            selectedContainerColor = colorScheme.surfaceVariant
         )
     ) {
         Text(surah.englishName)

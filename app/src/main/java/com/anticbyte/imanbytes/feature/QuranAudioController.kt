@@ -36,12 +36,34 @@ class QuranAudioController @Inject constructor(@ApplicationContext private val c
     }
 
     fun createMediaItem(surahs: List<Surah>) {
-        val x = List(surahs.size) {
-            MediaItem.Builder().setUri(
-                BuildConfig.AUDIO_BASE_URL.format("ar.alafasy", surahs[it].number)
-            ).build()
+        val controller = _controller.value ?: return
+        if (controller.mediaItemCount > 0) return // prevent reset
+
+        controller.setMediaItems(surahs.toMediaItems())
+        controller.prepare()
+    }
+
+    fun playAudio() {
+        val controller = _controller.value ?: return
+        if (!controller.isPlaying) {
+            controller.prepare()
+            controller.play()
         }
-        _controller.value?.setMediaItems(x)
+    }
+
+    fun pauseAudio() {
+        val controller = _controller.value ?: return
+        if (controller.isPlaying) {
+            controller.pause()
+        }
+    }
+
+    fun List<Surah>.toMediaItems(): List<MediaItem> = map { surah ->
+        MediaItem.Builder()
+            .setUri(BuildConfig.AUDIO_BASE_URL.format("ar.alafasy", surah.number))
+            .setMediaId(surah.number)
+            .setTag(surah)
+            .build()
     }
 
     fun releaseFuture() {
