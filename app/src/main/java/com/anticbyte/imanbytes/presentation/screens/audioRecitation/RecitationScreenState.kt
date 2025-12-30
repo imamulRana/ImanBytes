@@ -7,17 +7,8 @@ data class RecitationScreenState(
     val recitationType: RecitationType = RecitationType.ARABIC,
     val surahList: List<Surah> = emptyList(),
     val nowPlayingSurah: Surah? = null,
-    val playerState: PlayerState = PlayerState.PlayerIdle,
-    val audioProgress: Float = 0f,
     val errorMessages: String? = null
 )
-/*
-
-sealed interface RecitationScreenState{
-    object Loading: RecitationScreenState
-    data class Error(val message: String): RecitationScreenState
-    data class Success(val data: RecitationState): RecitationScreenState
-}*/
 
 sealed class PlayerState {
     data object PlayerIdle : PlayerState()

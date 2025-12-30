@@ -23,7 +23,6 @@ import androidx.compose.material3.HorizontalFloatingToolbar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.material3.MaterialTheme.typography
@@ -39,11 +38,9 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.Player
-import androidx.media3.ui.compose.state.PlayPauseButtonState
 import androidx.media3.ui.compose.state.rememberPlayPauseButtonState
 import com.anticbyte.imanbytes.R
 import com.anticbyte.imanbytes.domain.model.Surah
-import com.anticbyte.imanbytes.presentation.screens.audioRecitation.PlayerState
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
 
 @Composable
@@ -83,8 +80,10 @@ fun BoxScope.RecitationFloatingBar(
     onExpand: () -> Unit = {},
     onClick: () -> Unit = {},
     surah: Surah = Surah(),
-    player: Player
+    player: Player? = null
 ) {
+    if (player == null) return
+    val playerState = rememberPlayPauseButtonState(player)
     HorizontalFloatingToolbar(
         expanded = true, modifier = modifier
             .padding(horizontal = 16.dp)
@@ -128,24 +127,22 @@ fun BoxScope.RecitationFloatingBar(
             }
         }
         IconButton(
-            onClick = onClick,
+            onClick = {
+                playerState.onClick() },
             modifier = Modifier
                 .size(IconButtonDefaults.mediumContainerSize(widthOption = IconButtonDefaults.IconButtonWidthOption.Uniform)),
             shapes = IconButtonDefaults.shapes(
                 shape = IconButtonDefaults.mediumRoundShape
             )
         ) {
-            if (player.isLoading)
-                LoadingIndicator()
-            else
-                Icon(
-                    imageVector = ImageVector.vectorResource(
-                        id = if (player.isPlaying) R.drawable.pause_24px
-                        else R.drawable.play_arrow_24px
-                    ),
-                    contentDescription = null,
-                    modifier = Modifier.size(IconButtonDefaults.mediumIconSize),
-                )
+            Icon(
+                imageVector = ImageVector.vectorResource(
+                    id = if (playerState.showPlay) R.drawable.play_arrow_24px
+                    else R.drawable.pause_24px
+                ),
+                contentDescription = null,
+                modifier = Modifier.size(IconButtonDefaults.mediumIconSize),
+            )
         }
     }
 }

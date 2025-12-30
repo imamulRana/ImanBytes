@@ -107,10 +107,11 @@ dependencies {
     //dagger hilt android
     implementation(libs.dagger.hilt.android)
     implementation(libs.dagger.hilt.navigation.compose)
+    ksp(libs.dagger.hilt.compiler)
+    //firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.config)
     implementation(libs.firebase.analytics)
-    ksp(libs.dagger.hilt.compiler)
 
     //pref datastore
     implementation(libs.pref.datastore)
