@@ -2,6 +2,7 @@ package com.anticbyte.imanbytes.feature
 
 import android.content.ComponentName
 import android.content.Context
+import androidx.lifecycle.SavedStateHandle
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.session.MediaController
@@ -26,11 +27,9 @@ class QuranAudioController @Inject constructor(@ApplicationContext private val c
     private val controllerFuture: ListenableFuture<MediaController> =
         MediaController.Builder(context, sessionToken).buildAsync()
 
-    private val _mediaItems = MutableStateFlow(MediaItem.fromUri(""))
-    val mediaItem = _mediaItems.asStateFlow()
-
     private val _controller = MutableStateFlow<MediaController?>(null)
     val controller: StateFlow<MediaController?> = _controller.asStateFlow()
+
     // Track currently playing surah number
     private val _currentPlayingSurah = MutableStateFlow<String?>(null)
     val currentPlayingSurah: StateFlow<String?> = _currentPlayingSurah.asStateFlow()
@@ -39,13 +38,13 @@ class QuranAudioController @Inject constructor(@ApplicationContext private val c
     private val _isPlaying = MutableStateFlow(false)
     val isPlaying: StateFlow<Boolean> = _isPlaying.asStateFlow()
 
-
     init {
         controllerFuture.addListener(
-            { _controller.value = controllerFuture.get() },
+            { _controller.value = controllerFuture.get(); setupListener() },
             MoreExecutors.directExecutor()
         )
     }
+
     val playerState: Flow<Boolean> = callbackFlow {
         val listener = object : Player.Listener {
             override fun onIsPlayingChanged(isPlaying: Boolean) {

@@ -35,7 +35,7 @@ fun NavigationScaffold(
         bottomBar = {
             if (currentDestination?.hasRoute(Onboarding::class) == false)
                 Column {
-                    SegmentedListItem(
+                   /* SegmentedListItem(
                         modifier = Modifier.padding(horizontal = 8.dp),
                         onClick = {}, shapes = ListItemDefaults.shapes(),
                         colors = ListItemDefaults.segmentedColors(containerColor = colorScheme.surfaceContainerLow),
@@ -48,7 +48,7 @@ fun NavigationScaffold(
                         }
                     ) {
                         Text("Surah 1")
-                    }
+                    }*/
                     AppBottomBar(currentRoute = currentDestination, onItemSelected = {
                         navController.navigate(it ?: HomeBaseRoute) {
                             popUpTo(navController.graph.findStartDestination().id)

@@ -1,8 +1,10 @@
 package com.anticbyte.imanbytes.domain
 
+import com.anticbyte.imanbytes.data.remote.AsmaAlHusnaDto
 import com.anticbyte.imanbytes.data.remote.PrayerTimesResDto
 import com.anticbyte.imanbytes.data.remote.SurahDto
 import com.anticbyte.imanbytes.data.remote.SurahEditionDto
+import com.anticbyte.imanbytes.domain.model.Asma
 import com.anticbyte.imanbytes.domain.model.PrayerTime
 import com.anticbyte.imanbytes.domain.model.SelfRecitation
 import com.anticbyte.imanbytes.domain.model.Surah
@@ -57,6 +59,7 @@ fun JsonElement.toSajda(): Boolean {
         else -> false
     }
 }
+
 fun PrayerTimesResDto.Timings.toPrayerTime(): PrayerTime {
     return PrayerTime(
         fajr = this.fajr,
@@ -69,3 +72,10 @@ fun PrayerTimesResDto.Timings.toPrayerTime(): PrayerTime {
         midNight = this.midnight
     )
 }
+
+fun AsmaAlHusnaDto.Data.toAsma(): Asma = Asma(
+    name = this.name,
+    transliteration = this.transliteration,
+    englishMeaning = this.en.meaning,
+    number = this.number
+)

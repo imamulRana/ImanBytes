@@ -2,6 +2,7 @@ package com.anticbyte.imanbytes.presentation.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.anticbyte.imanbytes.domain.repo.AsmaAlHusnaRepo
 import com.anticbyte.imanbytes.domain.repo.PrayerTimeRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,13 +12,28 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(private val repo: PrayerTimeRepo) : ViewModel() {
+class HomeViewModel @Inject constructor(
+    private val repo: PrayerTimeRepo,
+    private val asmaRepo: AsmaAlHusnaRepo
+) : ViewModel() {
     private val _uiState = MutableStateFlow(HomeScreenState())
     val uiState = _uiState.asStateFlow()
 
     init {
         fetchPrayerTime()
+        fetchAsmaAlHusna()
     }
+
+    private fun fetchAsmaAlHusna() {
+        viewModelScope.launch {
+            asmaRepo.getSingleAsma("11").onSuccess { asma ->
+                _uiState.update {
+                    it.copy(asma = asma)
+                }
+            }
+        }
+    }
+
     private fun fetchPrayerTime() {
         viewModelScope.launch {
             repo.getPrayerTimes("01-01-2026").onSuccess { response ->

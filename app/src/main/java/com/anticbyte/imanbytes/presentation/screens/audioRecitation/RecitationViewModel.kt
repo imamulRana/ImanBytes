@@ -2,8 +2,6 @@ package com.anticbyte.imanbytes.presentation.screens.audioRecitation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.media3.common.MediaItem
-import androidx.media3.session.MediaController
 import com.anticbyte.imanbytes.domain.repo.QuranRepo
 import com.anticbyte.imanbytes.feature.QuranAudioController
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -48,7 +46,6 @@ class RecitationViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = false
     )
-
     fun togglePlayPause(surahNumber: String) {
         mediaController.togglePlayPause(surahNumber)
         _recitationUiState.update { state ->

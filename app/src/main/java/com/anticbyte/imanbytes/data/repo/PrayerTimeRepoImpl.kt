@@ -8,6 +8,7 @@ import com.anticbyte.imanbytes.utils.safeApiCall
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
+import io.ktor.http.appendPathSegments
 import io.ktor.http.isSuccess
 import io.ktor.http.path
 import javax.inject.Inject
@@ -15,9 +16,9 @@ import javax.inject.Inject
 class PrayerTimeRepoImpl @Inject constructor(private val httpClient: HttpClient) : PrayerTimeRepo {
     override suspend fun getPrayerTimes(date: String): Result<PrayerTime> {
         return safeApiCall {
-            val response = httpClient.get("https://api.aladhan.com/v1/timings/") {
+            val response = httpClient.get("https://api.aladhan.com") {
                 url {
-                    path(date)
+                    appendPathSegments("v1", "timings",date)
                     parameters.append("latitude", "23.68")
                     parameters.append("longitude", "90.36")
                     parameters.append("timezonestring", "Asia/Dhaka")

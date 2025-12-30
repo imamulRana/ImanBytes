@@ -66,7 +66,7 @@ androidx-navigation-compose = { group = "androidx.navigation", name = "navigatio
 
 #ktor
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
-ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
+ktor-client-cio = { module = "io.ktor:ktor-client-android", version.ref = "ktor" }
 ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-client-content-encoding = { module = "io.ktor:ktor-client-encoding", version.ref = "ktor" }

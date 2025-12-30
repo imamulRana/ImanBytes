@@ -22,13 +22,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.datasource.CollectionPreviewParameterProvider
 import androidx.compose.ui.unit.dp
-import androidx.media3.common.MediaItem
-import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.ui.compose.state.rememberPlayPauseButtonState
-import com.anticbyte.imanbytes.BuildConfig
 import com.anticbyte.imanbytes.R
 import com.anticbyte.imanbytes.domain.model.Surah
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
@@ -39,13 +34,15 @@ fun RecitationListItem(
     modifier: Modifier = Modifier,
     surah: Surah,
     onSurahClick: (surahNumber: String) -> Unit = {},
-    player: Player,
+    currentSurahNumber: String?,
+    isPlaying: Boolean,
+    togglePlayPause: (surahNumber: String) -> Unit = {},
     shapes: ListItemShapes
 ) {
-    val playerState = rememberPlayPauseButtonState(player)
-    val isPlaying = player.isPlaying
+    val isSelected = currentSurahNumber == surah.number
+    val isCurrentlyPlaying = isPlaying && isSelected
     SegmentedListItem(
-        selected = player.currentMediaItem?.mediaId == surah.number,
+        selected = isSelected,
         shapes = shapes,
         onClick = { onSurahClick(surah.number) },
         modifier = modifier,
@@ -58,7 +55,7 @@ fun RecitationListItem(
             ) {
                 Text(
                     text = surah.number,
-                    color = colorScheme.onSurfaceVariant,
+                    color = colorScheme.onPrimaryContainer,
                     style = typography.labelLarge
                 )
             }
@@ -75,32 +72,20 @@ fun RecitationListItem(
                             widthOption = IconButtonDefaults.IconButtonWidthOption.Uniform
                         )
                     ),
-                    checked = !playerState.showPlay,
-                    onCheckedChange = {
-                        if (!player.isPlaying) {
-                            player.setMediaItems(List(114) {
-                                MediaItem.Builder()
-                                    .setMediaId(surah.number)
-                                    .setUri(
-                                        BuildConfig.AUDIO_BASE_URL.format(
-                                            "ar.alafasy", surah.number
-                                        )
-                                    ).build()
-                            })
-                            player.prepare()
-                            player.play()
-                        } else
-                            playerState.onClick()
-                    },
+                    checked = isCurrentlyPlaying,
+                    onCheckedChange = { togglePlayPause(surah.number) },
                     shapes = IconButtonDefaults.toggleableShapes(),
                     colors = IconButtonDefaults.iconToggleButtonColors(
                         containerColor = colorScheme.primaryContainer,
-                        checkedContainerColor = colorScheme.primaryContainer
+                        checkedContainerColor = colorScheme.primaryContainer,
+                        contentColor = colorScheme.onPrimaryContainer,
+                        checkedContentColor = colorScheme.onPrimaryContainer
                     )
                 ) {
                     Icon(
                         imageVector = ImageVector.vectorResource(
-                            id = if (!playerState.showPlay) R.drawable.pause_24px else R.drawable.play_arrow_24px
+                            id = if (isCurrentlyPlaying) R.drawable.pause_24px
+                            else R.drawable.play_arrow_24px
                         ),
                         contentDescription = null,
                     )
@@ -109,14 +94,13 @@ fun RecitationListItem(
         },
         colors = ListItemDefaults.segmentedColors(
             containerColor = colorScheme.surfaceContainerLow,
-            leadingContentColor = colorScheme.primaryContainer
+            leadingContentColor = colorScheme.primaryContainer,
+            selectedContainerColor = colorScheme.surfaceVariant
         )
     ) {
         Text(surah.englishName)
     }
 }
-
-class PrevS : CollectionPreviewParameterProvider<String>(listOf())
 
 @OptIn(UnstableApi::class)
 @Preview
