@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import com.anticbyte.imanbytes.presentation.screens.audioRecitation.RecitationViewModel
 
 @Composable
 fun NavigationHost(
@@ -17,7 +18,7 @@ fun NavigationHost(
         startDestination = startDestination,
     ) {
         onboardingGraph(navController = navController)
+        homeGraph()
         knowledgeNavGraph(navController = navController)
-        recitationNavGraph(navController = navController)
     }
 }

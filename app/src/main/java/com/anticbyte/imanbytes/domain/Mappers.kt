@@ -1,7 +1,9 @@
 package com.anticbyte.imanbytes.domain
 
+import com.anticbyte.imanbytes.data.remote.PrayerTimesResDto
 import com.anticbyte.imanbytes.data.remote.SurahDto
 import com.anticbyte.imanbytes.data.remote.SurahEditionDto
+import com.anticbyte.imanbytes.domain.model.PrayerTime
 import com.anticbyte.imanbytes.domain.model.SelfRecitation
 import com.anticbyte.imanbytes.domain.model.Surah
 import com.anticbyte.imanbytes.domain.model.SurahText
@@ -54,4 +56,16 @@ fun JsonElement.toSajda(): Boolean {
         is JsonPrimitive -> this.boolean // treat both `false` or `true` as None (or handle differently if needed)
         else -> false
     }
+}
+fun PrayerTimesResDto.Timings.toPrayerTime(): PrayerTime {
+    return PrayerTime(
+        fajr = this.fajr,
+        dhuhr = this.dhuhr,
+        asr = this.asr,
+        maghrib = this.maghrib,
+        isha = this.isha,
+        sunRise = this.sunrise,
+        sunSet = this.sunset,
+        midNight = this.midnight
+    )
 }

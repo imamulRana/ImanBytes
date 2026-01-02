@@ -9,9 +9,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.anticbyte.imanbytes.presentation.knowledge.KnowledgeScreenRoute
 import com.anticbyte.imanbytes.presentation.knowledge.KnowledgeViewModel
+import com.anticbyte.imanbytes.presentation.screens.audioRecitation.RecitationViewModel
 import com.anticbyte.imanbytes.presentation.screens.hadith.HadithScreen
-import com.anticbyte.imanbytes.presentation.screens.selfRecitation.RecitationSelfDetailViewModel
-import com.anticbyte.imanbytes.presentation.screens.selfRecitation.RecitationSelfDetailRoute
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -39,7 +38,7 @@ fun NavGraphBuilder.knowledgeNavGraph(
             KnowledgeScreenRoute(
                 modifier = Modifier,
                 viewModel = viewModel,
-                navigateToQuran = { navController.navigate(RecitationBaseRoute) },
+                navigateToQuran = { navController.navigate(RecitationRoute) },
                 navigateToHadith = { navController.navigate(HadithRoute) },
                 navigateToPillar = { navController.navigate(PillarRoute) }
             )
@@ -50,5 +49,6 @@ fun NavGraphBuilder.knowledgeNavGraph(
         composable<PillarRoute> {
             HadithScreen()
         }
+        recitationNavGraph(navController = navController)
     }
 }

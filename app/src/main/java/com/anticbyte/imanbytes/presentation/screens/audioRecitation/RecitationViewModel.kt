@@ -2,8 +2,7 @@ package com.anticbyte.imanbytes.presentation.screens.audioRecitation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.media3.common.MediaItem
-import androidx.media3.session.MediaController
+import com.anticbyte.imanbytes.domain.model.Surah
 import com.anticbyte.imanbytes.domain.repo.QuranRepo
 import com.anticbyte.imanbytes.feature.QuranAudioController
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,42 +20,53 @@ class RecitationViewModel @Inject constructor(
     private val quranRepo: QuranRepo,
     private val mediaController: QuranAudioController
 ) : ViewModel() {
-    val player: StateFlow<MediaController?> = mediaController.controller
-
-    val mediaItem: StateFlow<MediaItem> = mediaController.mediaItem
     private val _recitationUiState =
         MutableStateFlow(RecitationScreenState())
 
     val recitationUiState: StateFlow<RecitationScreenState> = _recitationUiState.onStart {
         fetchAllSurah()
+
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = _recitationUiState.value
     )
 
-
-    /*val playerState = mediaController.playerStateFlow.stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(5000L),
-        PlayerState.PlayerIdle
-    )*/
-
-
-    fun setMediaItem(recitationType: RecitationType) {
-//        mediaController.setMediaItem(recitationType)
+    val mediaControllerState = mediaController.controller.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Eagerly,
+        initialValue = null
+    )
+    val currentPlayingSurah = mediaController.currentPlayingSurah.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = null
+    )
+    val isPlaying = mediaController.isPlaying.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = false
+    )
+    fun togglePlayPause(surahNumber: String) {
+        mediaController.togglePlayPause(surahNumber)
+        _recitationUiState.update { state ->
+            state.copy(nowPlayingSurah = state.surahList.find { it.number == surahNumber })
+        }
     }
 
     fun fetchAllSurah() {
         viewModelScope.launch {
             val response = quranRepo.getAllSurah()
             response.fold(
-                onSuccess =
-                    { surahs ->
-                        _recitationUiState.update { state ->
-                            state.copy(surahList = surahs, isLoading = false)
-                        }
-                    },
+                onSuccess = { surah ->
+                    _recitationUiState.update { state ->
+                        state.copy(surahList = surah, isLoading = false)
+                    }
+                    mediaController.createMediaItem(
+                        surah = surah,
+                        recitationUiState.value.recitationType.recitationId
+                    )
+                },
                 onFailure = {
                     _recitationUiState.update { state ->
                         state.copy(errorMessages = it.localizedMessage)

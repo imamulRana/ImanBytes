@@ -1,24 +1,32 @@
 package com.anticbyte.imanbytes
 
+import android.content.ComponentName
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.media3.session.MediaController
+import androidx.media3.session.SessionToken
 import androidx.navigation.compose.rememberNavController
+import com.anticbyte.imanbytes.feature.AudioPlaybackService
 import com.anticbyte.imanbytes.navigation.KnowledgeBaseRoute
 import com.anticbyte.imanbytes.navigation.NavigationScaffold
 import com.anticbyte.imanbytes.navigation.Onboarding
 import com.anticbyte.imanbytes.presentation.screens.onboard.OnboardingViewModel
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
+import com.anticbyte.imanbytes.utils.LocalMediaController
+import com.google.common.util.concurrent.ListenableFuture
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
