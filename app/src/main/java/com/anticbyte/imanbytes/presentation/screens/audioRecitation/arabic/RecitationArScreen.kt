@@ -55,7 +55,7 @@ fun RecitationArRoute(
     navigateToReadSurah: (String) -> Unit
 ) {
     val screenState by viewModel.recitationUiState.collectAsStateWithLifecycle()
-    val player by viewModel.player.collectAsStateWithLifecycle()
+    val player by viewModel.mediaControllerState.collectAsStateWithLifecycle()
 
     RecitationArScreen(
         modifier = modifier,

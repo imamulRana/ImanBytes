@@ -1,6 +1,8 @@
 package com.anticbyte.imanbytes.di
 
+import com.anticbyte.imanbytes.data.repo.PrayerTimeRepoImpl
 import com.anticbyte.imanbytes.data.repo.QuranRepoImpl
+import com.anticbyte.imanbytes.domain.repo.PrayerTimeRepo
 import com.anticbyte.imanbytes.domain.repo.QuranRepo
 import com.anticbyte.imanbytes.utils.jsonConfig
 import com.anticbyte.imanbytes.utils.loggingConfig
@@ -37,4 +39,9 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideQuranRepo(httpClient: HttpClient): QuranRepo = QuranRepoImpl(ktorClient = httpClient)
+
+    @Provides
+    @Singleton
+    fun providePrayerTimeRepo(httpClient: HttpClient): PrayerTimeRepo =
+        PrayerTimeRepoImpl(httpClient = httpClient)
 }

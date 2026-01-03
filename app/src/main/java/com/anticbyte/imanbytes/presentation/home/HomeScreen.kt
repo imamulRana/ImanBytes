@@ -6,11 +6,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.HorizontalDivider
@@ -23,21 +25,35 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.offset
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.anticbyte.imanbytes.R
 import com.anticbyte.imanbytes.presentation.component.AppTopBar
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
+
+@Composable
+fun HomeScreenRoute(
+    modifier: Modifier = Modifier,
+    viewModel: HomeViewModel = hiltViewModel()
+) {
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    HomeScreen(modifier = modifier, state = state)
+}
 
 @Composable
 fun TitleWithContent(
@@ -66,7 +82,10 @@ fun TitleWithContent(
 }
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
+fun HomeScreen(
+    modifier: Modifier = Modifier,
+    state: HomeScreenState = HomeScreenState()
+) {
     Scaffold(
         topBar = {
             AppTopBar(
@@ -87,30 +106,56 @@ fun HomeScreen(modifier: Modifier = Modifier) {
             }, title = "Verse of the day") {
                 VerseOfTheDayCard()
             }
-            TitleWithContent(leadingContent = {}, title = "Prayer Times") {
+            TitleWithContent(
+
+                leadingContent = {}, title = "Prayer Times"
+            ) {
                 LazyRow(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .layout { measurable, constrains ->
+                            val newCon = constrains.offset(32.dp.roundToPx())
+                            val placeable = measurable.measure(newCon)
+                            layout(placeable.width, placeable.height) {
+                                placeable.placeRelative(0, 0)
+                            }
+                        },
+                    contentPadding = PaddingValues(horizontal = 16.dp),
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
                     item {
                         PrayerTimeCard(
-                            prayerTime = "04:30 AM",
+                            prayerTime = state.prayerTimes.fajr,
                             prayerName = "Fajr",
                             prayerIconRes = R.drawable.ic_fajr
                         )
                     }
                     item {
                         PrayerTimeCard(
-                            prayerTime = "1:00 PM",
+                            prayerTime = state.prayerTimes.dhuhr,
                             prayerName = "Dhuhr",
                             prayerIconRes = R.drawable.ic_duhr
                         )
                     }
                     item {
                         PrayerTimeCard(
-                            prayerTime = "5:00 PM",
+                            prayerTime = state.prayerTimes.asr,
                             prayerName = "Asr",
                             prayerIconRes = R.drawable.ic_asr
+                        )
+                    }
+                    item {
+                        PrayerTimeCard(
+                            prayerTime = state.prayerTimes.maghrib,
+                            prayerName = "Maghrib",
+                            prayerIconRes = R.drawable.ic_magrib
+                        )
+                    }
+                    item {
+                        PrayerTimeCard(
+                            prayerTime = state.prayerTimes.isha,
+                            prayerName = "Isha",
+                            prayerIconRes = R.drawable.ic_isha
                         )
                     }
                 }
@@ -122,13 +167,18 @@ fun HomeScreen(modifier: Modifier = Modifier) {
 @Composable
 fun PrayerTimeCard(
     modifier: Modifier = Modifier,
-    prayerTime: String = "",
     prayerName: String = "",
+    prayerTime: String,
     @DrawableRes prayerIconRes: Int = R.drawable.ic_asr
 ) {
-    ElevatedCard() {
+    ElevatedCard(
+        modifier = modifier
+            .widthIn(min = 80.dp, max = 120.dp),
+        onClick = {}
+    ) {
         Column(
             modifier = modifier
+                .fillMaxWidth()
                 .padding(start = 16.dp, top = 16.dp, bottom = 24.dp, end = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -218,7 +268,10 @@ private fun HomeScreenPrev() {
 @Composable
 private fun PrayerTimeItemPreview() {
     ImanBytesTheme {
-        PrayerTimeCard()
+        PrayerTimeCard(
+            prayerName = "Fajr",
+            prayerTime = "04:30",
+        )
     }
 }
 

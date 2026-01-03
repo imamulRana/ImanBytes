@@ -61,7 +61,7 @@ fun RecitationTrRoute(
         onDispose { viewModel.persistCurrentSurah(currentSurahNumber) }
     }*/
 //    val mc by viewModel.mediaController.collectAsStateWithLifecycle()
-    val controller by viewModel.player.collectAsStateWithLifecycle()
+    val controller by viewModel.mediaControllerState.collectAsStateWithLifecycle()
     val player = rememberPresentationState(player = controller)
 
     RecitationTrScreen(

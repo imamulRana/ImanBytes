@@ -15,7 +15,7 @@ import javax.inject.Inject
 class PrayerTimeRepoImpl @Inject constructor(private val httpClient: HttpClient) : PrayerTimeRepo {
     override suspend fun getPrayerTimes(date: String): Result<PrayerTime> {
         return safeApiCall {
-            val response = httpClient.get("https://api.aladhan.com/v1/timings") {
+            val response = httpClient.get("https://api.aladhan.com/v1/timings/") {
                 url {
                     path(date)
                     parameters.append("latitude", "23.68")
