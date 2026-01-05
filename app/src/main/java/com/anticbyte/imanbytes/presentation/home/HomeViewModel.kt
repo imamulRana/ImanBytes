@@ -9,7 +9,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.Calendar
 import javax.inject.Inject
+import kotlin.random.Random
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -26,7 +30,7 @@ class HomeViewModel @Inject constructor(
 
     private fun fetchAsmaAlHusna() {
         viewModelScope.launch {
-            asmaRepo.getSingleAsma("11").onSuccess { asma ->
+            asmaRepo.getSingleAsma(Random.nextInt(1,99).toString()).onSuccess { asma ->
                 _uiState.update {
                     it.copy(asma = asma)
                 }
@@ -35,8 +39,10 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun fetchPrayerTime() {
+        val date = Calendar.getInstance()
+        val today = SimpleDateFormat("dd-MM-yyyy").format(date.time)
         viewModelScope.launch {
-            repo.getPrayerTimes("01-01-2026").onSuccess { response ->
+            repo.getPrayerTimes(today).onSuccess { response ->
                 _uiState.update {
                     it.copy(prayerTimes = response)
                 }
