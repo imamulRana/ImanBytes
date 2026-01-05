@@ -12,7 +12,6 @@ import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.LinearWavyProgressIndicator
 import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme.colorScheme
@@ -190,19 +189,21 @@ fun AudioControlSection(
         rememberProgressStateWithTickInterval(player = player, tickIntervalMs = 1000L)
     val current = getStringForTime(progressState.currentPositionMs)
     val duration by remember { derivedStateOf { getStringForTime(progressState.durationMs) } }
+    val currentDurLong by remember { derivedStateOf { progressState.durationMs } }
+    val durationLong by remember { derivedStateOf { progressState.currentPositionMs } }
 
     val sliderState = rememberSliderState(
-        value = progressState.currentPositionMs.toFloat() / progressState.durationMs.toFloat(),
+        value  = currentDurLong / durationLong.toFloat()
     )
+
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        Text("duration $durationLong currentPos $currentDurLong")
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Slider(state = sliderState, track = {
-                LinearProgressIndicator(
-                    progress = { it.coercedValueAsFraction }, modifier = Modifier.fillMaxWidth()
-                )
+                SliderDefaults.Track(it)
             })
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
