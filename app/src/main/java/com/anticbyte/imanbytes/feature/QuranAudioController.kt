@@ -45,24 +45,6 @@ class QuranAudioController @Inject constructor(@ApplicationContext private val c
         )
     }
 
-    val playerState: Flow<Boolean> = callbackFlow {
-        val listener = object : Player.Listener {
-            override fun onIsPlayingChanged(isPlaying: Boolean) {
-                trySend(isPlaying)
-            }
-
-            override fun onPlaybackStateChanged(playbackState: Int) {
-                if (playbackState == Player.STATE_ENDED) {
-                    trySend(false)
-                }
-            }
-        }
-        _controller.value?.addListener(listener)
-        awaitClose {
-            _controller.value?.removeListener(listener)
-        }
-    }
-
     private fun setupListener() {
         val listener = object : Player.Listener {
             override fun onIsPlayingChanged(isPlaying: Boolean) {

@@ -82,7 +82,7 @@ fun BoxScope.RecitationFloatingBar(
     surah: Surah = Surah(),
     player: Player? = null
 ) {
-    if (player == null) return
+    /*if (player == null) return
     val playerState = rememberPlayPauseButtonState(player)
     HorizontalFloatingToolbar(
         expanded = true, modifier = modifier
@@ -144,7 +144,7 @@ fun BoxScope.RecitationFloatingBar(
                 modifier = Modifier.size(IconButtonDefaults.mediumIconSize),
             )
         }
-    }
+    }*/
 }
 
 @Preview

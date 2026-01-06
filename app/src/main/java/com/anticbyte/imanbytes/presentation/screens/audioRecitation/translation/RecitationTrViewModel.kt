@@ -8,7 +8,6 @@ import com.anticbyte.imanbytes.feature.QuranAudioManager
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.PlayerState
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.RecitationType
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.PlayerSeekType
-import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationPlaybackAction
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -18,7 +17,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.math.roundToLong
 
 @HiltViewModel
 class RecitationTrViewModel @Inject constructor(
@@ -101,31 +99,4 @@ class RecitationTrViewModel @Inject constructor(
         }
     }
 
-    val playerActions = RecitationPlaybackAction(
-        playPause = { surahNumber ->
-            _recitationUiState.update { state ->
-                state.copy(
-                    nowPlayingSurah = state.surahList.find { it.number == surahNumber })
-            }
-            playSurah(surahNumber)
-        },
-        seekForward = {
-            seekAudio(
-                PlayerSeekType.FORWARD,
-                10000L
-            )
-        },
-        seekBackward = {
-            seekAudio(
-                PlayerSeekType.BACKWARD,
-                10000L
-            )
-        },
-        seek = { seekTo ->
-            seekAudio(null, (audioTimeline.value.second * seekTo).roundToLong())
-        },
-        persistCurrentSurah = { surahNumber ->
-            persistCurrentSurahNumber(surahNumber)
-        },
-    )
 }
