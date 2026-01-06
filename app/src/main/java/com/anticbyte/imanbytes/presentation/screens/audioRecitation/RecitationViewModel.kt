@@ -46,11 +46,16 @@ class RecitationViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = false
     )
-    fun togglePlayPause(surahNumber: String) {
+
+    fun togglePlayPause(surahNumber: String, recitationType: RecitationType) {
         mediaController.togglePlayPause(surahNumber)
         _recitationUiState.update { state ->
             state.copy(nowPlayingSurah = state.surahList.find { it.number == surahNumber })
         }
+        mediaController.createMediaItem(
+            surah = recitationUiState.value.surahList,
+            recitationType.recitationId
+        )
     }
 
     fun fetchAllSurah() {
@@ -61,10 +66,6 @@ class RecitationViewModel @Inject constructor(
                     _recitationUiState.update { state ->
                         state.copy(surahList = surah, isLoading = false)
                     }
-                    mediaController.createMediaItem(
-                        surah = surah,
-                        recitationUiState.value.recitationType.recitationId
-                    )
                 },
                 onFailure = {
                     _recitationUiState.update { state ->

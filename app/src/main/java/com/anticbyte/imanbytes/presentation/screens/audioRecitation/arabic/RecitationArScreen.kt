@@ -35,6 +35,7 @@ import com.anticbyte.imanbytes.domain.model.Surah
 import com.anticbyte.imanbytes.presentation.component.AppIconButton
 import com.anticbyte.imanbytes.presentation.component.AppTopBar
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.RecitationScreenState
+import com.anticbyte.imanbytes.presentation.screens.audioRecitation.RecitationType
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.RecitationViewModel
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationBottomSheet
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationFloatingBar
@@ -65,7 +66,7 @@ fun RecitationArRoute(
         player = player,
         currentSurahNumber = currentSurahNumber,
         isPlaying = isSurahPlaying,
-        togglePlayPause = viewModel::togglePlayPause
+        togglePlayPause = { viewModel.togglePlayPause(it, RecitationType.ARABIC) }
     )
 }
 
@@ -75,7 +76,9 @@ fun RecitationArScreen(
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit = {},
     onNavigateToReadSurah: (String) -> Unit = {},
-    screenState: RecitationScreenState = RecitationScreenState(),
+    screenState: RecitationScreenState = RecitationScreenState(
+        recitationType = RecitationType.ARABIC
+    ),
     currentSurahNumber: String? = null,
     isPlaying: Boolean = false,
     togglePlayPause: (surahNumber: String) -> Unit,

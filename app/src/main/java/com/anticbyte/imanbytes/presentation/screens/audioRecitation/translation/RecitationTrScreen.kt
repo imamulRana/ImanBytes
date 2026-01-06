@@ -10,7 +10,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
@@ -28,23 +27,18 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.ui.compose.state.rememberPresentationState
 import com.anticbyte.imanbytes.R
 import com.anticbyte.imanbytes.domain.model.Surah
 import com.anticbyte.imanbytes.presentation.component.AppIconButton
 import com.anticbyte.imanbytes.presentation.component.AppTopBar
-import com.anticbyte.imanbytes.presentation.screens.audioRecitation.PlayerState
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.RecitationScreenState
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.RecitationType
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.RecitationViewModel
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.arabic.recitationItemDescription
-import com.anticbyte.imanbytes.presentation.screens.audioRecitation.arabic.recitationItemsAr
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationBottomSheet
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationFloatingBar
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationFloatingButton
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationListItem
-import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationPlayBackState
-import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationPlaybackAction
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.customInnerPadding
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
 import com.anticbyte.imanbytes.utils.loadingItem
@@ -70,7 +64,7 @@ fun RecitationTrRoute(
         player = player,
         currentSurahNumber = currentSurahNumber,
         isPlaying = isSurahPlaying,
-        togglePlayPause = viewModel::togglePlayPause
+        togglePlayPause = { viewModel.togglePlayPause(it, RecitationType.TRANSLATION) }
     )
 }
 

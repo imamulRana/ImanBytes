@@ -3,6 +3,7 @@ package com.anticbyte.imanbytes.feature
 import android.content.Intent
 import androidx.annotation.OptIn
 import androidx.media3.common.AudioAttributes
+import androidx.media3.common.C
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.DefaultMediaNotificationProvider
@@ -11,12 +12,16 @@ import androidx.media3.session.MediaSessionService
 
 class AudioPlaybackService : MediaSessionService() {
     private var mediaSession: MediaSession? = null
+    val audioAttributes = AudioAttributes.Builder()
+        .setUsage(C.USAGE_MEDIA)
+        .setContentType(C.AUDIO_CONTENT_TYPE_SPEECH)
+        .build()
 
     @OptIn(UnstableApi::class)
     override fun onCreate() {
         super.onCreate()
         val player = ExoPlayer.Builder(this)
-            .setAudioAttributes(AudioAttributes.DEFAULT, true)
+            .setAudioAttributes(audioAttributes, true)
             .setHandleAudioBecomingNoisy(true)
             .build()
 
