@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.serialization)
     alias(libs.plugins.dagger.hilt.android) // dagger hilt android plugin
     alias(libs.plugins.kotlin.ksp) // kotlin ksp plugin
+    alias(libs.plugins.google.services)
 }
 
 android {
@@ -62,14 +63,19 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
     kotlin.compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_17)
+        optIn.addAll(
+            "androidx.compose.material3.ExperimentalMaterial3ExpressiveApi",
+            "androidx.compose.material3.ExperimentalMaterial3Api"
+        )
+        jvmTarget.set(JvmTarget.JVM_21)
         freeCompilerArgs.addAll(
             "-Xannotation-default-target=param-property",
-            "-XXLanguage:+ExplicitBackingFields"
+            "-XXLanguage:+ExplicitBackingFields",
+            "-opt-in=androidx.media3.common.util.UnstableApi"
         )
     }
     buildFeatures {
@@ -102,6 +108,10 @@ dependencies {
     implementation(libs.dagger.hilt.android)
     implementation(libs.dagger.hilt.navigation.compose)
     ksp(libs.dagger.hilt.compiler)
+    //firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.config)
+    implementation(libs.firebase.analytics)
 
     //pref datastore
     implementation(libs.pref.datastore)

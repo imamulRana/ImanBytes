@@ -7,36 +7,22 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.coroutines.coroutineContext
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val userPrefsRepo: UserPrefsRepo
 ) : ViewModel() {
+    val isUserOnboarded = userPrefsRepo.retrieveNavigationState().map { it }
 
-    private val _uiState = MutableStateFlow<Boolean?>(null)
-    val uiState = _uiState.onStart {
-        getIsOnBoarded()
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = null
-    )
-
-    fun setNavigationState(state: Boolean) {
+    fun setNavigationState(setOnboarding: Boolean) {
         viewModelScope.launch {
-            userPrefsRepo.persistNavigationState(state)
-            _uiState.value = state
+            userPrefsRepo.persistNavigationState(setOnboarding)
         }
     }
-
-    fun getIsOnBoarded() {
-        viewModelScope.launch {
-            userPrefsRepo.retrieveNavigationState()
-        }
-    }
-
 }

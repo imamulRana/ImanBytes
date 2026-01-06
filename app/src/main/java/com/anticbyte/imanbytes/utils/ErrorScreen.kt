@@ -12,8 +12,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.anticbyte.imanbytes.R
+import com.anticbyte.imanbytes.theme.ImanBytesTheme
 
 @Composable
 fun ErrorScreen(modifier: Modifier = Modifier) {
@@ -30,5 +32,13 @@ fun ErrorScreen(modifier: Modifier = Modifier) {
             )
             Text(text = "Oops! Something Came Up")
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun DefPrev() {
+    ImanBytesTheme {
+        ErrorScreen()
     }
 }

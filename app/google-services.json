@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "622174128547",
+    "project_id": "iman-bytes",
+    "storage_bucket": "iman-bytes.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:622174128547:android:9704da2d0420a63d62f216",
+        "android_client_info": {
+          "package_name": "com.anticbyte.imanbytes"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4TlzDCI098jVBCLNEVEd4fhWM5eFVJ9o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:622174128547:android:9d8ef6ae97beee5f62f216",
+        "android_client_info": {
+          "package_name": "com.anticbyte.imanbytes.debug"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4TlzDCI098jVBCLNEVEd4fhWM5eFVJ9o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

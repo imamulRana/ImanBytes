@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,17 +17,19 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ListItem
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.ListItemShapes
 import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.OutlinedIconButton
+import androidx.compose.material3.SegmentedListItem
 import androidx.compose.material3.Text
 import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -40,7 +43,6 @@ import androidx.compose.ui.unit.dp
 import com.anticbyte.imanbytes.R
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Preview
 @Composable
 fun KnowledgeSectionItem(
@@ -48,32 +50,38 @@ fun KnowledgeSectionItem(
     @DrawableRes leadingIcon: Int = R.drawable.ic_book_fill_sharp,
     @StringRes titleRes: Int = R.string.title_quran,
     @StringRes descriptionRes: Int = R.string.desc_quran,
-    onItemClick: () -> Unit = {}
+    onItemClick: () -> Unit = {},
+    shapes: ListItemShapes = ListItemDefaults.segmentedShapes(0,3)
 ) {
-    ListItem(
-        modifier = modifier.clickable { onItemClick() },
+    SegmentedListItem(
+        modifier = modifier,
         leadingContent = {
             Box(
                 Modifier
-                    .size(56.dp)
-                    .background(colorScheme.primary, MaterialShapes.Clover4Leaf.toShape()),
+                    .size(40.dp)
+                    .background(colorScheme.primaryContainer, MaterialShapes.Clover4Leaf.toShape()),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(imageVector = ImageVector.vectorResource(id = leadingIcon), null,
-                    tint = colorScheme.onPrimary)
+                Icon(
+                    imageVector = ImageVector.vectorResource(id = leadingIcon), null,
+                    tint = colorScheme.onPrimaryContainer,
+                    modifier = Modifier.size(IconButtonDefaults.extraSmallIconSize)
+                )
             }
         },
-        headlineContent = {
-            Text(
-                text = stringResource(id = titleRes)
-            )
-        },
+        onClick = onItemClick,
         supportingContent = {
             Text(
                 text = stringResource(id = descriptionRes)
             )
         },
-    )
+        shapes = shapes,
+        colors = ListItemDefaults.segmentedColors(containerColor = colorScheme.surfaceContainerLow)
+    ) {
+        Text(
+            text = stringResource(id = titleRes)
+        )
+    }
 }
 
 @Composable

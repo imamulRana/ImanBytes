@@ -1,18 +1,16 @@
 package com.anticbyte.imanbytes.navigation
 
-import androidx.compose.runtime.getValue
+//import com.anticbyte.imanbytes.presentation.screens.recitation.CombineRecitationScreen
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import com.anticbyte.imanbytes.presentation.knowledge.KnowledgeScreenRoot
+import com.anticbyte.imanbytes.presentation.knowledge.KnowledgeScreenRoute
 import com.anticbyte.imanbytes.presentation.knowledge.KnowledgeViewModel
+import com.anticbyte.imanbytes.presentation.screens.audioRecitation.RecitationViewModel
 import com.anticbyte.imanbytes.presentation.screens.hadith.HadithScreen
-import com.anticbyte.imanbytes.presentation.screens.recitation.RecitationScreen
-import com.anticbyte.imanbytes.presentation.screens.recitation.RecitationViewModel
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -21,30 +19,36 @@ data object KnowledgeBaseRoute
 @Serializable
 data object KnowledgeRoute
 
-@Serializable
-data object RecitationRoute
+/*@Serializable
+data object RecitationRoute2*/
 
 @Serializable
 data object HadithRoute
 
+@Serializable
+data object PillarRoute
 
-fun NavGraphBuilder.knowledgeNavGraph(navController: NavHostController) {
-    navigation<KnowledgeRoute>(startDestination = KnowledgeBaseRoute) {
-        composable<KnowledgeBaseRoute> {
+
+fun NavGraphBuilder.knowledgeNavGraph(
+    navController: NavHostController,
+) {
+    navigation<KnowledgeBaseRoute>(startDestination = KnowledgeRoute) {
+        composable<KnowledgeRoute> {
             val viewModel = hiltViewModel<KnowledgeViewModel>()
-            KnowledgeScreenRoot(
+            KnowledgeScreenRoute(
                 modifier = Modifier,
                 viewModel = viewModel,
-                navigateToQuran = { navController.navigate(RecitationRoute) }
+                navigateToQuran = { navController.navigate(RecitationRoute) },
+                navigateToHadith = { navController.navigate(HadithRoute) },
+                navigateToPillar = { navController.navigate(PillarRoute) }
             )
-        }
-        composable<RecitationRoute> {
-            val viewModel = hiltViewModel<RecitationViewModel>()
-            val state by viewModel.recitationUiState.collectAsStateWithLifecycle()
-            RecitationScreen()
         }
         composable<HadithRoute> {
             HadithScreen()
         }
+        composable<PillarRoute> {
+            HadithScreen()
+        }
+        recitationNavGraph(navController = navController)
     }
 }
