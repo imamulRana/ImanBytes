@@ -8,13 +8,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.FilledTonalIconButton
@@ -28,6 +28,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.VerticalDivider
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -53,6 +54,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.anticbyte.imanbytes.R
 import com.anticbyte.imanbytes.domain.model.Asma
+import com.anticbyte.imanbytes.presentation.component.AppErrorScreen
+import com.anticbyte.imanbytes.presentation.component.AppLoader
 import com.anticbyte.imanbytes.presentation.component.AppTopBar
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
 import com.anticbyte.imanbytes.utils.shareCardText
@@ -99,7 +102,6 @@ fun HomeScreen(
     state: HomeScreenState = HomeScreenState()
 ) {
     val topBarState = rememberTopAppBarState()
-    val scrollState = rememberScrollState()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(state = topBarState)
     Scaffold(
         modifier = Modifier.nestedScroll(
@@ -113,84 +115,99 @@ fun HomeScreen(
             )
         }
     ) {
-        LazyColumn(
-            contentPadding = PaddingValues(
-                top = it.calculateTopPadding().plus(24.dp),
-                bottom = it.calculateBottomPadding().plus(88.dp)
-            ),
-            verticalArrangement = Arrangement.spacedBy(24.dp)
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(it)
         ) {
-            item {
-                TitleWithContent(leadingContent = {
-                    VerticalDivider(
-                        thickness = 4.dp,
-                        modifier = Modifier.clip(shapes.medium)
-                    )
-                }, title = "Verse of the day") {
-                    VerseOfTheDayCard()
-                }
-            }
-            item {
-                TitleWithContent(
-
-                    leadingContent = {}, title = "Prayer Times"
+            if (state.isLoading) AppLoader()
+            else if (state.error != null) AppErrorScreen(
+                errorMessage = state.error,
+                onRetry = {})
+            else
+                PullToRefreshBox(
+                    isRefreshing = true, onRefresh = {},
                 ) {
-                    LazyRow(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .layout { measurable, constrains ->
-                                val newCon = constrains.offset(32.dp.roundToPx())
-                                val placeable = measurable.measure(newCon)
-                                layout(placeable.width, placeable.height) {
-                                    placeable.placeRelative(0, 0)
-                                }
-                            },
-                        contentPadding = PaddingValues(horizontal = 16.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    LazyColumn(
+                        contentPadding = PaddingValues(
+                            top = 24.dp,
+                            bottom = 88.dp
+                        ),
+                        verticalArrangement = Arrangement.spacedBy(24.dp)
                     ) {
                         item {
-                            PrayerTimeCard(
-                                prayerTime = state.prayerTimes.fajr,
-                                prayerName = "Fajr",
-                                prayerIconRes = R.drawable.ic_fajr
-                            )
+                            TitleWithContent(leadingContent = {
+                                VerticalDivider(
+                                    thickness = 4.dp,
+                                    modifier = Modifier.clip(shapes.medium)
+                                )
+                            }, title = "Verse of the day") {
+                                VerseOfTheDayCard()
+                            }
                         }
                         item {
-                            PrayerTimeCard(
-                                prayerTime = state.prayerTimes.dhuhr,
-                                prayerName = "Dhuhr",
-                                prayerIconRes = R.drawable.ic_duhr
-                            )
+                            TitleWithContent(
+
+                                leadingContent = {}, title = "Prayer Times"
+                            ) {
+                                LazyRow(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .layout { measurable, constrains ->
+                                            val newCon = constrains.offset(32.dp.roundToPx())
+                                            val placeable = measurable.measure(newCon)
+                                            layout(placeable.width, placeable.height) {
+                                                placeable.placeRelative(0, 0)
+                                            }
+                                        },
+                                    contentPadding = PaddingValues(horizontal = 16.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                ) {
+                                    item {
+                                        PrayerTimeCard(
+                                            prayerTime = state.prayerTimes.fajr,
+                                            prayerName = "Fajr",
+                                            prayerIconRes = R.drawable.ic_fajr
+                                        )
+                                    }
+                                    item {
+                                        PrayerTimeCard(
+                                            prayerTime = state.prayerTimes.dhuhr,
+                                            prayerName = "Dhuhr",
+                                            prayerIconRes = R.drawable.ic_duhr
+                                        )
+                                    }
+                                    item {
+                                        PrayerTimeCard(
+                                            prayerTime = state.prayerTimes.asr,
+                                            prayerName = "Asr",
+                                            prayerIconRes = R.drawable.ic_asr
+                                        )
+                                    }
+                                    item {
+                                        PrayerTimeCard(
+                                            prayerTime = state.prayerTimes.maghrib,
+                                            prayerName = "Maghrib",
+                                            prayerIconRes = R.drawable.ic_magrib
+                                        )
+                                    }
+                                    item {
+                                        PrayerTimeCard(
+                                            prayerTime = state.prayerTimes.isha,
+                                            prayerName = "Isha",
+                                            prayerIconRes = R.drawable.ic_isha
+                                        )
+                                    }
+                                }
+                            }
                         }
                         item {
-                            PrayerTimeCard(
-                                prayerTime = state.prayerTimes.asr,
-                                prayerName = "Asr",
-                                prayerIconRes = R.drawable.ic_asr
-                            )
-                        }
-                        item {
-                            PrayerTimeCard(
-                                prayerTime = state.prayerTimes.maghrib,
-                                prayerName = "Maghrib",
-                                prayerIconRes = R.drawable.ic_magrib
-                            )
-                        }
-                        item {
-                            PrayerTimeCard(
-                                prayerTime = state.prayerTimes.isha,
-                                prayerName = "Isha",
-                                prayerIconRes = R.drawable.ic_isha
-                            )
+                            TitleWithContent(title = "Asma al husna") {
+                                AsmaAlHusnaCard(asma = state.asma)
+                            }
                         }
                     }
                 }
-            }
-            item {
-                TitleWithContent(title = "Asma al husna") {
-                    AsmaAlHusnaCard(asma = state.asma)
-                }
-            }
         }
     }
 }
@@ -312,7 +329,8 @@ private fun HomeScreenPrev() {
     ImanBytesTheme(darkTheme = false, dynamicColor = true) {
         HomeScreen(
             state = HomeScreenState(
-
+                isLoading = false,
+                error = "a network occoured"
             )
         )
     }

@@ -48,7 +48,6 @@ fun AppFilledButton(
     Button(
         onClick = onClick,
         modifier = modifier
-            .fillMaxWidth()
             .padding(horizontal = 16.dp),
         contentPadding = ButtonDefaults.MediumContentPadding,
         shapes = ButtonDefaults.shapes()
