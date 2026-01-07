@@ -1,6 +1,7 @@
 package com.anticbyte.imanbytes.presentation.screens.audioRecitation.component
 
 import androidx.annotation.OptIn
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -72,7 +73,9 @@ fun RecitationBottomSheetContent(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
                 text = nowPlayingSurah?.englishName.orEmpty(),
@@ -84,7 +87,6 @@ fun RecitationBottomSheetContent(
                 text = nowPlayingSurah?.englishNameTranslation.orEmpty(),
                 style = typography.bodyMedium
             )
-            Spacer(modifier = Modifier.size(8.dp))
             AudioControlSection(
                 modifier = Modifier,
                 player = player

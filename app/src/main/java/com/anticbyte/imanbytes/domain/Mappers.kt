@@ -1,11 +1,14 @@
 package com.anticbyte.imanbytes.domain
 
 import com.anticbyte.imanbytes.data.remote.AsmaAlHusnaDto
+import com.anticbyte.imanbytes.data.remote.GetRandomVerseDto
 import com.anticbyte.imanbytes.data.remote.PrayerTimesResDto
 import com.anticbyte.imanbytes.data.remote.SurahDto
 import com.anticbyte.imanbytes.data.remote.SurahEditionDto
 import com.anticbyte.imanbytes.domain.model.Asma
+import com.anticbyte.imanbytes.domain.model.Edition
 import com.anticbyte.imanbytes.domain.model.PrayerTime
+import com.anticbyte.imanbytes.domain.model.RandomVerse
 import com.anticbyte.imanbytes.domain.model.SelfRecitation
 import com.anticbyte.imanbytes.domain.model.Surah
 import com.anticbyte.imanbytes.domain.model.SurahText
@@ -79,3 +82,36 @@ fun AsmaAlHusnaDto.Data.toAsma(): Asma = Asma(
     englishMeaning = this.en.meaning,
     number = this.number
 )
+
+fun GetRandomVerseDto.toDomain(): RandomVerse {
+    return RandomVerse(
+        number = data.number,
+        text = data.text,
+        // Mapping Edition (Assuming Edition domain model matches DTO structure)
+        edition = Edition(
+            identifier = data.edition.identifier,
+            language = data.edition.language,
+            name = data.edition.name,
+            englishName = data.edition.englishName,
+            format = data.edition.format,
+            type = data.edition.type,
+            direction = data.edition.direction
+        ),
+        // Mapping Surah with Int to String conversion
+        surah = Surah(
+            number = data.surah.number.toString(),
+            name = data.surah.name,
+            englishName = data.surah.englishName,
+            englishNameTranslation = data.surah.englishNameTranslation,
+            numberOfAyahs = data.surah.numberOfAyahs.toString(),
+            revelationType = data.surah.revelationType
+        ),
+        numberInSurah = data.numberInSurah,
+        juz = data.juz,
+        manzil = data.manzil,
+        page = data.page,
+        ruku = data.ruku,
+        hizbQuarter = data.hizbQuarter,
+        sajda = data.sajda
+    )
+}

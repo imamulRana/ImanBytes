@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
@@ -50,11 +49,12 @@ fun AudioControlSection(
     val playPauseState = rememberPlayPauseButtonState(player = player)
     val progressState =
         rememberProgressStateWithTickInterval(player = player, tickIntervalMs = 1000L)
-    val current = getStringForTime(progressState.currentPositionMs)
-    val duration by remember { derivedStateOf { getStringForTime(progressState.durationMs) } }
 
     var dragPosition by remember { mutableFloatStateOf(0f) }
     var isDragging by remember { mutableStateOf(false) }
+
+    val current by remember { derivedStateOf { getStringForTime(progressState.currentPositionMs) } }
+    val duration by remember { derivedStateOf { getStringForTime(progressState.durationMs) } }
 
     LaunchedEffect(progressState.currentPositionMs) {
         if (!isDragging) dragPosition =

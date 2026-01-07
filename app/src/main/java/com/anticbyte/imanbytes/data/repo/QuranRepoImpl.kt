@@ -1,21 +1,22 @@
 package com.anticbyte.imanbytes.data.repo
 
+import com.anticbyte.imanbytes.data.remote.GetRandomVerseDto
 import com.anticbyte.imanbytes.data.remote.SurahDto
 import com.anticbyte.imanbytes.data.remote.SurahEditionDto
 import com.anticbyte.imanbytes.data.remote.SurahInfoDto
+import com.anticbyte.imanbytes.domain.model.RandomVerse
 import com.anticbyte.imanbytes.domain.model.SelfRecitation
 import com.anticbyte.imanbytes.domain.model.Surah
 import com.anticbyte.imanbytes.domain.repo.QuranRepo
+import com.anticbyte.imanbytes.domain.toDomain
 import com.anticbyte.imanbytes.domain.toSelfRecitation
 import com.anticbyte.imanbytes.domain.toSurah
 import com.anticbyte.imanbytes.utils.safeApiCall
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
-import io.ktor.client.request.header
-import io.ktor.http.HttpHeaders
+import io.ktor.http.appendPathSegments
 import io.ktor.http.isSuccess
-import io.ktor.util.ContentEncoder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -64,6 +65,20 @@ class QuranRepoImpl(
                 } else {
                     throw Exception(response.status.description)
                 }
+            }
+        }
+    }
+
+    override suspend fun getRandomVerse(
+        verseNumber: String
+    ): Result<RandomVerse> {
+        return withContext(Dispatchers.IO) {
+            safeApiCall {
+                val response = ktorClient.get("https://api.alquran.cloud/v1/ayah") {
+                    url.appendPathSegments(verseNumber, "en.sahih")
+                }
+                if (response.status.isSuccess()) response.body<GetRandomVerseDto>().toDomain()
+                else throw Exception(response.status.description)
             }
         }
     }

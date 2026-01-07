@@ -4,12 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anticbyte.imanbytes.domain.repo.AsmaAlHusnaRepo
 import com.anticbyte.imanbytes.domain.repo.PrayerTimeRepo
+import com.anticbyte.imanbytes.domain.repo.QuranRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import javax.inject.Inject
@@ -18,7 +18,8 @@ import kotlin.random.Random
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val repo: PrayerTimeRepo,
-    private val asmaRepo: AsmaAlHusnaRepo
+    private val asmaRepo: AsmaAlHusnaRepo,
+    private val quranRepo: QuranRepo
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(HomeScreenState())
     val uiState = _uiState.asStateFlow()
@@ -26,11 +27,20 @@ class HomeViewModel @Inject constructor(
     init {
         fetchPrayerTime()
         fetchAsmaAlHusna()
+        fetchRandomVerse()
+    }
+
+    private fun fetchRandomVerse() {
+        viewModelScope.launch {
+            quranRepo.getRandomVerse(Random.nextInt(1, 6236).toString()).onSuccess { data ->
+                _uiState.update { it.copy(randomVerse = data) }
+            }
+        }
     }
 
     private fun fetchAsmaAlHusna() {
         viewModelScope.launch {
-            asmaRepo.getSingleAsma(Random.nextInt(1,99).toString()).onSuccess { asma ->
+            asmaRepo.getSingleAsma(Random.nextInt(1, 99).toString()).onSuccess { asma ->
                 _uiState.update {
                     it.copy(asma = asma)
                 }

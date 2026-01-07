@@ -1,5 +1,6 @@
 package com.anticbyte.imanbytes.presentation.component
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
@@ -15,6 +16,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.media3.exoplayer.ExoPlayer
 import kotlinx.coroutines.delay
 
@@ -54,14 +56,17 @@ fun BoxScope.AppErrorScreen(
     errorMessage: String = "Something went wrong",
     onRetry: () -> Unit
 ) {
-    Box(
+    Column(
         modifier = modifier.align(Alignment.Center),
-        contentAlignment = Alignment.Center
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(errorMessage)
-            AppFilledButton(modifier = Modifier.wrapContentWidth(), buttonLabel = "Retry", onClick = onRetry)
-        }
+        Text(errorMessage)
+        AppFilledButton(
+            modifier = Modifier.wrapContentWidth(),
+            buttonLabel = "Retry",
+            onClick = onRetry
+        )
     }
 }
 
