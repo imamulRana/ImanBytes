@@ -10,6 +10,7 @@ import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MediumFlexibleTopAppBar
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
@@ -27,7 +28,8 @@ fun AppTopBar(
     onNavigationIconClick: () -> Unit = {},
     isBackVisible: Boolean = false,
     scrollBehavior: TopAppBarScrollBehavior? = null,
-    actions: @Composable (RowScope.() -> Unit) = {}
+    actions: @Composable (RowScope.() -> Unit) = {},
+    colors: TopAppBarColors = TopAppBarDefaults.topAppBarColors()
 ) {
     MediumFlexibleTopAppBar(
         title = { Text(text = title ?: "") },
@@ -39,7 +41,7 @@ fun AppTopBar(
         },
         scrollBehavior = scrollBehavior,
         actions = actions,
-        colors = TopAppBarDefaults.topAppBarColors()
+        colors = colors
     )
 }
 

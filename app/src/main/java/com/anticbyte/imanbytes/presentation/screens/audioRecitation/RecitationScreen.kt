@@ -2,18 +2,20 @@ package com.anticbyte.imanbytes.presentation.screens.audioRecitation
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.ListItemShapes
 import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SegmentedListItem
 import androidx.compose.material3.Text
 import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
@@ -22,7 +24,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.anticbyte.imanbytes.R
 import com.anticbyte.imanbytes.presentation.component.AppTopBar
@@ -44,7 +45,6 @@ fun RecitationScreenRoute(
     )
 }
 
-@Preview
 @Composable
 fun RecitationScreen(
     modifier: Modifier = Modifier,
@@ -62,7 +62,13 @@ fun RecitationScreen(
     }) { innerPadding ->
         Column(
             modifier = modifier
-                .padding(innerPadding)
+                .padding(PaddingValues(
+                    top = innerPadding.calculateTopPadding(),
+                    bottom = innerPadding.calculateBottomPadding(),
+                    start = 16.dp,
+                    end = 16.dp
+                )),
+            verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap)
         ) {
             RecitationSelectionItem(
                 modifier = modifier,
@@ -70,7 +76,8 @@ fun RecitationScreen(
                 title = "Arabic Recitation of the Holy Quran",
                 subtitle = "Recitation in the voice of Mishary Rashid Alafasy in Arabic",
                 itemShape = MaterialShapes.Pill.toShape(),
-                onRecitationItemClick = onNavToArRecitation
+                onRecitationItemClick = onNavToArRecitation,
+                shapes = ListItemDefaults.segmentedShapes(0, 3)
             )
             RecitationSelectionItem(
                 modifier = modifier,
@@ -78,7 +85,8 @@ fun RecitationScreen(
                 title = "Arabic Recitation with English Translation",
                 subtitle = "Recitation in the voice of Mishary Rashid Alafasy in Arabic with English translation in the Voice of Ibrahim Walk",
                 itemShape = MaterialShapes.Square.toShape(),
-                onRecitationItemClick = onNavToTrRecitation
+                onRecitationItemClick = onNavToTrRecitation,
+                shapes = ListItemDefaults.segmentedShapes(1, 3)
             )
             RecitationSelectionItem(
                 modifier = modifier,
@@ -86,14 +94,13 @@ fun RecitationScreen(
                 title = "Arabic Recitation with English Translation",
                 subtitle = "Recitation in the voice of Mishary Rashid Alafasy in Arabic with English translation in the Voice of Ibrahim Walk",
                 itemShape = MaterialShapes.Cookie6Sided.toShape(),
-                onRecitationItemClick = onNavToSelfRecitation
+                onRecitationItemClick = onNavToSelfRecitation,
+                shapes = ListItemDefaults.segmentedShapes(2, 3)
             )
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
-@Preview
 @Composable
 fun RecitationSelectionItem(
     modifier: Modifier = Modifier,
@@ -101,11 +108,14 @@ fun RecitationSelectionItem(
     title: String = "Arabic Recitation",
     subtitle: String = "Arabic",
     itemShape: Shape = MaterialShapes.Pill.toShape(),
-    onRecitationItemClick: () -> Unit = {}
+    onRecitationItemClick: () -> Unit = {},
+    shapes: ListItemShapes = ListItemDefaults.segmentedShapes(0, 0)
 ) {
-    ListItem(
-        modifier = modifier
-            .clickable(onClick = onRecitationItemClick),
+    SegmentedListItem(
+        modifier = modifier,
+        onClick = {
+            onRecitationItemClick()
+        },
         leadingContent = {
             Box(
                 modifier = Modifier
@@ -123,7 +133,10 @@ fun RecitationSelectionItem(
                 )
             }
         },
-        headlineContent = { Text(text = title) },
-        supportingContent = { Text(text = subtitle) }
-    )
+        supportingContent = { Text(text = subtitle) },
+        shapes = shapes,
+        colors = ListItemDefaults.segmentedColors(containerColor = colorScheme.surfaceContainerLow)
+    ) {
+        Text(text = title)
+    }
 }

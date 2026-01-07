@@ -10,56 +10,93 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import com.anticbyte.imanbytes.R
 import com.anticbyte.imanbytes.domain.model.Surah
+import com.anticbyte.imanbytes.presentation.component.AppTopBar
+import com.anticbyte.imanbytes.theme.ImanBytesTheme
 
 
 @OptIn(UnstableApi::class)
 @Composable
 fun RecitationBottomSheetContent(
     modifier: Modifier = Modifier,
-    player: Player,
+    player: Player?,
     nowPlayingSurah: Surah? = null,
     onReadSurahClick: (String) -> Unit,
 ) {
-    Box(modifier = modifier.fillMaxSize()) {
+    Column(modifier = modifier.fillMaxSize()) {
+        AppTopBar(isBackVisible = true, colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color.Transparent
+        ), actions = {
+            Button (onClick = { onReadSurahClick(nowPlayingSurah?.number.orEmpty()) },
+                shapes = ButtonDefaults.shapes()){
+                Text(text = "Read Now")
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_forward),
+                    contentDescription = null)
+            }
+        })
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                modifier = Modifier
+                    .size(200.dp),
+                imageVector = ImageVector.vectorResource(R.drawable.ic_genres),
+                contentDescription = null,
+                tint = colorScheme.secondaryContainer
+            )
+        }
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, top = 16.dp)
-                .align(Alignment.TopStart)
+                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
         ) {
-            Button(
-                onClick = { onReadSurahClick(nowPlayingSurah?.number.orEmpty()) },
-                modifier = Modifier.align(Alignment.End)
-            ) {
-                Text(stringResource(R.string.read_surah))
-                Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
-                Icon(imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_forward), null)
-            }
-            Text(text = nowPlayingSurah?.englishName.orEmpty(), style = typography.displayMedium)
+            Text(
+                text = nowPlayingSurah?.englishName.orEmpty(),
+                style = typography.titleLargeEmphasized.copy(
+                    fontWeight = FontWeight.Bold
+                )
+            )
             Text(
                 text = nowPlayingSurah?.englishNameTranslation.orEmpty(),
-                style = typography.bodyLarge
+                style = typography.bodyMedium
+            )
+            Spacer(modifier = Modifier.size(8.dp))
+            AudioControlSection(
+                modifier = Modifier,
+                player = player
             )
         }
-        AudioControlSection(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 16.dp),
-            player = player
-        )
+    }
+}
+
+@Preview
+@Composable
+private fun RecitationSheetPreview() {
+    ImanBytesTheme(dynamicColor = false, darkTheme = true) {
+        RecitationBottomSheetContent(player = null, onReadSurahClick = {})
     }
 }

@@ -70,7 +70,6 @@ fun AudioControlSection(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp)
         ) {
             Slider(value = dragPosition, onValueChange = { newValue ->
                 isDragging = true
