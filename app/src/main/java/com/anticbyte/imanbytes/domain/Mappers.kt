@@ -2,6 +2,7 @@ package com.anticbyte.imanbytes.domain
 
 import com.anticbyte.imanbytes.data.remote.AsmaAlHusnaDto
 import com.anticbyte.imanbytes.data.remote.GetRandomVerseDto
+import com.anticbyte.imanbytes.data.remote.GetTafsirDto
 import com.anticbyte.imanbytes.data.remote.PrayerTimesResDto
 import com.anticbyte.imanbytes.data.remote.SurahDto
 import com.anticbyte.imanbytes.data.remote.SurahEditionDto
@@ -12,6 +13,7 @@ import com.anticbyte.imanbytes.domain.model.RandomVerse
 import com.anticbyte.imanbytes.domain.model.SelfRecitation
 import com.anticbyte.imanbytes.domain.model.Surah
 import com.anticbyte.imanbytes.domain.model.SurahText
+import com.anticbyte.imanbytes.domain.model.Tafsir
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
@@ -113,5 +115,22 @@ fun GetRandomVerseDto.toDomain(): RandomVerse {
         ruku = data.ruku,
         hizbQuarter = data.hizbQuarter,
         sajda = data.sajda
+    )
+}
+
+fun GetTafsirDto.toDomain(): Tafsir {
+    return Tafsir(
+        surahName = surahName,
+        surahNo = surahNo,
+        ayahNo = ayahNo,
+        tafsirs = tafsirs.map { it.toDomain() }
+    )
+}
+
+fun GetTafsirDto.Tafsir.toDomain(): Tafsir.TafsirData {
+    return Tafsir.TafsirData(
+        author = author,
+        groupVerse = groupVerse,
+        content = content
     )
 }

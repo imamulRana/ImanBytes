@@ -29,7 +29,6 @@ class HomeViewModel @Inject constructor(
         fetchAsmaAlHusna()
         fetchRandomVerse()
     }
-
     private fun fetchRandomVerse() {
         viewModelScope.launch {
             quranRepo.getRandomVerse(Random.nextInt(1, 6236).toString()).onSuccess { data ->

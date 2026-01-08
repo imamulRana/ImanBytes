@@ -1,5 +1,8 @@
 package com.anticbyte.imanbytes.domain.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class RandomVerse(
     val number: Int = 0,
     val text: String = "",

@@ -1,5 +1,8 @@
 package com.anticbyte.imanbytes.domain.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Edition(
     val identifier: String = "",
     val language: String = "",

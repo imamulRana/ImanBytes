@@ -21,7 +21,8 @@ fun NavigationHost(
         startDestination = startDestination,
     ) {
         onboardingGraph(navController = navController)
-        homeGraph()
+        homeGraph(navController = navController)
+        randomVerseGraph(navController)
         knowledgeNavGraph(navController = navController)
     }
 }

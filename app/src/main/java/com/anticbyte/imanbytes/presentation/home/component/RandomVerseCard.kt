@@ -28,14 +28,19 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.anticbyte.imanbytes.R
 import com.anticbyte.imanbytes.domain.model.RandomVerse
+import com.anticbyte.imanbytes.domain.model.Tafsir
 import com.anticbyte.imanbytes.utils.shareCardText
 
 @Composable
-fun RandomVerseCard(modifier: Modifier = Modifier, verse: RandomVerse) {
+fun RandomVerseCard(
+    modifier: Modifier = Modifier, verse: RandomVerse,
+    tafsir: Tafsir = Tafsir(),
+    onReadMore: (verseId: String) -> Unit = {}
+) {
     val context = LocalContext.current
     ElevatedCard(
         modifier = modifier,
-        onClick = {},
+        onClick = { onReadMore(verse.number.toString()) },
         shape = shapes.extraLarge
     ) {
         Column(
@@ -101,4 +106,5 @@ fun RandomVerseCard(modifier: Modifier = Modifier, verse: RandomVerse) {
             }
         }
     }
+    Text(tafsir.tafsirs.last().content)
 }

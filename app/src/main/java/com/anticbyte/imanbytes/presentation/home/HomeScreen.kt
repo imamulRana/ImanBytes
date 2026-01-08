@@ -40,16 +40,21 @@ import com.anticbyte.imanbytes.theme.ImanBytesTheme
 @Composable
 fun HomeScreenRoute(
     modifier: Modifier = Modifier,
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel = hiltViewModel(),
+    navigateToRandomVerse: (verseId: String) -> Unit = {},
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    HomeScreen(modifier = modifier, state = state)
+    HomeScreen(
+        modifier = modifier, state = state,
+        navigateToRandomVerse = navigateToRandomVerse
+    )
 }
 
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    state: HomeScreenState = HomeScreenState()
+    state: HomeScreenState = HomeScreenState(),
+    navigateToRandomVerse: (verseId: String) -> Unit = {},
 ) {
     val topBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(state = topBarState)
@@ -92,7 +97,10 @@ fun HomeScreen(
                                     modifier = Modifier.clip(shapes.medium)
                                 )
                             }, title = "Verse of the day") {
-                                RandomVerseCard(verse = state.randomVerse)
+                                RandomVerseCard(
+                                    verse = state.randomVerse,
+                                    onReadMore = navigateToRandomVerse
+                                )
                             }
                         }
                         item {

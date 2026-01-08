@@ -1,0 +1,17 @@
+package com.anticbyte.imanbytes.navigation
+
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.composable
+import com.anticbyte.imanbytes.presentation.random_verse.RandomVerseScreenRoute
+import kotlinx.serialization.Serializable
+
+
+@Serializable
+data class RandomVerseRoute(val verseId: String)
+
+fun NavGraphBuilder.randomVerseGraph(navController: NavHostController) {
+    composable<RandomVerseRoute> {
+        RandomVerseScreenRoute()
+    }
+}
