@@ -11,30 +11,24 @@ import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.rememberTextMeasurer
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.anticbyte.imanbytes.R
 import com.anticbyte.imanbytes.domain.model.RandomVerse
-import com.anticbyte.imanbytes.domain.model.Tafsir
 import com.anticbyte.imanbytes.utils.shareCardText
 
 @Composable
 fun RandomVerseCard(
-    modifier: Modifier = Modifier, verse: RandomVerse,
-    tafsir: Tafsir = Tafsir(),
+    modifier: Modifier = Modifier,
+    verse: RandomVerse,
     onReadMore: (verseId: String) -> Unit = {}
 ) {
     val context = LocalContext.current
@@ -62,25 +56,7 @@ fun RandomVerseCard(
                     color = LocalContentColor.current.copy(.5f)
                 )
             }
-            val gradient = Brush.verticalGradient(
-                listOf(
-                    Color.Transparent,
-                    colorScheme.surfaceContainerLow
-                )
-            )
-            val textMeasurer = rememberTextMeasurer()
-            val style = typography.bodyLarge
-            val text = "Tap to read more"
-
-            val textLayoutResult = textMeasurer.measure(
-                text = text,
-                style = style.copy(color = Color.White)
-            )
-            Text(
-                verse.text,
-                maxLines = 3,
-                overflow = TextOverflow.Ellipsis
-            )
+            Text(verse.text)
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -89,7 +65,12 @@ fun RandomVerseCard(
                 FilledTonalIconButton(
                     onClick = {
                         context.shareCardText(
-                            "Verse of the day"
+                            """
+                            ${verse.surah.englishName}:${verse.numberInSurah}
+                            ${verse.text}
+                            
+                            ${verse.surah.number}
+                        """.trimIndent()
                         )
                     },
                     modifier = Modifier
@@ -106,5 +87,4 @@ fun RandomVerseCard(
             }
         }
     }
-    Text(tafsir.tafsirs.last().content)
 }

@@ -1,7 +1,6 @@
 package com.anticbyte.imanbytes.presentation.component
 
 
-import android.annotation.SuppressLint
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
@@ -14,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.util.fastForEachIndexed
+import androidx.compose.ui.util.fastForEach
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -29,7 +28,7 @@ fun AppBottomBar(
     onItemSelected: (Any?) -> Unit = {}
 ) {
     ShortNavigationBar(modifier = modifier, containerColor = colorScheme.background) {
-        NavigationBarItem.entries.fastForEachIndexed { index, navigationBarItem ->
+        NavigationBarItem.entries.fastForEach { navigationBarItem ->
             val isSelected =
                 currentRoute?.hierarchy?.any { it.hasRoute(navigationBarItem.navRoute::class) } == true
             ShortNavigationBarItem(

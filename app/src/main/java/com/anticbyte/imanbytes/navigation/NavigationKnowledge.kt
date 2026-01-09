@@ -9,7 +9,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.anticbyte.imanbytes.presentation.knowledge.KnowledgeScreenRoute
 import com.anticbyte.imanbytes.presentation.knowledge.KnowledgeViewModel
-import com.anticbyte.imanbytes.presentation.screens.audioRecitation.RecitationViewModel
 import com.anticbyte.imanbytes.presentation.screens.hadith.HadithScreen
 import kotlinx.serialization.Serializable
 
@@ -19,19 +18,13 @@ data object KnowledgeBaseRoute
 @Serializable
 data object KnowledgeRoute
 
-/*@Serializable
-data object RecitationRoute2*/
-
 @Serializable
 data object HadithRoute
 
 @Serializable
 data object PillarRoute
 
-
-fun NavGraphBuilder.knowledgeNavGraph(
-    navController: NavHostController,
-) {
+fun NavGraphBuilder.knowledgeNavGraph(navController: NavHostController) {
     navigation<KnowledgeBaseRoute>(startDestination = KnowledgeRoute) {
         composable<KnowledgeRoute> {
             val viewModel = hiltViewModel<KnowledgeViewModel>()
@@ -40,15 +33,13 @@ fun NavGraphBuilder.knowledgeNavGraph(
                 viewModel = viewModel,
                 navigateToQuran = { navController.navigate(RecitationRoute) },
                 navigateToHadith = { navController.navigate(HadithRoute) },
-                navigateToPillar = { navController.navigate(PillarRoute) }
+                navigateToPillar = { navController.navigate(PillarRoute) },
+                navigateToAsma = { navController.navigate(AsmaRoute) }
             )
         }
-        composable<HadithRoute> {
-            HadithScreen()
-        }
-        composable<PillarRoute> {
-            HadithScreen()
-        }
+        composable<HadithRoute> { HadithScreen() }
+        composable<PillarRoute> { HadithScreen() }
         recitationNavGraph(navController = navController)
+        asmaGraph(navController = navController)
     }
 }

@@ -3,6 +3,8 @@ package com.anticbyte.imanbytes.presentation.home
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -59,21 +61,19 @@ fun HomeScreen(
     val topBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(state = topBarState)
     Scaffold(
-        modifier = Modifier.nestedScroll(
-            scrollBehavior.nestedScrollConnection
-        ),
         topBar = {
             AppTopBar(
                 title = "Iman Bytes",
                 subtitle = "Your Islamic Companion",
                 scrollBehavior = scrollBehavior
             )
-        }
-    ) {
+        },
+        contentWindowInsets = WindowInsets(bottom = 88.dp)
+    ) { innerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it)
+                .padding(innerPadding)
         ) {
             if (state.isLoading) AppLoader()
             else if (state.error != null) AppErrorScreen(
@@ -84,9 +84,10 @@ fun HomeScreen(
                     isRefreshing = false, onRefresh = {},
                 ) {
                     LazyColumn(
+                        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
                         contentPadding = PaddingValues(
-                            top = 24.dp,
-                            bottom = 88.dp
+                            vertical = 24.dp,
+                            horizontal = 16.dp
                         ),
                         verticalArrangement = Arrangement.spacedBy(24.dp)
                     ) {
@@ -174,8 +175,7 @@ private fun HomeScreenPrev() {
     ImanBytesTheme(darkTheme = false, dynamicColor = true) {
         HomeScreen(
             state = HomeScreenState(
-                isLoading = false,
-                error = "a network occoured"
+                isLoading = false
             )
         )
     }

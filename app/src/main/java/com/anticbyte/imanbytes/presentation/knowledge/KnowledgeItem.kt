@@ -13,7 +13,7 @@ enum class KnowledgeItem(
         titleRes = R.string.title_quran,
         descriptionRes = R.string.desc_quran,
     ),
-    HADITH(
+    /*HADITH(
         iconRes = R.drawable.ic_book_fill_sharp,
         titleRes = R.string.title_hadith,
         descriptionRes = R.string.desc_hadith,
@@ -22,5 +22,10 @@ enum class KnowledgeItem(
         iconRes = R.drawable.ic_book_fill_sharp,
         titleRes = R.string.title_pillars,
         descriptionRes = R.string.desc_pillars,
+    ),*/
+    ASMA(
+        iconRes = R.drawable.ic_book_fill_sharp,
+        titleRes = R.string.title_asma,
+        descriptionRes = R.string.desc_asma,
     )
 }

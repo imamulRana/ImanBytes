@@ -31,4 +31,8 @@ class PrayerTimeRepoImpl @Inject constructor(private val httpClient: HttpClient)
             }
         }
     }
+
+    override suspend fun ramadanPrayerTimesGet(): Result<PrayerTime> {
+        TODO("Not yet implemented")
+    }
 }

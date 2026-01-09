@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.ListItemDefaults
-import androidx.compose.material3.ListItemShapes
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -34,12 +33,14 @@ fun KnowledgeScreenRoute(
     viewModel: KnowledgeViewModel,
     navigateToQuran: () -> Unit,
     navigateToHadith: () -> Unit,
-    navigateToPillar: () -> Unit
+    navigateToPillar: () -> Unit,
+    navigateToAsma: () -> Unit
 ) {
     KnowledgeScreen(
         onNavigateToQuran = navigateToQuran,
         onNavigateToHadith = navigateToHadith,
-        onNavigateToPillar = navigateToPillar
+        onNavigateToPillar = navigateToPillar,
+        onNavigateToAsma = navigateToAsma
     )
 }
 
@@ -59,7 +60,8 @@ fun KnowledgeScreen(
     modifier: Modifier = Modifier,
     onNavigateToQuran: () -> Unit = {},
     onNavigateToHadith: () -> Unit = {},
-    onNavigateToPillar: () -> Unit = {}
+    onNavigateToPillar: () -> Unit = {},
+    onNavigateToAsma: () -> Unit = {}
 ) {
     Scaffold(topBar = {
         AppTopBar(
@@ -72,11 +74,13 @@ fun KnowledgeScreen(
             modifier = modifier
                 .fillMaxSize()
                 .padding(innerPadding),
-            verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap),        ) {
+            verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap),
+        ) {
             KnowledgeItems(
                 onNavigateToQuran = onNavigateToQuran,
                 onNavigateToHadith = onNavigateToHadith,
-                onNavigateToPillar = onNavigateToPillar
+                onNavigateToPillar = onNavigateToPillar,
+                onNavigateToAsma = onNavigateToAsma
             )
         }
     }
@@ -92,7 +96,8 @@ fun KnowledgeScreen(
 fun KnowledgeItems(
     onNavigateToQuran: () -> Unit = {},
     onNavigateToHadith: () -> Unit = {},
-    onNavigateToPillar: () -> Unit = {}
+    onNavigateToPillar: () -> Unit = {},
+    onNavigateToAsma: () -> Unit = {}
 ) {
     KnowledgeItem.entries.fastForEach { item ->
         KnowledgeSectionItem(
@@ -103,11 +108,12 @@ fun KnowledgeItems(
             onItemClick = {
                 when (item) {
                     KnowledgeItem.QURAN -> onNavigateToQuran()
-                    KnowledgeItem.HADITH -> onNavigateToHadith()
-                    KnowledgeItem.PILLARS -> onNavigateToPillar()
+                    /*KnowledgeItem.HADITH -> onNavigateToHadith()
+                    KnowledgeItem.PILLARS -> onNavigateToPillar()*/
+                    KnowledgeItem.ASMA -> onNavigateToAsma()
                 }
             },
-            shapes = ListItemDefaults.segmentedShapes(item.ordinal,KnowledgeItem.entries.size)
+            shapes = ListItemDefaults.segmentedShapes(item.ordinal, KnowledgeItem.entries.size)
         )
     }
 }

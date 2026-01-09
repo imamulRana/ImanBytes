@@ -15,7 +15,6 @@ import dagger.hilt.components.SingletonComponent
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.plugins.HttpRequestRetry
-import io.ktor.client.plugins.compression.ContentEncoding
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.Logging
 import javax.inject.Singleton
@@ -28,9 +27,6 @@ object NetworkModule {
     fun provideNetworkService(): HttpClient =
         HttpClient(Android) {
             install(plugin = ContentNegotiation, configure = jsonConfig)
-            install(plugin = ContentEncoding) {
-                gzip(0.9F)
-            }
             install(plugin = Logging, configure = loggingConfig)
             install(HttpRequestRetry) {
                 retryOnException(5, true)
@@ -40,7 +36,8 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideQuranRepo(httpClient: HttpClient): QuranRepo = QuranRepoImpl(ktorClient = httpClient)
+    fun provideQuranRepo(httpClient: HttpClient): QuranRepo =
+        QuranRepoImpl(ktorClient = httpClient)
 
     @Provides
     @Singleton

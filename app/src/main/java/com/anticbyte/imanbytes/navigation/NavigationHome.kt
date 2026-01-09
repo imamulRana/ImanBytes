@@ -5,7 +5,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.anticbyte.imanbytes.presentation.home.HomeScreenRoute
-import com.anticbyte.imanbytes.presentation.random_verse.RandomVerseScreenRoute
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -21,6 +20,5 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
                 navController.navigate(RandomVerseRoute(it))
             })
         }
-        randomVerseGraph(navController)
     }
 }
