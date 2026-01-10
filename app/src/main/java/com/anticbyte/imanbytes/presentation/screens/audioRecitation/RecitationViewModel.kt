@@ -52,10 +52,6 @@ class RecitationViewModel @Inject constructor(
         _recitationUiState.update { state ->
             state.copy(nowPlayingSurah = state.surahList.find { it.number == surahNumber })
         }
-        mediaController.createMediaItem(
-            surah = recitationUiState.value.surahList,
-            recitationType.recitationId
-        )
     }
 
     fun fetchAllSurah() {
@@ -66,6 +62,10 @@ class RecitationViewModel @Inject constructor(
                     _recitationUiState.update { state ->
                         state.copy(surahList = surah, isLoading = false)
                     }
+                    mediaController.createMediaItem(
+                        surah = surah,
+                        recitationId = RecitationType.TRANSLATION.recitationId
+                    )
                 },
                 onFailure = {
                     _recitationUiState.update { state ->

@@ -29,12 +29,17 @@ android {
             isDebuggable = true
             applicationIdSuffix = ".debug"
             versionNameSuffix = "-debug"
-            buildConfigField(type = "Boolean", name = "LOGGING", value = "true")
             buildConfigField(
-                type = "String",
-                name = "BASE_URL",
-                value = "\"https://jsonplaceholder.typicode.com/\""
+                "String",
+                "AUDIO_BASE_URL",
+                "\"https://cdn.islamic.network/quran/audio-surah/128/%s/%s.mp3\""
             )
+        }
+        create("staging") {
+            applicationIdSuffix = ".staging"
+            versionNameSuffix = "-staging"
+            isDebuggable = true
+            signingConfig = signingConfigs.getByName("debug")
             buildConfigField(
                 "String",
                 "AUDIO_BASE_URL",
@@ -48,12 +53,6 @@ android {
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
-            )
-            buildConfigField(type = "Boolean", name = "LOGGING", value = "false")
-            buildConfigField(
-                type = "String",
-                name = "BASE_URL",
-                value = "\"https://jsonplaceholder.typicode.com/\""
             )
             buildConfigField(
                 "String",

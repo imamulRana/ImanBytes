@@ -30,7 +30,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.anticbyte.imanbytes.R
 import com.anticbyte.imanbytes.domain.model.PrayerTime
 import com.anticbyte.imanbytes.presentation.component.AppTopBar
@@ -38,7 +38,7 @@ import com.anticbyte.imanbytes.theme.ImanBytesTheme
 
 @Composable
 fun RamadanDayDetailRoute(
-    viewModel: RamadanDayDetailViewModel = viewModel()
+    viewModel: RamadanDayDetailViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -53,8 +53,8 @@ fun RamadanDayDetailScreen(
 ) {
     Scaffold(topBar = {
         AppTopBar(
-            title = "27 Ramadan 1447",
-            subtitle = "27 March 2026",
+            title = uiState.monthPrayerTime.month.plus(uiState.monthPrayerTime.year),
+            subtitle = uiState.monthPrayerTime.date,
             isBackVisible = true,
             onNavigationIconClick = {}
         )
@@ -70,9 +70,7 @@ fun RamadanDayDetailScreen(
             ) {
                 suhoorAndIftarSection("5:14", "6:15")
                 ramadanPrayerTimes(
-                    PrayerTime(
-
-                    )
+                    uiState.monthPrayerTime.prayerTimes
                 )
             }
         }
@@ -100,11 +98,11 @@ fun LazyListScope.suhoorAndIftarSection(
 }
 
 
-fun LazyListScope.ramadanPrayerTimes(prayerTime: PrayerTime) {
-    itemsIndexed(prayerTime.toTimeList()) { index, (prayer, time) ->
+fun LazyListScope.ramadanPrayerTimes(prayerTime: List<Pair<String, String>>) {
+    itemsIndexed(prayerTime) { index, (prayer, time) ->
         SegmentedListItem(
             onClick = {},
-            shapes = ListItemDefaults.segmentedShapes(index, prayerTime.toTimeList().size),
+            shapes = ListItemDefaults.segmentedShapes(index, prayerTime.size),
             supportingContent = {
                 Text(time)
             }, colors = ListItemDefaults.segmentedColors(colorScheme.surfaceContainerLow)

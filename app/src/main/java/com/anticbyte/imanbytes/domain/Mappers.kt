@@ -1,6 +1,7 @@
 package com.anticbyte.imanbytes.domain
 
 import com.anticbyte.imanbytes.data.remote.AsmaAlHusnaDto
+import com.anticbyte.imanbytes.data.remote.GetPrayerTimesByMonthDto
 import com.anticbyte.imanbytes.data.remote.GetRandomVerseDto
 import com.anticbyte.imanbytes.data.remote.GetTafsirDto
 import com.anticbyte.imanbytes.data.remote.PrayerTimesResDto
@@ -9,6 +10,7 @@ import com.anticbyte.imanbytes.data.remote.SurahEditionDto
 import com.anticbyte.imanbytes.domain.model.Asma
 import com.anticbyte.imanbytes.domain.model.Edition
 import com.anticbyte.imanbytes.domain.model.PrayerTime
+import com.anticbyte.imanbytes.domain.model.RamadanCalender
 import com.anticbyte.imanbytes.domain.model.RandomVerse
 import com.anticbyte.imanbytes.domain.model.SelfRecitation
 import com.anticbyte.imanbytes.domain.model.Surah
@@ -132,5 +134,44 @@ fun GetTafsirDto.Tafsir.toDomain(): Tafsir.TafsirData {
         author = author,
         groupVerse = groupVerse,
         content = content
+    )
+}
+
+fun GetPrayerTimesByMonthDto.toRamadanCalendar(): List<RamadanCalender> {
+    return data.map { it.toRamadanCalendar() }
+}
+
+private fun GetPrayerTimesByMonthDto.Data.toRamadanCalendar(): RamadanCalender {
+    return RamadanCalender(
+        date = date.readable,
+        day = date.gregorian.weekday.en,
+        designation = date.hijri.designation.abbreviated,
+        hijri = date.hijri.date,
+        gregorian = date.gregorian.date,
+        meta = meta.timezone,
+        method = meta.method.name,
+        month = date.hijri.month.en,
+        year = date.hijri.year,
+        holidays = date.hijri.holidays,
+        prayerTimes = timings.toPrayerTimePairs(),
+        midnight = timings.midnight
+    )
+}
+
+private fun GetPrayerTimesByMonthDto.Data.Timings.toPrayerTimePairs(): List<Pair<String, String>> {
+    fun String.cleanTime() = substringBefore(" ")
+
+    return listOf(
+        "Imsak" to imsak.cleanTime(),
+        "Fajr" to fajr.cleanTime(),
+        "Sunrise" to sunrise.cleanTime(),
+        "Dhuhr" to dhuhr.cleanTime(),
+        "Asr" to asr.cleanTime(),
+        "Maghrib" to maghrib.cleanTime(),
+        "Sunset" to sunset.cleanTime(),
+        "Isha" to isha.cleanTime(),
+        "Midnight" to midnight.cleanTime(),
+        "Firstthird" to firstThird.cleanTime(),
+        "Lastthird" to lastThird.cleanTime()
     )
 }

@@ -1,45 +1,118 @@
 {
   "project_info": {
-    "project_number": "622174128547",
-    "project_id": "iman-bytes",
-    "storage_bucket": "iman-bytes.firebasestorage.app"
+    "project_number": "527016575934",
+    "project_id": "iman-bytes-371ec",
+    "storage_bucket": "iman-bytes-371ec.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:622174128547:android:9704da2d0420a63d62f216",
+        "mobilesdk_app_id": "1:527016575934:android:bd9072101931822b46efef",
         "android_client_info": {
           "package_name": "com.anticbyte.imanbytes"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "527016575934-3rlvics2aafagbnrojtqhjs1jj3q3sic.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyB4TlzDCI098jVBCLNEVEd4fhWM5eFVJ9o"
+          "current_key": "AIzaSyD0IMJ-6S3wIJJCbPQ3uOpSmIaSYB9RYBo"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "527016575934-3rlvics2aafagbnrojtqhjs1jj3q3sic.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:622174128547:android:9d8ef6ae97beee5f62f216",
+        "mobilesdk_app_id": "1:527016575934:android:bbd6a4d260441d6246efef",
         "android_client_info": {
           "package_name": "com.anticbyte.imanbytes.debug"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "527016575934-23o8lg28s6lreqkutv0d949vq325tplo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.anticbyte.imanbytes.debug",
+            "certificate_hash": "5fa9a33c49d8a0d2bfc8e2e6ca82ce8472708d0c"
+          }
+        },
+        {
+          "client_id": "527016575934-5f5e6c0644ji0dbehti39nkt9o5a1ims.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.anticbyte.imanbytes.debug",
+            "certificate_hash": "bbb42fe56e60c4b6a5fbaa01c5d5992119d9dbfd"
+          }
+        },
+        {
+          "client_id": "527016575934-3rlvics2aafagbnrojtqhjs1jj3q3sic.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyB4TlzDCI098jVBCLNEVEd4fhWM5eFVJ9o"
+          "current_key": "AIzaSyD0IMJ-6S3wIJJCbPQ3uOpSmIaSYB9RYBo"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "527016575934-3rlvics2aafagbnrojtqhjs1jj3q3sic.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:527016575934:android:3703ed27ee5af33346efef",
+        "android_client_info": {
+          "package_name": "com.anticbyte.imanbytes.staging"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "527016575934-25hf1t1h2ig5vmaqt79pd1f1t7jmtop2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.anticbyte.imanbytes.staging",
+            "certificate_hash": "bbb42fe56e60c4b6a5fbaa01c5d5992119d9dbfd"
+          }
+        },
+        {
+          "client_id": "527016575934-3rlvics2aafagbnrojtqhjs1jj3q3sic.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0IMJ-6S3wIJJCbPQ3uOpSmIaSYB9RYBo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "527016575934-3rlvics2aafagbnrojtqhjs1jj3q3sic.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

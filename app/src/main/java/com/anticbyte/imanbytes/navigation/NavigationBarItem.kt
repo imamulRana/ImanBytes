@@ -25,6 +25,6 @@ enum class NavigationBarItem(
         unselectedIcon = R.drawable.ic_nav_profile,
         selectedIcon = R.drawable.ic_nav_profile_fill,
         itemLabel = "Profile",
-        navRoute = ProfileRoute.ProfileBaseRoute
+        navRoute = PrayerTimeRamadanRoute
     )
 }
