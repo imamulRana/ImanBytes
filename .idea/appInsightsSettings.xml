@@ -7,6 +7,14 @@
         <entry key="Firebase Crashlytics">
           <value>
             <InsightsFilterSettings>
+              <option name="connection">
+                <ConnectionSetting>
+                  <option name="appId" value="com.anticbyte.imanbytes.debug" />
+                  <option name="mobileSdkAppId" value="1:527016575934:android:bbd6a4d260441d6246efef" />
+                  <option name="projectId" value="iman-bytes-371ec" />
+                  <option name="projectNumber" value="527016575934" />
+                </ConnectionSetting>
+              </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
               <option name="timeIntervalDays" value="THIRTY_DAYS" />
               <option name="visibilityType" value="ALL" />
