@@ -7,11 +7,9 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
@@ -32,11 +30,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.offset
+import androidx.compose.ui.util.fastForEachIndexed
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.anticbyte.imanbytes.R
@@ -47,8 +44,9 @@ import com.anticbyte.imanbytes.presentation.component.AppLoader
 import com.anticbyte.imanbytes.presentation.component.AppTopBar
 import com.anticbyte.imanbytes.presentation.component.TitleAndContentSection
 import com.anticbyte.imanbytes.presentation.home.component.AsmaAlHusnaCard
-import com.anticbyte.imanbytes.presentation.home.component.HomeScreenCard
+import com.anticbyte.imanbytes.presentation.home.component.ComposableWithTitle
 import com.anticbyte.imanbytes.presentation.home.component.PrayerTimeCard
+import com.anticbyte.imanbytes.presentation.home.component.PrayerTimeSec
 import com.anticbyte.imanbytes.presentation.home.component.RandomVerseCard
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
 
@@ -104,47 +102,77 @@ fun HomeScreen(
                         ),
                         verticalArrangement = Arrangement.spacedBy(24.dp)
                     ) {
-/*
                         item {
-                            TitleAndContentSection(title = "Ramadan") {
-                                HomeScreenCard(
-                                    title = {
-                                        Text("1 Ramadan 1447", style = typography.titleLarge)
-                                    },
-                                    subtitle = {
-                                        Text("1 January 2026")
-                                    },
-                                    extraContent = {
-                                        Column(
-                                            modifier = Modifier.padding(horizontal = 16.dp),
-                                            verticalArrangement = Arrangement.spacedBy(
-                                                ListItemDefaults.SegmentedGap
+                            ComposableWithTitle(title = "prayer time") {
+                                state.prayerTimes.fastForEachIndexed { index, (prayer, time) ->
+                                    SegmentedListItem(
+                                        onClick = {},
+                                        leadingContent = {
+                                            Icon(
+                                                imageVector = ImageVector.vectorResource(
+                                                    PrayerTimeSec.entries[index].icon
+                                                ), null,
+                                                tint = PrayerTimeSec.entries[index].color
                                             )
-                                        ) {
-                                            SegmentedListItem(
-                                                onClick = {},
-                                                shapes = ListItemDefaults.segmentedShapes(0, 2),
-                                                overlineContent = {
-                                                    Text("Suhoor ends")
-                                                }
-                                            ) {
-                                                Text("5:30")
-                                            }
-                                            SegmentedListItem(
-                                                onClick = {},
-                                                shapes = ListItemDefaults.segmentedShapes(1, 2),
-                                                overlineContent = {
-                                                    Text("Iftaar begins")
-                                                }
-                                            ) {
-                                                Text("5:30")
-                                            }
-                                        }
+                                        },
+                                        shapes = ListItemDefaults.segmentedShapes(
+                                            index,
+                                            state.prayerTimes.size
+                                        ),
+                                        trailingContent = {
+                                            Text(
+                                                time,
+                                                style = typography.titleMedium
+                                            )
+                                        },
+                                        colors = ListItemDefaults.segmentedColors(colorScheme.surfaceContainerLowest)
+                                    ) {
+                                        Text(prayer, style = typography.labelLarge)
                                     }
-                                )
+                                }
                             }
                         }
-*/
+                        /*
+                                                item {
+                                                    TitleAndContentSection(title = "Ramadan") {
+                                                        HomeScreenCard(
+                                                            title = {
+                                                                Text("1 Ramadan 1447", style = typography.titleLarge)
+                                                            },
+                                                            subtitle = {
+                                                                Text("1 January 2026")
+                                                            },
+                                                            extraContent = {
+                                                                Column(
+                                                                    modifier = Modifier.padding(horizontal = 16.dp),
+                                                                    verticalArrangement = Arrangement.spacedBy(
+                                                                        ListItemDefaults.SegmentedGap
+                                                                    )
+                                                                ) {
+                                                                    SegmentedListItem(
+                                                                        onClick = {},
+                                                                        shapes = ListItemDefaults.segmentedShapes(0, 2),
+                                                                        overlineContent = {
+                                                                            Text("Suhoor ends")
+                                                                        }
+                                                                    ) {
+                                                                        Text("5:30")
+                                                                    }
+                                                                    SegmentedListItem(
+                                                                        onClick = {},
+                                                                        shapes = ListItemDefaults.segmentedShapes(1, 2),
+                                                                        overlineContent = {
+                                                                            Text("Iftaar begins")
+                                                                        }
+                                                                    ) {
+                                                                        Text("5:30")
+                                                                    }
+                                                                }
+                                                            }
+                                                        )
+                                                    }
+                                                }
+                        */
                         item {
                             TitleAndContentSection(leadingContent = {
                                 VerticalDivider(
@@ -158,59 +186,61 @@ fun HomeScreen(
                                 )
                             }
                         }
-                        item {
-                            TitleAndContentSection(title = "Prayer Times") {
-                                LazyRow(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .layout { measurable, constrains ->
-                                            val newCon = constrains.offset(32.dp.roundToPx())
-                                            val placeable = measurable.measure(newCon)
-                                            layout(placeable.width, placeable.height) {
-                                                placeable.placeRelative(0, 0)
-                                            }
-                                        },
-                                    contentPadding = PaddingValues(horizontal = 16.dp),
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                ) {
-                                    item {
-                                        PrayerTimeCard(
-                                            prayerTime = state.prayerTimes.fajr,
-                                            prayerName = "Fajr",
-                                            prayerIconRes = R.drawable.ic_fajr
-                                        )
-                                    }
-                                    item {
-                                        PrayerTimeCard(
-                                            prayerTime = state.prayerTimes.dhuhr,
-                                            prayerName = "Dhuhr",
-                                            prayerIconRes = R.drawable.ic_duhr
-                                        )
-                                    }
-                                    item {
-                                        PrayerTimeCard(
-                                            prayerTime = state.prayerTimes.asr,
-                                            prayerName = "Asr",
-                                            prayerIconRes = R.drawable.ic_asr
-                                        )
-                                    }
-                                    item {
-                                        PrayerTimeCard(
-                                            prayerTime = state.prayerTimes.maghrib,
-                                            prayerName = "Maghrib",
-                                            prayerIconRes = R.drawable.ic_magrib
-                                        )
-                                    }
-                                    item {
-                                        PrayerTimeCard(
-                                            prayerTime = state.prayerTimes.isha,
-                                            prayerName = "Isha",
-                                            prayerIconRes = R.drawable.ic_isha
-                                        )
-                                    }
-                                }
-                            }
-                        }
+                        /*
+                                                item {
+                                                    TitleAndContentSection(title = "Prayer Times") {
+                                                        LazyRow(
+                                                            modifier = Modifier
+                                                                .fillMaxWidth()
+                                                                .layout { measurable, constrains ->
+                                                                    val newCon = constrains.offset(32.dp.roundToPx())
+                                                                    val placeable = measurable.measure(newCon)
+                                                                    layout(placeable.width, placeable.height) {
+                                                                        placeable.placeRelative(0, 0)
+                                                                    }
+                                                                },
+                                                            contentPadding = PaddingValues(horizontal = 16.dp),
+                                                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                                        ) {
+                                                            item {
+                                                                PrayerTimeCard(
+                                                                    prayerTime = state.prayerTimes.fajr,
+                                                                    prayerName = "Fajr",
+                                                                    prayerIconRes = R.drawable.ic_fajr
+                                                                )
+                                                            }
+                                                            item {
+                                                                PrayerTimeCard(
+                                                                    prayerTime = state.prayerTimes.dhuhr,
+                                                                    prayerName = "Dhuhr",
+                                                                    prayerIconRes = R.drawable.ic_duhr
+                                                                )
+                                                            }
+                                                            item {
+                                                                PrayerTimeCard(
+                                                                    prayerTime = state.prayerTimes.asr,
+                                                                    prayerName = "Asr",
+                                                                    prayerIconRes = R.drawable.ic_asr
+                                                                )
+                                                            }
+                                                            item {
+                                                                PrayerTimeCard(
+                                                                    prayerTime = state.prayerTimes.maghrib,
+                                                                    prayerName = "Maghrib",
+                                                                    prayerIconRes = R.drawable.ic_magrib
+                                                                )
+                                                            }
+                                                            item {
+                                                                PrayerTimeCard(
+                                                                    prayerTime = state.prayerTimes.isha,
+                                                                    prayerName = "Isha",
+                                                                    prayerIconRes = R.drawable.ic_isha
+                                                                )
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                        */
                         item {
                             TitleAndContentSection(title = "Asma al husna") {
                                 AsmaAlHusnaCard(asma = state.asma)
@@ -226,10 +256,17 @@ fun HomeScreen(
 @Preview
 @Composable
 private fun HomeScreenPrev() {
-    ImanBytesTheme(darkTheme = false, dynamicColor = true) {
+    ImanBytesTheme(darkTheme = true, dynamicColor = false) {
         HomeScreen(
             state = HomeScreenState(
-                isLoading = false
+                isLoading = false,
+                prayerTimes = listOf(
+                    "Fajr" to "04:30",
+                    "Dhuhr" to "12:30",
+                    "Asr" to "16:30",
+                    "Maghrib" to "18:30",
+                    "Isha" to "19:30"
+                )
             )
         )
     }
