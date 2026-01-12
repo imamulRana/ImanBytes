@@ -86,31 +86,29 @@ fun ListItemAvatar(
 }
 
 enum class PrayerTimeSec(
-    @DrawableRes val icon: Int
+    @DrawableRes val icon: Int,
+    val color: Color
 ) {
-//    IMASK(),
-
     FAJR(
-//        Pair("Fajr", "04:30"),
-        R.drawable.ic_fajr
+        R.drawable.sunny_snowing_24px,
+        Color(0xFF5B6B8F)
     ),
-
-    //    SUNRISE(),
     DHUHR(
-        R.drawable.ic_duhr
+        R.drawable.sunny_24px,
+        Color(0xFFC68A3D)
     ),
     ASR(
-        R.drawable.ic_asr
+        R.drawable.partly_cloudy_day_24px,
+        Color(0xFFD68847)
     ),
     MAGHRIB(
-        R.drawable.ic_magrib
+        R.drawable.wb_twilight_24px,
+        Color(0xFFB5485C)
     ),
-
-    //    SUNSET(),
     ISHA(
-        R.drawable.ic_isha
-    ),
-//    MIDNIGHT()
+        R.drawable.bedtime_24px,
+        Color(0xFF4A5272)
+    )
 }
 
 @Composable
@@ -131,7 +129,10 @@ fun PrayerTimeSection(
             SegmentedListItem(
                 onClick = {},
                 leadingContent = {
-                    Icon(ImageVector.vectorResource(PrayerTimeSec.entries[index].icon), null)
+                    Icon(
+                        ImageVector.vectorResource(PrayerTimeSec.entries[index].icon),
+                        null,
+                    )
                 },
                 shapes = ListItemDefaults.segmentedShapes(index, prayerTime.size),
                 trailingContent = {
@@ -141,6 +142,25 @@ fun PrayerTimeSection(
                 Text(prayer)
             }
         }
+    }
+}
+
+@Composable
+fun ComposableWithTitle(
+    modifier: Modifier = Modifier,
+    title: String = "",
+    content: @Composable () -> Unit
+) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap)
+    ) {
+        Text(
+            text = title.uppercase(),
+            modifier = Modifier.padding(top = 0.dp, start = 8.dp, end = 8.dp, bottom = 8.dp),
+            style = typography.labelSmall
+        )
+        content()
     }
 }
 

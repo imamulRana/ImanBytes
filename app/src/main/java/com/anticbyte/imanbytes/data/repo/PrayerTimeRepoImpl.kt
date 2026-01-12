@@ -2,7 +2,6 @@ package com.anticbyte.imanbytes.data.repo
 
 import com.anticbyte.imanbytes.data.remote.GetPrayerTimesByMonthDto
 import com.anticbyte.imanbytes.data.remote.PrayerTimesResDto
-import com.anticbyte.imanbytes.domain.model.PrayerTime
 import com.anticbyte.imanbytes.domain.model.RamadanCalender
 import com.anticbyte.imanbytes.domain.repo.PrayerTimeRepo
 import com.anticbyte.imanbytes.domain.toPrayerTime
@@ -18,7 +17,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class PrayerTimeRepoImpl @Inject constructor(private val httpClient: HttpClient) : PrayerTimeRepo {
-    override suspend fun getPrayerTimes(date: String): Result<PrayerTime> {
+    override suspend fun getPrayerTimes(date: String): Result<List<Pair<String, String>>> {
         return withContext(Dispatchers.IO) {
             safeApiCall {
                 val response = httpClient.get("https://api.aladhan.com") {

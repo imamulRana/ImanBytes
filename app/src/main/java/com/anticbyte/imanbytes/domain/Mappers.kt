@@ -9,7 +9,6 @@ import com.anticbyte.imanbytes.data.remote.SurahDto
 import com.anticbyte.imanbytes.data.remote.SurahEditionDto
 import com.anticbyte.imanbytes.domain.model.Asma
 import com.anticbyte.imanbytes.domain.model.Edition
-import com.anticbyte.imanbytes.domain.model.PrayerTime
 import com.anticbyte.imanbytes.domain.model.RamadanCalender
 import com.anticbyte.imanbytes.domain.model.RandomVerse
 import com.anticbyte.imanbytes.domain.model.SelfRecitation
@@ -67,18 +66,13 @@ fun JsonElement.toSajda(): Boolean {
     }
 }
 
-fun PrayerTimesResDto.Timings.toPrayerTime(): PrayerTime {
-    return PrayerTime(
-        fajr = this.fajr,
-        dhuhr = this.dhuhr,
-        asr = this.asr,
-        maghrib = this.maghrib,
-        isha = this.isha,
-        sunRise = this.sunrise,
-        sunSet = this.sunset,
-        midNight = this.midnight
-    )
-}
+fun PrayerTimesResDto.Timings.toPrayerTime(): List<Pair<String, String>> = listOf(
+    "Fajr" to fajr,
+    "Dhuhr" to dhuhr,
+    "Asr" to asr,
+    "Maghrib" to maghrib,
+    "Isha" to isha
+)
 
 fun AsmaAlHusnaDto.Data.toAsma(): Asma = Asma(
     name = this.name,
