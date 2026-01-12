@@ -150,7 +150,7 @@ private fun PrayerTimeSectionPreview() {
     ImanBytesTheme {
         PrayerTimeSection(
             prayerTime = listOf(
-                "Fajr" to "04:30",
+                "Time" to "04:30",
             )
         )
     }
