@@ -13,6 +13,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.compose.rememberNavController
+import com.anticbyte.imanbytes.navigation.HomeBaseRoute
 import com.anticbyte.imanbytes.navigation.KnowledgeBaseRoute
 import com.anticbyte.imanbytes.navigation.NavigationScaffold
 import com.anticbyte.imanbytes.navigation.Onboarding
@@ -39,7 +40,7 @@ class MainActivity : ComponentActivity() {
                 // We don't need collectLatest as we just need the final value.
                 viewModel.isOnBoarded.collect { isOnboarded ->
                     // Set the resolved route, which will satisfy the splash screen condition.
-                    startDestination = if (isOnboarded) KnowledgeBaseRoute else Onboarding
+                    startDestination = if (isOnboarded) HomeBaseRoute else Onboarding
                     // IMPORTANT: We only need to resolve the route once.
                     // To stop collecting/re-setting the state, use .first() or break/cancel.
                     // If viewModel.isOnBoarded is a StateFlow, it will always emit.

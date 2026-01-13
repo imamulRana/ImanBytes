@@ -21,7 +21,8 @@ fun NavigationScaffold(
 
     val excludedRoutes = setOf(
         Onboarding::class,
-        RandomVerseRoute::class
+        RandomVerseRoute::class,
+        RecitationSelfDetailRoute::class
     )
     Scaffold(
         bottomBar = {

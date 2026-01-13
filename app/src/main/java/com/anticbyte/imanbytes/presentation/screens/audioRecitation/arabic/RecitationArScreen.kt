@@ -4,13 +4,16 @@ import androidx.annotation.OptIn
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -32,7 +35,9 @@ import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import com.anticbyte.imanbytes.R
 import com.anticbyte.imanbytes.domain.model.Surah
+import com.anticbyte.imanbytes.presentation.component.AppErrorScreen
 import com.anticbyte.imanbytes.presentation.component.AppIconButton
+import com.anticbyte.imanbytes.presentation.component.AppLoader
 import com.anticbyte.imanbytes.presentation.component.AppTopBar
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.RecitationScreenState
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.RecitationType
@@ -41,10 +46,7 @@ import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.Re
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationFloatingBar
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationFloatingButton
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationListItem
-import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.customInnerPadding
-import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.paddingWithoutTop
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
-import com.anticbyte.imanbytes.utils.loadingItem
 
 @Composable
 fun RecitationArRoute(
@@ -95,7 +97,7 @@ fun RecitationArScreen(
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             AppTopBar(
-                title = "Arabic Recitation",
+                title = "Quran Recitation",
                 onNavigationIconClick = onNavigateBack,
                 isBackVisible = true,
                 scrollBehavior = scrollBehavior,
@@ -107,17 +109,27 @@ fun RecitationArScreen(
                 }
             )
         }) { innerPadding ->
-        Box(modifier = Modifier.fillMaxSize()) {
-            LazyColumn(
-                state = listState,
-                contentPadding = innerPadding.customInnerPadding(),
-                verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap)
-            ) {
-                if (screenState.isLoading) loadingItem()
-                else {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .navigationBarsPadding()
+        ) {
+            if (screenState.isLoading) AppLoader()
+            else if (!screenState.errorMessages.isNullOrBlank()) AppErrorScreen(errorMessage = screenState.errorMessages) { }
+            else
+                LazyColumn(
+                    state = listState,
+                    contentPadding = PaddingValues(
+                        start = 16.dp,
+                        end = 16.dp,
+                        top = 12.dp,
+                        bottom = innerPadding.calculateBottomPadding()
+                    ),
+                    verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap)
+                ) {
                     recitationItemDescription(descriptionRes = R.string.recitation_description_arabic)
                     recitationItemsAr(
-                        modifier = Modifier.padding(horizontal = 16.dp),
                         surahList = screenState.surahList,
                         onSurahClick = { surahNumber -> showSheet = true },
                         currentSurahNumber = currentSurahNumber,
@@ -125,7 +137,6 @@ fun RecitationArScreen(
                         togglePlayPause = togglePlayPause
                     )
                 }
-            }
             RecitationFloatingButton(
                 innerPadding = innerPadding,
                 listState = listState,
@@ -153,7 +164,7 @@ fun RecitationArScreen(
 // FIXME: - Implement and onclick to surah properly
 @OptIn(UnstableApi::class)
 fun LazyListScope.recitationItemsAr(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     surahList: List<Surah>,
     onSurahClick: (surahNumber: String) -> Unit = {},
     currentSurahNumber: String?,
@@ -178,7 +189,8 @@ fun LazyListScope.recitationItemDescription(@StringRes descriptionRes: Int) {
         Text(
             text = stringResource(descriptionRes),
             textAlign = TextAlign.Justify,
-            modifier = Modifier.paddingWithoutTop(16.dp)
+            style = typography.bodyMedium,
+            modifier = Modifier.padding(bottom = 16.dp)
         )
     }
 }

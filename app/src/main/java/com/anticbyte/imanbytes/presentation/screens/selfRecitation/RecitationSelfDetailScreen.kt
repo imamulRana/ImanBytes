@@ -4,7 +4,9 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material3.HorizontalDivider
@@ -23,7 +25,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -76,7 +77,9 @@ fun RecitationSelfDetailScreen(
                         )
                     }
                 })
-        }) { innerPadding ->
+        },
+        contentWindowInsets = WindowInsets(bottom = 88.dp)
+    ) { innerPadding ->
         LazyColumn(
             contentPadding = innerPadding.customInnerPadding(),
         ) {
@@ -110,7 +113,8 @@ fun LazyListScope.txtRecitationItemDesc(@StringRes descriptionRes: Int) {
         Text(
             text = stringResource(descriptionRes),
             textAlign = TextAlign.Justify,
-            modifier = Modifier.paddingWithoutTop(16.dp)
+            style = typography.bodyMedium,
+            modifier = Modifier.padding(bottom = 16.dp)
         )
     }
 }

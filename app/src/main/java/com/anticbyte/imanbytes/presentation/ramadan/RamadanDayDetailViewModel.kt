@@ -27,12 +27,19 @@ class RamadanDayDetailViewModel @Inject constructor(
     fun loadData() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
-            prayerTimeRepo.ramadanPrayerTimesGet().onSuccess { resp ->
-                _uiState.update {
-                    it.copy(monthPrayerTime = resp.first())
+            prayerTimeRepo.ramadanPrayerTimesGet().onSuccess { response ->
+                _uiState.update { lState ->
+                    lState.copy(
+                        monthPrayerTime = response,
+                        isLoading = false,
+                        errorMessage = null
+                    )
+                }
+            }.onFailure {
+                _uiState.update { lState ->
+                    lState.copy(errorMessage = it.message)
                 }
             }
-            _uiState.value = _uiState.value.copy(isLoading = false)
         }
     }
 }

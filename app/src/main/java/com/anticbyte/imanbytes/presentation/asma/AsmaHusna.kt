@@ -115,7 +115,7 @@ fun LazyListScope.asmaAlHusnaList(asmaList: List<Asma>) {
                     Text(asma.transliteration, style = typography.bodySmall)
                 }
             },
-            colors = ListItemDefaults.segmentedColors(containerColor = colorScheme.surfaceContainerLow)
+            colors = ListItemDefaults.segmentedColors(containerColor = colorScheme.surfaceContainer)
         ) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
@@ -130,7 +130,7 @@ fun LazyListScope.asmaAlHusnaList(asmaList: List<Asma>) {
 @Preview(showBackground = true)
 @Composable
 private fun AsmaHusnaScreenPreview() {
-    ImanBytesTheme(dynamicColor = false) {
+    ImanBytesTheme(dynamicColor = false, darkTheme = true) {
         AsmaHusnaScreen(
             uiState = AsmaHusnaScreenState(
                 asmaList = listOf(

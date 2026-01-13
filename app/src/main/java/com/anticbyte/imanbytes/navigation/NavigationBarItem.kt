@@ -21,10 +21,11 @@ enum class NavigationBarItem(
         itemLabel = "Knowledge",
         navRoute = KnowledgeBaseRoute
     ),
-    PROFILE(
+    // TODO: Add this in the next update.
+/*    PROFILE(
         unselectedIcon = R.drawable.ic_nav_profile,
         selectedIcon = R.drawable.ic_nav_profile_fill,
         itemLabel = "Profile",
         navRoute = PrayerTimeRamadanRoute
-    )
+    )*/
 }

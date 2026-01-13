@@ -137,18 +137,11 @@ fun GetPrayerTimesByMonthDto.toRamadanCalendar(): List<RamadanCalender> {
 
 private fun GetPrayerTimesByMonthDto.Data.toRamadanCalendar(): RamadanCalender {
     return RamadanCalender(
-        date = date.readable,
-        day = date.gregorian.weekday.en,
-        designation = date.hijri.designation.abbreviated,
-        hijri = date.hijri.date,
-        gregorian = date.gregorian.date,
-        meta = meta.timezone,
-        method = meta.method.name,
-        month = date.hijri.month.en,
-        year = date.hijri.year,
+        //new
+        gregorianDate = date.readable,
+        hijriDate = date.hijri.day.plus(" " + date.hijri.month.en).plus(" " + date.hijri.year),
         holidays = date.hijri.holidays,
-        prayerTimes = timings.toPrayerTimePairs(),
-        midnight = timings.midnight
+        prayerTimes = timings.toPrayerTimePairs()
     )
 }
 

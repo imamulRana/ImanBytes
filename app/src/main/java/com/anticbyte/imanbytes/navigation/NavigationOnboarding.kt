@@ -16,7 +16,7 @@ fun NavGraphBuilder.onboardingGraph(navController: NavHostController) {
         val viewModel = hiltViewModel<OnboardingViewModel>()
         OnboardingScreen(onContinue = {
             viewModel.setIsOnBoarded(true)
-            navController.navigate(KnowledgeBaseRoute)
+            navController.navigate(HomeBaseRoute)
         })
     }
 }

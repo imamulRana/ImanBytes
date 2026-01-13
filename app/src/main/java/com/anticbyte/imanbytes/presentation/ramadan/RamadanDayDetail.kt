@@ -1,3 +1,4 @@
+/*
 package com.anticbyte.imanbytes.presentation.ramadan
 
 import androidx.compose.foundation.background
@@ -160,3 +161,4 @@ private fun RamadanDayDetailScreenPreview() {
         )
     }
 }
+*/

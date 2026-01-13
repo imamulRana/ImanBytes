@@ -34,12 +34,14 @@ fun NavGraphBuilder.knowledgeNavGraph(navController: NavHostController) {
                 navigateToQuran = { navController.navigate(RecitationRoute) },
                 navigateToHadith = { navController.navigate(HadithRoute) },
                 navigateToPillar = { navController.navigate(PillarRoute) },
-                navigateToAsma = { navController.navigate(AsmaRoute) }
+                navigateToAsma = { navController.navigate(AsmaRoute) },
+                navigateToRamadan = { navController.navigate(RamadanRoute) }
             )
         }
         composable<HadithRoute> { HadithScreen() }
         composable<PillarRoute> { HadithScreen() }
-        recitationNavGraph(navController = navController)
+        recitationGraph(navController = navController)
         asmaGraph(navController = navController)
+        ramadanGraph(navController = navController)
     }
 }

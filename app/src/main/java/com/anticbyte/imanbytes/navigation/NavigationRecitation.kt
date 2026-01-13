@@ -3,7 +3,6 @@ package com.anticbyte.imanbytes.navigation
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -35,7 +34,7 @@ data object RecitationSelfRoute
 @Serializable
 data class RecitationSelfDetailRoute(val surahNumber: String)
 
-fun NavGraphBuilder.recitationNavGraph(
+fun NavGraphBuilder.recitationGraph(
     navController: NavHostController
 ) {
     /* section for recitation main screen */

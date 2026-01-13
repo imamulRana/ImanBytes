@@ -44,18 +44,18 @@ fun RecitationListItem(
     SegmentedListItem(
         selected = isSelected,
         shapes = shapes,
-        onClick = { onSurahClick(surah.number) },
+        onClick = { /*onSurahClick(surah.number)*/ },
         modifier = modifier,
         leadingContent = {
             Box(
                 modifier = Modifier
-                    .background(color = colorScheme.primaryContainer, CircleShape)
+                    .background(color = colorScheme.secondaryContainer, CircleShape)
                     .size(size = 40.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = surah.number,
-                    color = colorScheme.onPrimaryContainer,
+                    color = colorScheme.onSecondaryContainer,
                     style = typography.labelLarge
                 )
             }
@@ -93,7 +93,7 @@ fun RecitationListItem(
             }
         },
         colors = ListItemDefaults.segmentedColors(
-            containerColor = colorScheme.surfaceContainerLow,
+            containerColor = colorScheme.surfaceContainer,
             leadingContentColor = colorScheme.primaryContainer,
             selectedContainerColor = colorScheme.surfaceVariant
         )

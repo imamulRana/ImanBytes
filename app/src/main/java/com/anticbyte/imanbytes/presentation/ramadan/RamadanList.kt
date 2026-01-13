@@ -1,3 +1,4 @@
+/*
 package com.anticbyte.imanbytes.presentation.ramadan
 
 import androidx.compose.foundation.background
@@ -92,7 +93,7 @@ private fun RamadanListPreview() {
             },
             designation = "AH",
             hijri = "${index + 1} Date 1446",
-            gregorian = "${index + 1}-03-2025",
+            gregorianDate = "${index + 1}-03-2025",
             meta = "Asia/Dhaka",
             method = "University of Islamic Sciences, Karachi",
             month = "Ramadan",
@@ -117,3 +118,4 @@ private fun RamadanListPreview() {
         RamadanList(ramadanCalender = dummyRamadanData)
     }
 }
+*/

@@ -55,7 +55,7 @@ fun RecitationScreen(
 ) {
     Scaffold(topBar = {
         AppTopBar(
-            title = "Recitation",
+            title = "Quran",
             isBackVisible = true,
             onNavigationIconClick = onNavigateBack
         )
@@ -70,29 +70,32 @@ fun RecitationScreen(
                 )),
             verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap)
         ) {
+            // recitation arabic
             RecitationSelectionItem(
                 modifier = modifier,
                 iconRes = R.drawable.ic_recitation,
-                title = "Arabic Recitation of the Holy Quran",
-                subtitle = "Recitation in the voice of Mishary Rashid Alafasy in Arabic",
+                title = "Arabic Quran Recitation",
+                subtitle = "Listen to the words of Allah in their original Arabic, recited with devotion by Mishary Rashid Alafasy.",
                 itemShape = MaterialShapes.Pill.toShape(),
                 onRecitationItemClick = onNavToArRecitation,
                 shapes = ListItemDefaults.segmentedShapes(0, 3)
             )
+            // recitation translation
             RecitationSelectionItem(
                 modifier = modifier,
                 iconRes = R.drawable.ic_translation,
-                title = "Arabic Recitation with English Translation",
-                subtitle = "Recitation in the voice of Mishary Rashid Alafasy in Arabic with English translation in the Voice of Ibrahim Walk",
+                title = "Recitation with Meaning",
+                subtitle = "Hear the Quran in Arabic, with English translation by Ibrahim Walk, helping you truly understand the message of the Lord of the Worlds.",
                 itemShape = MaterialShapes.Square.toShape(),
                 onRecitationItemClick = onNavToTrRecitation,
                 shapes = ListItemDefaults.segmentedShapes(1, 3)
             )
+            // self recitation
             RecitationSelectionItem(
                 modifier = modifier,
                 iconRes = R.drawable.ic_self_recitation,
-                title = "Arabic Recitation with English Translation",
-                subtitle = "Recitation in the voice of Mishary Rashid Alafasy in Arabic with English translation in the Voice of Ibrahim Walk",
+                title = "Read and Reflect",
+                subtitle = "Read the Quran in Arabic with Saheeh International translation, and reflect in a quiet space with your Lord.",
                 itemShape = MaterialShapes.Cookie6Sided.toShape(),
                 onRecitationItemClick = onNavToSelfRecitation,
                 shapes = ListItemDefaults.segmentedShapes(2, 3)
@@ -135,7 +138,7 @@ fun RecitationSelectionItem(
         },
         supportingContent = { Text(text = subtitle) },
         shapes = shapes,
-        colors = ListItemDefaults.segmentedColors(containerColor = colorScheme.surfaceContainerLow)
+        colors = ListItemDefaults.segmentedColors(containerColor = colorScheme.surfaceContainer)
     ) {
         Text(text = title)
     }

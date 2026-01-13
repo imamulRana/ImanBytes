@@ -4,7 +4,7 @@
     <string name="topic_all">All</string>
 
     <string name="title_quran">Quran</string>
-    <string name="desc_quran">Discover the miracles of Quran and get to know it.</string>
+    <string name="desc_quran">Explore the Quran with clarity, meaning, and guidance for everyday life.</string>
 
     <string name="title_seerah">Seerah</string>
     <string name="desc_seerah">Biography of our beloved prophet Muhammad (S.A.W).</string>
@@ -19,7 +19,7 @@
     <string name="desc_pillars">An unique way to learn the pillars of islam.</string>
 
     <string name="title_asma">Asma Al Husna</string>
-    <string name="desc_asma">An unique way to learn the pillars of islam.</string>
+    <string name="desc_asma">Discover the 99 names of Allah and grow closer through understanding His attributes.</string>
 
     <string name="test_verse_title">Allah Places Inspiration in us in Many Ways</string>
     <string name="test_verse">رَفِيعُ ٱلدَّرَجَـٰتِ ذُو ٱلْعَرْشِ يُلْقِى ٱلرُّوحَ مِنْ أَمْرِهِۦ عَلَىٰ مَن يَشَآءُ مِنْ عِبَادِهِۦ لِيُنذِرَ يَوْمَ ٱلتَّلَاقِ</string>
@@ -42,4 +42,6 @@ This present world of ours is illuminated by the light of the sun, which is able
     <string name="recitation_description_translation">(it is) a Book (the Quran) which We have sent down to you, full of blessings, that they may ponder over its Verses, and that men of understanding may remember. [Sad 38:29]</string>
     <string name="read_surah">Read Surah</string>
     <string name="sajda">"Sajda"</string>
+    <string name="ramadan_calendar">Ramadan Calendar</string>
+    <string name="ramadan_calendar_desc">Ramadan calendar of 2026</string>
 </resources>

@@ -10,6 +10,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,13 +35,15 @@ fun KnowledgeScreenRoute(
     navigateToQuran: () -> Unit,
     navigateToHadith: () -> Unit,
     navigateToPillar: () -> Unit,
-    navigateToAsma: () -> Unit
+    navigateToAsma: () -> Unit,
+    navigateToRamadan: () -> Unit
 ) {
     KnowledgeScreen(
         onNavigateToQuran = navigateToQuran,
         onNavigateToHadith = navigateToHadith,
         onNavigateToPillar = navigateToPillar,
-        onNavigateToAsma = navigateToAsma
+        onNavigateToAsma = navigateToAsma,
+        onNavigateToRamadan = navigateToRamadan
     )
 }
 
@@ -61,7 +64,8 @@ fun KnowledgeScreen(
     onNavigateToQuran: () -> Unit = {},
     onNavigateToHadith: () -> Unit = {},
     onNavigateToPillar: () -> Unit = {},
-    onNavigateToAsma: () -> Unit = {}
+    onNavigateToAsma: () -> Unit = {},
+    onNavigateToRamadan: () -> Unit = {}
 ) {
     Scaffold(topBar = {
         AppTopBar(
@@ -80,7 +84,8 @@ fun KnowledgeScreen(
                 onNavigateToQuran = onNavigateToQuran,
                 onNavigateToHadith = onNavigateToHadith,
                 onNavigateToPillar = onNavigateToPillar,
-                onNavigateToAsma = onNavigateToAsma
+                onNavigateToAsma = onNavigateToAsma,
+                onNavigateToRamadan = onNavigateToRamadan
             )
         }
     }
@@ -97,7 +102,8 @@ fun KnowledgeItems(
     onNavigateToQuran: () -> Unit = {},
     onNavigateToHadith: () -> Unit = {},
     onNavigateToPillar: () -> Unit = {},
-    onNavigateToAsma: () -> Unit = {}
+    onNavigateToAsma: () -> Unit = {},
+    onNavigateToRamadan: () -> Unit = {}
 ) {
     KnowledgeItem.entries.fastForEach { item ->
         KnowledgeSectionItem(
@@ -105,12 +111,14 @@ fun KnowledgeItems(
             leadingIcon = item.iconRes,
             titleRes = item.titleRes,
             descriptionRes = item.descriptionRes,
+            leadingShape = item.leadingShape.toShape(),
             onItemClick = {
                 when (item) {
                     KnowledgeItem.QURAN -> onNavigateToQuran()
                     /*KnowledgeItem.HADITH -> onNavigateToHadith()
                     KnowledgeItem.PILLARS -> onNavigateToPillar()*/
                     KnowledgeItem.ASMA -> onNavigateToAsma()
+                    KnowledgeItem.RAMADAN -> onNavigateToRamadan
                 }
             },
             shapes = ListItemDefaults.segmentedShapes(item.ordinal, KnowledgeItem.entries.size)

@@ -17,6 +17,4 @@ class PlayerViewModel @Inject constructor(private val audioController: QuranAudi
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = null
     )
-
-
 }
