@@ -112,7 +112,7 @@ fun HomeScreen(
                                                 imageVector = ImageVector.vectorResource(
                                                     PrayerTimeSec.entries[index].icon
                                                 ), null,
-                                                tint = PrayerTimeSec.entries[index].color
+                                                tint = colorScheme.onPrimaryContainer
                                             )
                                         },
                                         shapes = ListItemDefaults.segmentedShapes(
@@ -256,7 +256,7 @@ fun HomeScreen(
 @Preview
 @Composable
 private fun HomeScreenPrev() {
-    ImanBytesTheme(darkTheme = true, dynamicColor = false) {
+    ImanBytesTheme(darkTheme = false, dynamicColor = false) {
         HomeScreen(
             state = HomeScreenState(
                 isLoading = false,

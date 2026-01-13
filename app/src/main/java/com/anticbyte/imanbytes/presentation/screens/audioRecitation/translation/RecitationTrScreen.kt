@@ -4,8 +4,8 @@ import androidx.annotation.OptIn
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
@@ -101,12 +101,13 @@ fun RecitationTrScreen(
                     )
                 }
             )
-        }) { innerPadding ->
+        },
+        contentWindowInsets = WindowInsets(bottom = 88.dp)
+    ) { innerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .navigationBarsPadding()
         ) {
             if (screenState.isLoading) AppLoader()
             else if (!screenState.errorMessages.isNullOrBlank()) AppErrorScreen(errorMessage = screenState.errorMessages) { }
@@ -114,10 +115,8 @@ fun RecitationTrScreen(
                 LazyColumn(
                     state = listState,
                     contentPadding = PaddingValues(
-                        start = 16.dp,
-                        end = 16.dp,
-                        top = 12.dp,
-                        bottom = innerPadding.calculateBottomPadding()
+                        horizontal = 16.dp,
+                        vertical = 12.dp
                     ),
                     verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap)
                 ) {

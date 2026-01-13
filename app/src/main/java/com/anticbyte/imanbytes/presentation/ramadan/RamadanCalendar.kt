@@ -1,20 +1,33 @@
 package com.anticbyte.imanbytes.presentation.ramadan
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SegmentedListItem
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.anticbyte.imanbytes.domain.model.RamadanCalender
@@ -40,6 +53,8 @@ fun RamadanCalendarScreen(
     state: RamadanDayDetailScreenState,
     onNavigateUp: () -> Unit = {}
 ) {
+    var isSheetExpanded by rememberSaveable { mutableStateOf(false) }
+    var ramadanCalender by remember { mutableStateOf(RamadanCalender()) }
     Scaffold(
         topBar = {
             AppTopBar(
@@ -48,18 +63,38 @@ fun RamadanCalendarScreen(
                 isBackVisible = true,
                 onNavigationIconClick = onNavigateUp
             )
-        }
+        },
+        contentWindowInsets = WindowInsets(bottom = 88.dp)
     ) { innerPadding ->
+        RamadanCalendarDetailSheet(
+            modifier = modifier
+                .fillMaxSize()
+                .consumeWindowInsets(PaddingValues(bottom = innerPadding.calculateBottomPadding())),
+            ramadanCalender = ramadanCalender, isExpanded = isSheetExpanded,
+            onDismiss = { isSheetExpanded = false })
         Box(
             modifier = modifier
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            LazyColumn() {
+            LazyColumn(
+                contentPadding = PaddingValues(
+                    vertical = 24.dp,
+                    horizontal = 16.dp
+                ),
+                verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap)
+            ) {
                 itemsIndexed(state.monthPrayerTime) { index, ramadan ->
                     SegmentedListItem(
-                        onClick = {},
-                        shapes = ListItemDefaults.segmentedShapes(index, state.monthPrayerTime.size)
+                        onClick = {
+                            ramadanCalender = ramadan
+                            isSheetExpanded = !isSheetExpanded
+                        },
+                        shapes = ListItemDefaults.segmentedShapes(
+                            index,
+                            state.monthPrayerTime.size
+                        ),
+                        colors = ListItemDefaults.segmentedColors(containerColor = colorScheme.surfaceContainer)
                     ) {
                         Text(ramadan.hijriDate)
                     }
@@ -67,6 +102,66 @@ fun RamadanCalendarScreen(
             }
         }
     }
+}
+
+@Composable
+fun RamadanCalendarDetailSheet(
+    modifier: Modifier = Modifier,
+    isExpanded: Boolean = false,
+    onDismiss: () -> Unit = {},
+    ramadanCalender: RamadanCalender,
+) {
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    LaunchedEffect(isExpanded) {
+        if (isExpanded) sheetState.show() else sheetState.hide()
+    }
+    if (isExpanded)
+        ModalBottomSheet(
+            modifier = modifier,
+            onDismissRequest = onDismiss,
+            sheetState = sheetState,
+            dragHandle = {},
+            containerColor = colorScheme.surface,
+        ) {
+            Scaffold(topBar = {
+                AppTopBar(
+                    title = ramadanCalender.hijriDate,
+                    isBackVisible = true,
+                    onNavigationIconClick = onDismiss,
+                    subtitle = ramadanCalender.gregorianDate
+                )
+            }) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(it)
+                ) {
+                    LazyColumn(
+                        contentPadding = PaddingValues(
+                            horizontal = 16.dp,
+                            vertical = 12.dp
+                        ),
+                        verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap)
+                    ) {
+                        itemsIndexed(ramadanCalender.prayerTimes) { index, prayer ->
+                            SegmentedListItem(
+                                onClick = {},
+                                shapes = ListItemDefaults.segmentedShapes(
+                                    index,
+                                    ramadanCalender.prayerTimes.size
+                                ),
+                                supportingContent = {
+                                    Text(prayer.second)
+                                },
+                                colors = ListItemDefaults.segmentedColors(containerColor = colorScheme.surfaceContainer)
+                            ) {
+                                Text(prayer.first)
+                            }
+                        }
+                    }
+                }
+            }
+        }
 }
 
 class StateProvider : PreviewParameterProvider<RamadanDayDetailScreenState> {

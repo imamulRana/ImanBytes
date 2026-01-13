@@ -118,7 +118,7 @@ fun KnowledgeItems(
                     /*KnowledgeItem.HADITH -> onNavigateToHadith()
                     KnowledgeItem.PILLARS -> onNavigateToPillar()*/
                     KnowledgeItem.ASMA -> onNavigateToAsma()
-                    KnowledgeItem.RAMADAN -> onNavigateToRamadan
+                    KnowledgeItem.RAMADAN -> onNavigateToRamadan()
                 }
             },
             shapes = ListItemDefaults.segmentedShapes(item.ordinal, KnowledgeItem.entries.size)
