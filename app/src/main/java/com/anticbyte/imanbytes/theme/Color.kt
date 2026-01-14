@@ -73,3 +73,15 @@ val surfaceContainerLowDark = Color(0xFF191C1B)
 val surfaceContainerDark = Color(0xFF1D201F)
 val surfaceContainerHighDark = Color(0xFF282B29)
 val surfaceContainerHighestDark = Color(0xFF333534)
+
+/*extended colors*/
+//light
+val specialOccasionLight = Color(0xFF7C5800)
+val onSpecialOccasionLight = Color(0xFFFFFFFF)
+val specialOccasionContainerLight = Color(0xFFdce6f2)
+val onSpecialOccasionContainerLight = Color(0xFF5d6771)
+//dark
+val specialOccasionDark = Color(0xFFFFDEA6)
+val onSpecialOccasionDark = Color(0xFF412D00)
+val specialOccasionContainerDark = Color(0xFFdae4ef)
+val onSpecialOccasionContainerDark = Color(0xFF5c6570)

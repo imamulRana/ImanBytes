@@ -32,6 +32,9 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.anticbyte.imanbytes.domain.model.RamadanCalender
 import com.anticbyte.imanbytes.presentation.component.AppTopBar
+import com.anticbyte.imanbytes.presentation.home.component.ListItemAvatar
+import com.anticbyte.imanbytes.theme.ImanBytesTheme
+import com.anticbyte.imanbytes.utils.LocalExtendedColors
 
 @Composable
 fun RamadanCalendarRoute(
@@ -53,12 +56,13 @@ fun RamadanCalendarScreen(
     state: RamadanDayDetailScreenState,
     onNavigateUp: () -> Unit = {}
 ) {
+    val extendedColors = LocalExtendedColors.current
     var isSheetExpanded by rememberSaveable { mutableStateOf(false) }
     var ramadanCalender by remember { mutableStateOf(RamadanCalender()) }
     Scaffold(
         topBar = {
             AppTopBar(
-                title = "Ramadan",
+                title = "Month",
                 subtitle = "Ramadan calender 2026",
                 isBackVisible = true,
                 onNavigationIconClick = onNavigateUp
@@ -85,6 +89,7 @@ fun RamadanCalendarScreen(
                 verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap)
             ) {
                 itemsIndexed(state.monthPrayerTime) { index, ramadan ->
+                    val isHoliday = ramadan.holidays.isNotEmpty()
                     SegmentedListItem(
                         onClick = {
                             ramadanCalender = ramadan
@@ -94,9 +99,17 @@ fun RamadanCalendarScreen(
                             index,
                             state.monthPrayerTime.size
                         ),
-                        colors = ListItemDefaults.segmentedColors(containerColor = colorScheme.surfaceContainer)
+                        leadingContent = {
+                            ListItemAvatar(label = ramadan.hijriDay)
+                        },
+                        colors = ListItemDefaults.segmentedColors(
+                            containerColor = if (isHoliday) colorScheme.surfaceContainerHighest else colorScheme.surfaceContainer,
+                        ),
+                        supportingContent = {
+                            Text(ramadan.gregorianWeekday)
+                        }
                     ) {
-                        Text(ramadan.hijriDate)
+                        Text(ramadan.gregorianDate)
                     }
                 }
             }
@@ -109,7 +122,7 @@ fun RamadanCalendarDetailSheet(
     modifier: Modifier = Modifier,
     isExpanded: Boolean = false,
     onDismiss: () -> Unit = {},
-    ramadanCalender: RamadanCalender,
+    ramadanCalender: RamadanCalender
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     LaunchedEffect(isExpanded) {
@@ -150,6 +163,9 @@ fun RamadanCalendarDetailSheet(
                                     index,
                                     ramadanCalender.prayerTimes.size
                                 ),
+                                leadingContent = {
+
+                                },
                                 supportingContent = {
                                     Text(prayer.second)
                                 },
@@ -170,7 +186,26 @@ class StateProvider : PreviewParameterProvider<RamadanDayDetailScreenState> {
             monthPrayerTime = listOf(
                 RamadanCalender(
                     gregorianDate = "18 Feb 2026",
-                    hijriDate = "1 Ramadan 1447"
+                    hijriDate = "1 Ramadan 1447",
+                    prayerTimes = listOf(
+                        "Imsak" to "05:04",
+                        "Fajr" to "05:34",
+                        "Sunrise" to "06:30",
+                    ),
+                    holidays = listOf("Eid-ul-Fitr"),
+                    hijriDay = "1",
+                    gregorianWeekday = "Tuesday",
+                ),
+                RamadanCalender(
+                    gregorianDate = "19 Feb 2026",
+                    hijriDate = "2 Ramadan 1447",
+                    prayerTimes = listOf(
+                        "Imsak" to "05:04",
+                        "Fajr" to "05:34",
+                        "Sunrise" to "06:30",
+                    ),
+                    hijriDay = "2",
+                    gregorianWeekday = "Wednesday",
                 )
             )
         )
@@ -182,7 +217,9 @@ class StateProvider : PreviewParameterProvider<RamadanDayDetailScreenState> {
 private fun RamadanCalendarPreview(
     @PreviewParameter(StateProvider::class) state: RamadanDayDetailScreenState
 ) {
-    RamadanCalendarScreen(
-        state = state
-    )
+    ImanBytesTheme(dynamicColor = false, darkTheme = true) {
+        RamadanCalendarScreen(
+            state = state
+        )
+    }
 }

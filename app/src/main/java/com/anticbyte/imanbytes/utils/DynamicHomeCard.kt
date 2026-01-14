@@ -9,10 +9,13 @@ import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.anticbyte.imanbytes.theme.ExtendedColorScheme
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
+import com.anticbyte.imanbytes.theme.extendedLight
 
 @Composable
 fun DynamicHomeCard(modifier: Modifier = Modifier) {
@@ -36,6 +39,9 @@ fun TitleLayout(
     }
 }
 
+val LocalExtendedColors = staticCompositionLocalOf<ExtendedColorScheme> {
+    error("No ExtendedColors provided")
+}
 @Preview()
 @Composable
 private fun DynamicHomeCardPreview() {

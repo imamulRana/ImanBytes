@@ -138,6 +138,8 @@ fun GetPrayerTimesByMonthDto.toRamadanCalendar(): List<RamadanCalender> {
 private fun GetPrayerTimesByMonthDto.Data.toRamadanCalendar(): RamadanCalender {
     return RamadanCalender(
         //new
+        hijriDay = date.hijri.day,
+        gregorianWeekday = date.gregorian.weekday.en,
         gregorianDate = date.readable,
         hijriDate = date.hijri.day.plus(" " + date.hijri.month.en).plus(" " + date.hijri.year),
         holidays = date.hijri.holidays,

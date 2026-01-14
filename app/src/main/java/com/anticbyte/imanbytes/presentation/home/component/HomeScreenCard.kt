@@ -86,10 +86,10 @@ fun ListItemAvatar(
     Box(
         modifier = modifier
             .defaultMinSize(minWidth = 40.dp, minHeight = 40.dp)
-            .background(color = colorScheme.primaryContainer, CircleShape),
+            .background(color = colorScheme.secondaryContainer, CircleShape),
         contentAlignment = Alignment.Center
     ) {
-        Text(label)
+        Text(label, color = colorScheme.onSecondaryContainer)
     }
 }
 

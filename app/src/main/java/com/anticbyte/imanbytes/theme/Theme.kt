@@ -2,17 +2,24 @@ package com.anticbyte.imanbytes.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialExpressiveTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MotionScheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
-import androidx.compose.material3.expressiveLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.Immutable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import com.anticbyte.imanbytes.utils.LocalExtendedColors
+
+@Immutable
+data class ExtendedColorScheme(
+    val specialOccasion: ColorFamily,
+)
 
 private val lightScheme = lightColorScheme(
     primary = primaryLight,
@@ -90,6 +97,36 @@ private val darkScheme = darkColorScheme(
     surfaceContainerHighest = surfaceContainerHighestDark,
 )
 
+val extendedLight = ExtendedColorScheme(
+    specialOccasion = ColorFamily(
+        specialOccasionLight,
+        onSpecialOccasionLight,
+        specialOccasionContainerLight,
+        onSpecialOccasionContainerLight,
+    ),
+)
+
+val extendedDark = ExtendedColorScheme(
+    specialOccasion = ColorFamily(
+        specialOccasionDark,
+        onSpecialOccasionDark,
+        specialOccasionContainerDark,
+        onSpecialOccasionContainerDark,
+    ),
+)
+
+@Immutable
+data class ColorFamily(
+    val color: Color,
+    val onColor: Color,
+    val colorContainer: Color,
+    val onColorContainer: Color
+)
+
+val unspecified_scheme = ColorFamily(
+    Color.Unspecified, Color.Unspecified, Color.Unspecified, Color.Unspecified
+)
+
 @Composable
 fun ImanBytesTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -106,12 +143,14 @@ fun ImanBytesTheme(
         darkTheme -> darkScheme
         else -> lightScheme
     }
-
-    MaterialExpressiveTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        motionScheme = MotionScheme.expressive(),
-        content = content,
-        shapes = MaterialTheme.shapes,
-    )
+    val extendedColorScheme = if (darkTheme) extendedDark else extendedLight
+    CompositionLocalProvider(LocalExtendedColors provides extendedColorScheme) {
+        MaterialExpressiveTheme(
+            colorScheme = colorScheme,
+            typography = Typography,
+            motionScheme = MotionScheme.expressive(),
+            content = content,
+            shapes = MaterialTheme.shapes,
+        )
+    }
 }
