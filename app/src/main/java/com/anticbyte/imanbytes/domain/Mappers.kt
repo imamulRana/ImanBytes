@@ -19,6 +19,7 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.boolean
+import to12Hour
 
 fun SurahDto.SurahData.toSurah(): Surah = Surah(
     number = this.number.toString(),
@@ -143,24 +144,22 @@ private fun GetPrayerTimesByMonthDto.Data.toRamadanCalendar(): RamadanCalender {
         gregorianDate = date.readable,
         hijriDate = date.hijri.day.plus(" " + date.hijri.month.en).plus(" " + date.hijri.year),
         holidays = date.hijri.holidays,
+        imsak = timings.imsak.substringBefore(" ").to12Hour(),
+        sunset = timings.sunset.substringBefore(" ").to12Hour(),
         prayerTimes = timings.toPrayerTimePairs()
     )
 }
 
 private fun GetPrayerTimesByMonthDto.Data.Timings.toPrayerTimePairs(): List<Pair<String, String>> {
-    fun String.cleanTime() = substringBefore(" ")
+    fun String.cleanTime() = substringBefore(" ").to12Hour()
 
     return listOf(
-        "Imsak" to imsak.cleanTime(),
         "Fajr" to fajr.cleanTime(),
-        "Sunrise" to sunrise.cleanTime(),
         "Dhuhr" to dhuhr.cleanTime(),
         "Asr" to asr.cleanTime(),
         "Maghrib" to maghrib.cleanTime(),
-        "Sunset" to sunset.cleanTime(),
         "Isha" to isha.cleanTime(),
         "Midnight" to midnight.cleanTime(),
-        "Firstthird" to firstThird.cleanTime(),
         "Lastthird" to lastThird.cleanTime()
     )
 }

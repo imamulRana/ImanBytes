@@ -1,3 +1,4 @@
+import android.os.Build
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Devices.PIXEL_9
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,131 +32,147 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEachIndexed
 import com.anticbyte.imanbytes.domain.model.RamadanCalender
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 @Composable
 fun RamadanDayDetailSheet(
     modifier: Modifier = Modifier,
     day: RamadanCalender,
-
-    ) {
-    ModalBottomSheet(
-        {}, dragHandle = {},
-        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    ) {
-        Scaffold(topBar = {
-            TopAppBar(
-                title = { Text("Dummy Text") },
-                subtitle = {
-                    Text(day.hijriDate)
-                })
-        }) { innerPadding ->
-            Box(
-                modifier = modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-            ) {
-                LazyColumn(
-                    contentPadding = PaddingValues(
-                        horizontal = 16.dp,
-                        vertical = 12.dp
-                    ),
-                    verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap)
+    showSheet: Boolean = false,
+    onDismiss: () -> Unit = {}
+) {
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    LaunchedEffect(showSheet) {
+        if (showSheet) sheetState.hide()
+        else sheetState.show()
+    }
+    if (showSheet)
+        ModalBottomSheet(
+            onDismissRequest = onDismiss, dragHandle = {},
+            sheetState = sheetState
+        ) {
+            Scaffold(topBar = {
+                TopAppBar(
+                    title = { Text("Dummy Text") },
+                    subtitle = {
+                        Text(day.hijriDate)
+                    })
+            }) { innerPadding ->
+                Box(
+                    modifier = modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
                 ) {
-                    day.holidays.fastForEachIndexed { index, holiday ->
+                    LazyColumn(
+                        contentPadding = PaddingValues(
+                            horizontal = 16.dp,
+                            vertical = 12.dp
+                        ),
+                        verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap)
+                    ) {
+                        day.holidays.fastForEachIndexed { index, holiday ->
+                            item {
+                                Text(
+                                    "Events", style = typography.labelMedium, modifier = Modifier
+                                        .padding(8.dp)
+                                )
+                                SegmentedListItem(
+                                    shapes = ListItemDefaults.segmentedShapes(
+                                        index,
+                                        day.holidays.size
+                                    ),
+                                    onClick = {},
+                                    trailingContent = {
+                                        Text(holiday)
+                                    },
+                                    colors = ListItemDefaults.segmentedColors(
+                                        containerColor = colorScheme.surfaceContainer
+                                    )
+                                ) {
+
+                                }
+                                Spacer(modifier = Modifier.size(16.dp))
+                            }
+                        }
                         item {
-                            Text(
-                                "Events", style = typography.labelMedium, modifier = Modifier
-                                    .padding(8.dp)
-                            )
-                            SegmentedListItem(
-                                shapes = ListItemDefaults.segmentedShapes(index, day.holidays.size),
-                                onClick = {},
-                                trailingContent = {
-                                    Text(holiday)
-                                },
-                                colors = ListItemDefaults.segmentedColors(
-                                    containerColor = colorScheme.surfaceContainer
-                                )
-                            ) {
-
-                            }
-                            Spacer(modifier = Modifier.size(16.dp))
-                        }
-                    }
-                    item {
-                        Row(horizontalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap)) {
-                            Card(
-                                modifier = Modifier
-                                    .weight(1f),
-                                colors = CardDefaults.cardColors(containerColor = colorScheme.surfaceContainer)
-                            ) {
-                                Column(modifier = Modifier.padding(16.dp)) {
-
-                                    Text("5:42", style = typography.displaySmall)
-                                    Text("16:04")
+                            Row(horizontalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap)) {
+                                Card(
+                                    modifier = Modifier
+                                        .weight(1f),
+                                    colors = CardDefaults.cardColors(containerColor = colorScheme.surfaceContainer)
+                                ) {
+                                    Column(modifier = Modifier.padding(16.dp)) {
+                                        Text(day.imsak, style = typography.headlineSmall)
+                                        Text("Suhoor end time", style = typography.bodySmall)
+                                    }
                                 }
-                            }
-                            Card(
-                                modifier = Modifier
-                                    .weight(1f),
-                                colors = CardDefaults.cardColors(containerColor = colorScheme.surfaceContainer)
-                            ) {
-                                Column(modifier = Modifier.padding(16.dp)) {
-
-                                    Text("5:42", style = typography.displaySmall)
-                                    Text("16:04")
+                                Card(
+                                    modifier = Modifier
+                                        .weight(1f),
+                                    colors = CardDefaults.cardColors(containerColor = colorScheme.surfaceContainer)
+                                ) {
+                                    Column(modifier = Modifier.padding(16.dp)) {
+                                        Text(
+                                            day.sunset, style = typography.headlineSmall
+                                        )
+                                        Text("Iftaar start time", style = typography.bodySmall)
+                                    }
                                 }
+                                /*SegmentedListItem(
+                                    modifier = Modifier.weight(1f),
+                                    shapes = ListItemDefaults.shapes(shapes.large),
+                                    onClick = {},
+                                    trailingContent = {
+                                    },
+                                    supportingContent = {
+                                        Text("16:04")
+                                    },
+                                    colors = ListItemDefaults.segmentedColors(
+                                        containerColor = colorScheme.surfaceContainer
+                                    )
+                                ) {
+                                    Text("5:40", style = typography.displaySmall)
+                                }
+                                SegmentedListItem(
+                                    modifier = Modifier.weight(1f),
+                                    shapes = ListItemDefaults.shapes(shapes.large),
+                                    onClick = {},
+                                    supportingContent = {
+                                        Text("16:04")
+                                    },
+                                    trailingContent = {
+                                    },
+                                    colors = ListItemDefaults.segmentedColors(
+                                        containerColor = colorScheme.surfaceContainer
+                                    )
+                                ) {
+                                    Text("5:42", style = typography.displaySmall)
+                                }*/
                             }
-                            /*SegmentedListItem(
-                                modifier = Modifier.weight(1f),
-                                shapes = ListItemDefaults.shapes(shapes.large),
-                                onClick = {},
-                                trailingContent = {
-                                },
-                                supportingContent = {
-                                    Text("16:04")
-                                },
-                                colors = ListItemDefaults.segmentedColors(
-                                    containerColor = colorScheme.surfaceContainer
-                                )
-                            ) {
-                                Text("5:40", style = typography.displaySmall)
-                            }
-                            SegmentedListItem(
-                                modifier = Modifier.weight(1f),
-                                shapes = ListItemDefaults.shapes(shapes.large),
-                                onClick = {},
-                                supportingContent = {
-                                    Text("16:04")
-                                },
-                                trailingContent = {
-                                },
-                                colors = ListItemDefaults.segmentedColors(
-                                    containerColor = colorScheme.surfaceContainer
-                                )
-                            ) {
-                                Text("5:42", style = typography.displaySmall)
-                            }*/
                         }
-                    }
-                    itemsIndexed(day.prayerTimes) { index, prayerTime ->
-                        SegmentedListItem(
-                            shapes = ListItemDefaults.segmentedShapes(index, day.prayerTimes.size),
-                            onClick = {},
-                            trailingContent = {
-                                Text(prayerTime.second)
-                            },
-                            colors = ListItemDefaults.segmentedColors(
-                                containerColor = colorScheme.surfaceContainer
-                            )
-                        ) {
-                            Text(prayerTime.first)
+                        itemsIndexed(day.prayerTimes) { index, prayerTime ->
+                            SegmentedListItem(
+                                shapes = ListItemDefaults.segmentedShapes(
+                                    index,
+                                    day.prayerTimes.size
+                                ),
+                                onClick = {},
+                                trailingContent = {
+                                    Text(prayerTime.second)
+                                },
+                                colors = ListItemDefaults.segmentedColors(
+                                    containerColor = colorScheme.surfaceContainer
+                                )
+                            ) {
+                                Text(prayerTime.first)
+                            }
                         }
                     }
                 }
             }
         }
-    }
 }
 
 class RamadanDayDetailSheetStateProvider : PreviewParameterProvider<RamadanCalender> {
@@ -180,6 +198,17 @@ private fun RamadanDayDetailSheetPreview(
     @PreviewParameter(RamadanDayDetailSheetStateProvider::class) day: RamadanCalender
 ) {
     ImanBytesTheme {
-        RamadanDayDetailSheet(day = day)
+//        RamadanDayDetailSheet(day = day)
     }
+}
+
+fun String.to12Hour(): String {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val time = LocalTime.parse(this)
+        val formatter = DateTimeFormatter.ofPattern("h:mm a", Locale.getDefault())
+        time.format(formatter)
+    } else {
+        this
+    }
+
 }

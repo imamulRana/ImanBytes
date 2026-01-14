@@ -1,16 +1,20 @@
 package com.anticbyte.imanbytes.presentation.ramadan
 
+import RamadanDayDetailSheet
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.shapes
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SegmentedListItem
@@ -23,16 +27,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastForEachIndexed
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.anticbyte.imanbytes.domain.model.RamadanCalender
 import com.anticbyte.imanbytes.presentation.component.AppTopBar
-import com.anticbyte.imanbytes.presentation.home.component.ListItemAvatar
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
 import com.anticbyte.imanbytes.utils.LocalExtendedColors
 
@@ -59,10 +64,13 @@ fun RamadanCalendarScreen(
     val extendedColors = LocalExtendedColors.current
     var isSheetExpanded by rememberSaveable { mutableStateOf(false) }
     var ramadanCalender by remember { mutableStateOf(RamadanCalender()) }
+    val dayGroups = remember(state.monthPrayerTime) {
+        state.monthPrayerTime.chunked(10)
+    }
     Scaffold(
         topBar = {
             AppTopBar(
-                title = "Month",
+                title = "Calendar",
                 subtitle = "Ramadan calender 2026",
                 isBackVisible = true,
                 onNavigationIconClick = onNavigateUp
@@ -70,12 +78,9 @@ fun RamadanCalendarScreen(
         },
         contentWindowInsets = WindowInsets(bottom = 88.dp)
     ) { innerPadding ->
-        RamadanCalendarDetailSheet(
-            modifier = modifier
-                .fillMaxSize()
-                .consumeWindowInsets(PaddingValues(bottom = innerPadding.calculateBottomPadding())),
-            ramadanCalender = ramadanCalender, isExpanded = isSheetExpanded,
-            onDismiss = { isSheetExpanded = false })
+        RamadanDayDetailSheet(
+            day = ramadanCalender, showSheet = isSheetExpanded,
+            onDismiss = { isSheetExpanded = !isSheetExpanded })
         Box(
             modifier = modifier
                 .fillMaxSize()
@@ -88,28 +93,56 @@ fun RamadanCalendarScreen(
                 ),
                 verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap)
             ) {
-                itemsIndexed(state.monthPrayerTime) { index, ramadan ->
-                    val isHoliday = ramadan.holidays.isNotEmpty()
-                    SegmentedListItem(
-                        onClick = {
-                            ramadanCalender = ramadan
-                            isSheetExpanded = !isSheetExpanded
-                        },
-                        shapes = ListItemDefaults.segmentedShapes(
-                            index,
-                            state.monthPrayerTime.size
-                        ),
-                        leadingContent = {
-                            ListItemAvatar(label = ramadan.hijriDay)
-                        },
-                        colors = ListItemDefaults.segmentedColors(
-                            containerColor = if (isHoliday) colorScheme.surfaceContainerHighest else colorScheme.surfaceContainer,
-                        ),
-                        supportingContent = {
-                            Text(ramadan.gregorianWeekday)
+                dayGroups.fastForEachIndexed { index, group ->
+                    item {
+                        when (index) {
+                            0 -> Text("10 Days of Mercy")
+                            1 -> Text("10 Days of Forgiveness")
+                            else -> Text("30 Days of Freedom")
                         }
-                    ) {
-                        Text(ramadan.gregorianDate)
+                    }
+                    itemsIndexed(group) { index, ramadan ->
+                        val isHoliday = ramadan.holidays.isNotEmpty()
+                        SegmentedListItem(
+                            onClick = {
+                                ramadanCalender = ramadan
+                                isSheetExpanded = !isSheetExpanded
+                            },
+                            shapes = ListItemDefaults.segmentedShapes(
+                                index,
+                                group.size
+                            ),
+                            leadingContent = {
+                                Box(
+                                    modifier = Modifier
+                                        .size(40.dp)
+                                        .background(
+                                            color = colorScheme.secondaryContainer,
+                                            shapes.large
+                                        ),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        ramadan.hijriDay,
+                                        style = typography.titleMedium,
+                                        color = colorScheme.secondary
+                                    )
+                                }
+                            },
+                            supportingContent = {
+                                Text(ramadan.gregorianDate)
+                            },
+                            overlineContent = {
+                                Text(ramadan.hijriDate)
+                            },
+                            colors = ListItemDefaults.segmentedColors(
+                                containerColor = if (isHoliday) colorScheme.surfaceContainerHighest else colorScheme.surfaceContainer,
+                            ),
+                        ) {
+                            Text(
+                                ramadan.gregorianWeekday.take(3),
+                            )
+                        }
                     }
                 }
             }
@@ -195,6 +228,8 @@ class StateProvider : PreviewParameterProvider<RamadanDayDetailScreenState> {
                     holidays = listOf("Eid-ul-Fitr"),
                     hijriDay = "1",
                     gregorianWeekday = "Tuesday",
+                    sunset = "6:04 PM",
+                    imsak = "4:04 AM"
                 ),
                 RamadanCalender(
                     gregorianDate = "19 Feb 2026",
