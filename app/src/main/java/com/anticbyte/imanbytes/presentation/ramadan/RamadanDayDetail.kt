@@ -10,8 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
@@ -97,59 +96,29 @@ fun RamadanDayDetailSheet(
                             }
                         }
                         item {
-                            Row(horizontalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap)) {
-                                Card(
-                                    modifier = Modifier
-                                        .weight(1f),
-                                    colors = CardDefaults.cardColors(containerColor = colorScheme.surfaceContainer)
-                                ) {
-                                    Column(modifier = Modifier.padding(16.dp)) {
+                            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                                ElevatedCard(modifier = Modifier.weight(1f)) {
+                                    Column(
+                                        modifier = Modifier.padding(
+                                            horizontal = 16.dp,
+                                            vertical = 24.dp
+                                        )
+                                    ) {
                                         Text(day.imsak, style = typography.headlineSmall)
                                         Text("Suhoor end time", style = typography.bodySmall)
                                     }
                                 }
-                                Card(
-                                    modifier = Modifier
-                                        .weight(1f),
-                                    colors = CardDefaults.cardColors(containerColor = colorScheme.surfaceContainer)
-                                ) {
-                                    Column(modifier = Modifier.padding(16.dp)) {
-                                        Text(
-                                            day.sunset, style = typography.headlineSmall
+                                ElevatedCard(modifier = Modifier.weight(1f)) {
+                                    Column(
+                                        modifier = Modifier.padding(
+                                            horizontal = 16.dp,
+                                            vertical = 24.dp
                                         )
+                                    ) {
+                                        Text(day.sunset, style = typography.headlineSmall)
                                         Text("Iftaar start time", style = typography.bodySmall)
                                     }
                                 }
-                                /*SegmentedListItem(
-                                    modifier = Modifier.weight(1f),
-                                    shapes = ListItemDefaults.shapes(shapes.large),
-                                    onClick = {},
-                                    trailingContent = {
-                                    },
-                                    supportingContent = {
-                                        Text("16:04")
-                                    },
-                                    colors = ListItemDefaults.segmentedColors(
-                                        containerColor = colorScheme.surfaceContainer
-                                    )
-                                ) {
-                                    Text("5:40", style = typography.displaySmall)
-                                }
-                                SegmentedListItem(
-                                    modifier = Modifier.weight(1f),
-                                    shapes = ListItemDefaults.shapes(shapes.large),
-                                    onClick = {},
-                                    supportingContent = {
-                                        Text("16:04")
-                                    },
-                                    trailingContent = {
-                                    },
-                                    colors = ListItemDefaults.segmentedColors(
-                                        containerColor = colorScheme.surfaceContainer
-                                    )
-                                ) {
-                                    Text("5:42", style = typography.displaySmall)
-                                }*/
                             }
                         }
                         itemsIndexed(day.prayerTimes) { index, prayerTime ->

@@ -19,6 +19,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SegmentedListItem
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,6 +30,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -67,13 +70,16 @@ fun RamadanCalendarScreen(
     val dayGroups = remember(state.monthPrayerTime) {
         state.monthPrayerTime.chunked(10)
     }
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             AppTopBar(
                 title = "Calendar",
                 subtitle = "Ramadan calender 2026",
                 isBackVisible = true,
-                onNavigationIconClick = onNavigateUp
+                onNavigationIconClick = onNavigateUp,
+                scrollBehavior = scrollBehavior
             )
         },
         contentWindowInsets = WindowInsets(bottom = 88.dp)
@@ -88,18 +94,30 @@ fun RamadanCalendarScreen(
         ) {
             LazyColumn(
                 contentPadding = PaddingValues(
-                    vertical = 24.dp,
-                    horizontal = 16.dp
+                    start = 16.dp,
+                    end = 16.dp,
+                    bottom = 48.dp
                 ),
                 verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap)
             ) {
                 dayGroups.fastForEachIndexed { index, group ->
                     item {
-                        when (index) {
-                            0 -> Text("10 Days of Mercy")
-                            1 -> Text("10 Days of Forgiveness")
-                            else -> Text("30 Days of Freedom")
-                        }
+                        Text(
+                            "10 Days of ${
+                                when (index) {
+                                    0 -> "Mercy"
+                                    1 -> "Forgiveness"
+                                    else -> "Success"
+                                }
+                            }".uppercase(),
+                            style = typography.titleSmall,
+                            modifier = Modifier
+                                .fillParentMaxWidth()
+                                .padding(vertical = 12.dp),
+                            textAlign = TextAlign.Center,
+                            color = colorScheme.primary
+
+                        )
                     }
                     itemsIndexed(group) { index, ramadan ->
                         val isHoliday = ramadan.holidays.isNotEmpty()

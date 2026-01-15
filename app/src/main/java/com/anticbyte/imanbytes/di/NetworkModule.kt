@@ -1,5 +1,6 @@
 package com.anticbyte.imanbytes.di
 
+import android.content.Context
 import com.anticbyte.imanbytes.data.repo.AsmaAlHusnaRepoImpl
 import com.anticbyte.imanbytes.data.repo.PrayerTimeRepoImpl
 import com.anticbyte.imanbytes.data.repo.QuranRepoImpl
@@ -11,12 +12,16 @@ import com.anticbyte.imanbytes.utils.loggingConfig
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.plugins.HttpRequestRetry
+import io.ktor.client.plugins.cache.HttpCache
+import io.ktor.client.plugins.cache.storage.FileStorage
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.Logging
+import java.io.File
 import javax.inject.Singleton
 
 @Module
@@ -24,10 +29,19 @@ import javax.inject.Singleton
 object NetworkModule {
     @Provides
     @Singleton
-    fun provideNetworkService(): HttpClient =
+    fun provideNetworkService(@ApplicationContext context: Context): HttpClient =
         HttpClient(Android) {
             install(plugin = ContentNegotiation, configure = jsonConfig)
             install(plugin = Logging, configure = loggingConfig)
+            install(HttpCache) {
+                val cacheFolder = File(context.cacheDir, "http_cache")
+
+                // 2. Ensure the directory actually exists before Ktor tries to use it
+                if (!cacheFolder.exists()) {
+                    cacheFolder.mkdirs()
+                }
+                publicStorage(FileStorage(context.filesDir))
+            }
             install(HttpRequestRetry) {
                 retryOnException(5, true)
                 exponentialDelay()
