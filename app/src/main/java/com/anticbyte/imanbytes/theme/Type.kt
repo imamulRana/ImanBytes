@@ -8,13 +8,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.anticbyte.imanbytes.R
 
-// Set of Material typography styles to start with
-val NotoNakshArabic = FontFamily(
-    Font(R.font.noto_naskh_arabic, FontWeight.Normal),
-    Font(R.font.noto_naskh_arabic_medium, FontWeight.Medium),
-    Font(R.font.noto_naskh_arabic_bold, FontWeight.Bold)
-)
-
 val Montserrat = FontFamily(
     Font(resId = R.font.montserrat, weight = FontWeight.Normal),
     Font(resId = R.font.montserrat_medium, weight = FontWeight.Medium),

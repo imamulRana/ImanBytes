@@ -82,7 +82,7 @@ fun RamadanCalendarScreen(
                 scrollBehavior = scrollBehavior
             )
         },
-        contentWindowInsets = WindowInsets(bottom = 88.dp)
+        contentWindowInsets = WindowInsets(bottom = 64.dp)
     ) { innerPadding ->
         RamadanDayDetailSheet(
             day = ramadanCalender, showSheet = isSheetExpanded,

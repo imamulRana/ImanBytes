@@ -79,7 +79,7 @@ fun HomeScreen(
                 scrollBehavior = scrollBehavior
             )
         },
-        contentWindowInsets = WindowInsets(bottom = 88.dp)
+        contentWindowInsets = WindowInsets(bottom = 64.dp)
     ) { innerPadding ->
         Box(
             modifier = Modifier

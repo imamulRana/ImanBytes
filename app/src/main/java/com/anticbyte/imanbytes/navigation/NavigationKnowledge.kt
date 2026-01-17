@@ -40,7 +40,6 @@ fun NavGraphBuilder.knowledgeNavGraph(navController: NavHostController) {
         }
         composable<HadithRoute> { HadithScreen() }
         composable<PillarRoute> { HadithScreen() }
-        recitationGraph(navController = navController)
         asmaGraph(navController = navController)
         ramadanGraph(navController = navController)
     }

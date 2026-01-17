@@ -114,7 +114,7 @@ fun KnowledgeItems(
             leadingShape = item.leadingShape.toShape(),
             onItemClick = {
                 when (item) {
-                    KnowledgeItem.QURAN -> onNavigateToQuran()
+//                    KnowledgeItem.QURAN -> onNavigateToQuran()
                     /*KnowledgeItem.HADITH -> onNavigateToHadith()
                     KnowledgeItem.PILLARS -> onNavigateToPillar()*/
                     KnowledgeItem.ASMA -> onNavigateToAsma()

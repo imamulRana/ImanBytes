@@ -13,12 +13,12 @@ enum class KnowledgeItem(
     val leadingShape: RoundedPolygon
     //todo implement destinations,
 ) {
-    QURAN(
+    /*QURAN(
         iconRes = R.drawable.ic_book_fill_sharp,
         titleRes = R.string.title_quran,
         descriptionRes = R.string.desc_quran,
         leadingShape = MaterialShapes.Pill
-    ),
+    ),*/
     /*HADITH(
         iconRes = R.drawable.ic_book_fill_sharp,
         titleRes = R.string.title_hadith,
@@ -36,9 +36,9 @@ enum class KnowledgeItem(
         leadingShape = MaterialShapes.Clover4Leaf
     ),
     RAMADAN(
-        iconRes = R.drawable.ic_duhr,
+        iconRes = R.drawable.ic_calendar,
         titleRes = R.string.ramadan_calendar,
         descriptionRes = R.string.ramadan_calendar_desc,
-        leadingShape = MaterialShapes.ClamShell
+        leadingShape = MaterialShapes.Oval
     )
 }
