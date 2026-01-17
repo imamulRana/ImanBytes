@@ -44,4 +44,6 @@ This present world of ours is illuminated by the light of the sun, which is able
     <string name="sajda">"Sajda"</string>
     <string name="ramadan_calendar">Ramadan Calendar</string>
     <string name="ramadan_calendar_desc">Ramadan calendar of 2026</string>
+
+    <string name="iftaar_dua">ذَهَبَ الظَّمَأُ وَابْتَلَّتِ الْعُرُوقُ وَثَبَتَ الأَجْرُ إِنْ شَاءَ اللَّهُ</string>
 </resources>

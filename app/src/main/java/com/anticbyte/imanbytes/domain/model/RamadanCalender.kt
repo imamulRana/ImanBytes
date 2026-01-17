@@ -1,5 +1,8 @@
 package com.anticbyte.imanbytes.domain.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class RamadanCalender(
     val hijriDay: String = "",
     val gregorianWeekday: String = "",

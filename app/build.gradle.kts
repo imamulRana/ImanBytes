@@ -17,8 +17,8 @@ android {
         applicationId = "com.anticbyte.imanbytes"
         minSdk = 24
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "0.6.5"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -124,9 +124,6 @@ dependencies {
 
     //androidx media3
     implementation(libs.bundles.media3)
-
-    //parse string from html jsoup
-    implementation(libs.jsoup)
 
     //test
     testImplementation(libs.junit)

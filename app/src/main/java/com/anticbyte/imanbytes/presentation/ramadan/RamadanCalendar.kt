@@ -1,11 +1,10 @@
 package com.anticbyte.imanbytes.presentation.ramadan
 
-import RamadanDayDetailSheet
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -15,19 +14,13 @@ import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.material3.MaterialTheme.typography
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SegmentedListItem
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -48,13 +41,15 @@ import com.anticbyte.imanbytes.utils.LocalExtendedColors
 fun RamadanCalendarRoute(
     modifier: Modifier = Modifier,
     viewModel: RamadanDayDetailViewModel = hiltViewModel(),
-    navigateUp: () -> Unit
+    navigateUp: () -> Unit,
+    navigateToDetail: (RamadanCalender) -> Unit
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     RamadanCalendarScreen(
         modifier = modifier,
         state = state,
-        onNavigateUp = navigateUp
+        onNavigateUp = navigateUp,
+        onNavigateToDetail = navigateToDetail
     )
 }
 
@@ -62,11 +57,10 @@ fun RamadanCalendarRoute(
 fun RamadanCalendarScreen(
     modifier: Modifier = Modifier,
     state: RamadanDayDetailScreenState,
-    onNavigateUp: () -> Unit = {}
+    onNavigateUp: () -> Unit = {},
+    onNavigateToDetail: (RamadanCalender) -> Unit = {}
 ) {
     val extendedColors = LocalExtendedColors.current
-    var isSheetExpanded by rememberSaveable { mutableStateOf(false) }
-    var ramadanCalender by remember { mutableStateOf(RamadanCalender()) }
     val dayGroups = remember(state.monthPrayerTime) {
         state.monthPrayerTime.chunked(10)
     }
@@ -81,23 +75,16 @@ fun RamadanCalendarScreen(
                 onNavigationIconClick = onNavigateUp,
                 scrollBehavior = scrollBehavior
             )
-        },
-        contentWindowInsets = WindowInsets(bottom = 64.dp)
+        }
     ) { innerPadding ->
-        RamadanDayDetailSheet(
-            day = ramadanCalender, showSheet = isSheetExpanded,
-            onDismiss = { isSheetExpanded = !isSheetExpanded })
         Box(
             modifier = modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .consumeWindowInsets(innerPadding)
         ) {
             LazyColumn(
-                contentPadding = PaddingValues(
-                    start = 16.dp,
-                    end = 16.dp,
-                    bottom = 48.dp
-                ),
+                contentPadding = PaddingValues(horizontal = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap)
             ) {
                 dayGroups.fastForEachIndexed { index, group ->
@@ -123,8 +110,7 @@ fun RamadanCalendarScreen(
                         val isHoliday = ramadan.holidays.isNotEmpty()
                         SegmentedListItem(
                             onClick = {
-                                ramadanCalender = ramadan
-                                isSheetExpanded = !isSheetExpanded
+                                onNavigateToDetail(ramadan)
                             },
                             shapes = ListItemDefaults.segmentedShapes(
                                 index,
@@ -166,69 +152,6 @@ fun RamadanCalendarScreen(
             }
         }
     }
-}
-
-@Composable
-fun RamadanCalendarDetailSheet(
-    modifier: Modifier = Modifier,
-    isExpanded: Boolean = false,
-    onDismiss: () -> Unit = {},
-    ramadanCalender: RamadanCalender
-) {
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    LaunchedEffect(isExpanded) {
-        if (isExpanded) sheetState.show() else sheetState.hide()
-    }
-    if (isExpanded)
-        ModalBottomSheet(
-            modifier = modifier,
-            onDismissRequest = onDismiss,
-            sheetState = sheetState,
-            dragHandle = {},
-            containerColor = colorScheme.surface,
-        ) {
-            Scaffold(topBar = {
-                AppTopBar(
-                    title = ramadanCalender.hijriDate,
-                    isBackVisible = true,
-                    onNavigationIconClick = onDismiss,
-                    subtitle = ramadanCalender.gregorianDate
-                )
-            }) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(it)
-                ) {
-                    LazyColumn(
-                        contentPadding = PaddingValues(
-                            horizontal = 16.dp,
-                            vertical = 12.dp
-                        ),
-                        verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap)
-                    ) {
-                        itemsIndexed(ramadanCalender.prayerTimes) { index, prayer ->
-                            SegmentedListItem(
-                                onClick = {},
-                                shapes = ListItemDefaults.segmentedShapes(
-                                    index,
-                                    ramadanCalender.prayerTimes.size
-                                ),
-                                leadingContent = {
-
-                                },
-                                supportingContent = {
-                                    Text(prayer.second)
-                                },
-                                colors = ListItemDefaults.segmentedColors(containerColor = colorScheme.surfaceContainer)
-                            ) {
-                                Text(prayer.first)
-                            }
-                        }
-                    }
-                }
-            }
-        }
 }
 
 class StateProvider : PreviewParameterProvider<RamadanDayDetailScreenState> {

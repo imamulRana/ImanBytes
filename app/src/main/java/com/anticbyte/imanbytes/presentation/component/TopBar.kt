@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MediumFlexibleTopAppBar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarColors
@@ -31,7 +32,10 @@ fun AppTopBar(
         title = { Text(text = title ?: "") },
         subtitle = { if (subtitle != null) Text(text = subtitle) },
         navigationIcon = {
-            if (isBackVisible) FilledTonalIconButton(onClick = onNavigationIconClick) {
+            if (isBackVisible) FilledTonalIconButton(
+                onClick = onNavigationIconClick,
+                shapes = IconButtonDefaults.shapes()
+            ) {
                 Icon(imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_back), null)
             }
         },
