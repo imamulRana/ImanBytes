@@ -119,6 +119,7 @@ fun KnowledgeItems(
                     KnowledgeItem.PILLARS -> onNavigateToPillar()*/
                     KnowledgeItem.ASMA -> onNavigateToAsma()
                     KnowledgeItem.RAMADAN -> onNavigateToRamadan()
+                    KnowledgeItem.DUA -> {}
                 }
             },
             shapes = ListItemDefaults.segmentedShapes(item.ordinal, KnowledgeItem.entries.size)

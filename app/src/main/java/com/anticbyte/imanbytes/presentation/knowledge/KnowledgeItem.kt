@@ -1,8 +1,6 @@
 package com.anticbyte.imanbytes.presentation.knowledge
 
 import androidx.compose.material3.MaterialShapes
-import androidx.compose.material3.toShape
-import androidx.compose.ui.graphics.Shape
 import androidx.graphics.shapes.RoundedPolygon
 import com.anticbyte.imanbytes.R
 
@@ -39,6 +37,12 @@ enum class KnowledgeItem(
         iconRes = R.drawable.ic_calendar,
         titleRes = R.string.ramadan_calendar,
         descriptionRes = R.string.ramadan_calendar_desc,
-        leadingShape = MaterialShapes.Oval
+        leadingShape = MaterialShapes.Pill
+    ),
+    DUA(
+        iconRes = R.drawable.ic_dua,
+        titleRes = R.string.ramadan_calendar,
+        descriptionRes = R.string.ramadan_calendar_desc,
+        leadingShape = MaterialShapes.Cookie4Sided
     )
 }
