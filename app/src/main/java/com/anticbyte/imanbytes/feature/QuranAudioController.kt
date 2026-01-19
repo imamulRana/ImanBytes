@@ -2,7 +2,6 @@ package com.anticbyte.imanbytes.feature
 
 import android.content.ComponentName
 import android.content.Context
-import androidx.lifecycle.SavedStateHandle
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.session.MediaController
@@ -12,12 +11,9 @@ import com.anticbyte.imanbytes.domain.model.Surah
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
 
 class QuranAudioController @Inject constructor(@ApplicationContext private val context: Context) {
@@ -37,6 +33,10 @@ class QuranAudioController @Inject constructor(@ApplicationContext private val c
     // Track playback state
     private val _isPlaying = MutableStateFlow(false)
     val isPlaying: StateFlow<Boolean> = _isPlaying.asStateFlow()
+
+    private val _isPaused = MutableStateFlow(false)
+    val isPaused = _isPaused.asStateFlow()
+
 
     init {
         controllerFuture.addListener(

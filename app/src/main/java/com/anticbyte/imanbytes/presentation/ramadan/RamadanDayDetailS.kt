@@ -33,10 +33,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -156,13 +153,13 @@ fun RamadanDayDetailSScreen(
                             Text(prayerTime.first)
                         }
                     }
-                    item {
+                    /*item {
                         Text(
                             stringResource(R.string.iftaar_dua), style = typography.titleLarge.copy(
                                 fontFamily = FontFamily(Font(R.font.lateef))
                             )
                         )
-                    }
+                    }*/
                 }
             }
         }

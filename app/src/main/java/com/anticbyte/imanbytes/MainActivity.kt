@@ -14,9 +14,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.anticbyte.imanbytes.navigation.HomeBaseRoute
-import com.anticbyte.imanbytes.navigation.KnowledgeBaseRoute
 import com.anticbyte.imanbytes.navigation.NavigationScaffold
 import com.anticbyte.imanbytes.navigation.Onboarding
+import com.anticbyte.imanbytes.presentation.player.PlayerViewModel
 import com.anticbyte.imanbytes.presentation.screens.onboard.OnboardingViewModel
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,6 +25,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val viewModel: OnboardingViewModel by viewModels()
+    private val playerViewModel: PlayerViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)

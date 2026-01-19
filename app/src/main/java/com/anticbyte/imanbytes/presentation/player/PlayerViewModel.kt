@@ -12,9 +12,14 @@ import javax.inject.Inject
 class PlayerViewModel @Inject constructor(private val audioController: QuranAudioController) :
     ViewModel() {
 
-    val player = audioController.controller.stateIn(
+    val mediaControllerState = audioController.controller.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Eagerly,
+        initialValue = null
+    )
+    val playerState = audioController.isPlaying.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
-        initialValue = null
+        initialValue = false
     )
 }

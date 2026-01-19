@@ -32,19 +32,19 @@ import com.anticbyte.imanbytes.theme.ImanBytesTheme
 fun MiniPlayer(
     modifier: Modifier = Modifier,
     onShowSheet: () -> Unit = {},
-    nowPlayingSurah: String? = null,
     viewModel: PlayerViewModel = hiltViewModel()
 ) {
-    val player by viewModel.player.collectAsStateWithLifecycle()
+    val player by viewModel.mediaControllerState.collectAsStateWithLifecycle()
+    val isPlaying by viewModel.playerState.collectAsStateWithLifecycle()
     player?.let { audioPlayer ->
         val playPauseButtonState = rememberPlayPauseButtonState(audioPlayer)
-        nowPlayingSurah?.let {
+        if (isPlaying || playPauseButtonState.showPlay)
             SegmentedListItem(
                 modifier = modifier,
                 onClick = onShowSheet,
                 shapes = ListItemDefaults.segmentedShapes(0, 1),
                 supportingContent = {
-                    Text("Item description", style = typography.bodySmall)
+                    Text(audioPlayer.mediaMetadata.title.toString(), style = typography.bodySmall)
                 },
                 leadingContent = {
                     Box(
@@ -60,10 +60,12 @@ fun MiniPlayer(
                     }
                 },
                 trailingContent = {
-                    TonalToggleButton(true, onCheckedChange = {}) {
+                    TonalToggleButton(!playPauseButtonState.showPlay, onCheckedChange = {
+                        playPauseButtonState.onClick()
+                    }) {
                         Icon(
                             imageVector = ImageVector.vectorResource(
-                                if (playPauseButtonState.showPlay) R.drawable.ic_pause_fill else R.drawable.ic_play_arrow_fill
+                                if (!playPauseButtonState.showPlay) R.drawable.ic_pause_fill else R.drawable.ic_play_arrow_fill
                             ), null
                         )
                     }
@@ -71,7 +73,6 @@ fun MiniPlayer(
             ) {
                 Text("Item playing", style = typography.titleMedium)
             }
-        }
     }
 }
 
