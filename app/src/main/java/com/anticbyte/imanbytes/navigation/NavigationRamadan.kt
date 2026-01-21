@@ -11,7 +11,6 @@ import androidx.savedstate.SavedState
 import com.anticbyte.imanbytes.domain.model.RamadanCalender
 import com.anticbyte.imanbytes.presentation.ramadan.RamadanCalendarRoute
 import com.anticbyte.imanbytes.presentation.ramadan.RamadanDayDetailSRoute
-import com.anticbyte.imanbytes.presentation.ramadan.RamadanDayDetailSViewModel
 import com.anticbyte.imanbytes.presentation.ramadan.RamadanDayDetailViewModel
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -64,7 +63,7 @@ fun NavGraphBuilder.ramadanGraph(navController: NavHostController) {
             enterTransition = { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Up) },
             exitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Down) },
         ) {
-            val viewModel = hiltViewModel<RamadanDayDetailSViewModel>()
+            val viewModel = hiltViewModel<RamadanDetailViewModel>()
             RamadanDayDetailSRoute(
                 viewModel = viewModel,
                 navigateUp = { navController.navigateUp() }

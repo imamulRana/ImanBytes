@@ -16,11 +16,10 @@ class RamadanDayDetailViewModel @Inject constructor(
     private val prayerTimeRepo: PrayerTimeRepo
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(RamadanDayDetailScreenState())
-    val uiState: StateFlow<RamadanDayDetailScreenState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(RamadanCalendarState())
+    val uiState: StateFlow<RamadanCalendarState> = _uiState.asStateFlow()
 
     init {
-
         loadData()
     }
 

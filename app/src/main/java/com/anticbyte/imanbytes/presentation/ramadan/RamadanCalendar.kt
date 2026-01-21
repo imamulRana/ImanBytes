@@ -33,6 +33,8 @@ import androidx.compose.ui.util.fastForEachIndexed
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.anticbyte.imanbytes.domain.model.RamadanCalender
+import com.anticbyte.imanbytes.presentation.component.AppErrorScreen
+import com.anticbyte.imanbytes.presentation.component.AppLoader
 import com.anticbyte.imanbytes.presentation.component.AppTopBar
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
 import com.anticbyte.imanbytes.utils.LocalExtendedColors
@@ -56,7 +58,7 @@ fun RamadanCalendarRoute(
 @Composable
 fun RamadanCalendarScreen(
     modifier: Modifier = Modifier,
-    state: RamadanDayDetailScreenState,
+    state: RamadanCalendarState,
     onNavigateUp: () -> Unit = {},
     onNavigateToDetail: (RamadanCalender) -> Unit = {}
 ) {
@@ -83,80 +85,83 @@ fun RamadanCalendarScreen(
                 .padding(innerPadding)
                 .consumeWindowInsets(innerPadding)
         ) {
-            LazyColumn(
-                contentPadding = PaddingValues(horizontal = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap)
-            ) {
-                dayGroups.fastForEachIndexed { index, group ->
-                    item {
-                        Text(
-                            "10 Days of ${
-                                when (index) {
-                                    0 -> "Mercy"
-                                    1 -> "Forgiveness"
-                                    else -> "Success"
-                                }
-                            }".uppercase(),
-                            style = typography.titleSmall,
-                            modifier = Modifier
-                                .fillParentMaxWidth()
-                                .padding(vertical = 12.dp),
-                            textAlign = TextAlign.Center,
-                            color = colorScheme.primary
-
-                        )
-                    }
-                    itemsIndexed(group) { index, ramadan ->
-                        val isHoliday = ramadan.holidays.isNotEmpty()
-                        SegmentedListItem(
-                            onClick = {
-                                onNavigateToDetail(ramadan)
-                            },
-                            shapes = ListItemDefaults.segmentedShapes(
-                                index,
-                                group.size
-                            ),
-                            leadingContent = {
-                                Box(
-                                    modifier = Modifier
-                                        .size(40.dp)
-                                        .background(
-                                            color = colorScheme.secondaryContainer,
-                                            shapes.large
-                                        ),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text(
-                                        ramadan.hijriDay,
-                                        style = typography.titleMedium,
-                                        color = colorScheme.secondary
-                                    )
-                                }
-                            },
-                            supportingContent = {
-                                Text(ramadan.gregorianDate)
-                            },
-                            overlineContent = {
-                                Text(ramadan.hijriDate)
-                            },
-                            colors = ListItemDefaults.segmentedColors(
-                                containerColor = if (isHoliday) colorScheme.surfaceContainerHighest else colorScheme.surfaceContainer,
-                            ),
-                        ) {
+            if (state.isLoading) AppLoader()
+            else if (state.errorMessage != null) AppErrorScreen() { }
+            else
+                LazyColumn(
+                    contentPadding = PaddingValues(horizontal = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap)
+                ) {
+                    dayGroups.fastForEachIndexed { index, group ->
+                        item {
                             Text(
-                                ramadan.gregorianWeekday.take(3),
+                                "10 Days of ${
+                                    when (index) {
+                                        0 -> "Mercy"
+                                        1 -> "Forgiveness"
+                                        else -> "Success"
+                                    }
+                                }".uppercase(),
+                                style = typography.titleSmall,
+                                modifier = Modifier
+                                    .fillParentMaxWidth()
+                                    .padding(vertical = 12.dp),
+                                textAlign = TextAlign.Center,
+                                color = colorScheme.primary
+
                             )
+                        }
+                        itemsIndexed(group) { index, ramadan ->
+                            val isHoliday = ramadan.holidays.isNotEmpty()
+                            SegmentedListItem(
+                                onClick = {
+                                    onNavigateToDetail(ramadan)
+                                },
+                                shapes = ListItemDefaults.segmentedShapes(
+                                    index,
+                                    group.size
+                                ),
+                                leadingContent = {
+                                    Box(
+                                        modifier = Modifier
+                                            .size(40.dp)
+                                            .background(
+                                                color = colorScheme.secondaryContainer,
+                                                shapes.large
+                                            ),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Text(
+                                            ramadan.hijriDay,
+                                            style = typography.titleMedium,
+                                            color = colorScheme.secondary
+                                        )
+                                    }
+                                },
+                                supportingContent = {
+                                    Text(ramadan.gregorianDate)
+                                },
+                                overlineContent = {
+                                    Text(ramadan.hijriDate)
+                                },
+                                colors = ListItemDefaults.segmentedColors(
+                                    containerColor = if (isHoliday) colorScheme.surfaceContainerHighest else colorScheme.surfaceContainer,
+                                ),
+                            ) {
+                                Text(
+                                    ramadan.gregorianWeekday.take(3),
+                                )
+                            }
                         }
                     }
                 }
-            }
         }
     }
 }
 
-class StateProvider : PreviewParameterProvider<RamadanDayDetailScreenState> {
+class StateProvider : PreviewParameterProvider<RamadanCalendarState> {
     override val values = sequenceOf(
-        RamadanDayDetailScreenState(
+        RamadanCalendarState(
             monthPrayerTime = listOf(
                 RamadanCalender(
                     gregorianDate = "18 Feb 2026",
@@ -191,7 +196,7 @@ class StateProvider : PreviewParameterProvider<RamadanDayDetailScreenState> {
 @Preview(showBackground = true)
 @Composable
 private fun RamadanCalendarPreview(
-    @PreviewParameter(StateProvider::class) state: RamadanDayDetailScreenState
+    @PreviewParameter(StateProvider::class) state: RamadanCalendarState
 ) {
     ImanBytesTheme(dynamicColor = false, darkTheme = true) {
         RamadanCalendarScreen(
