@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.shapes
@@ -33,7 +35,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -43,6 +49,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.anticbyte.imanbytes.R
 import com.anticbyte.imanbytes.domain.model.RamadanCalender
 import com.anticbyte.imanbytes.presentation.component.AppTopBar
+import com.anticbyte.imanbytes.presentation.home.generateWord
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
 
 @Composable
@@ -153,16 +160,67 @@ fun RamadanDayDetailSScreen(
                             Text(prayerTime.first)
                         }
                     }
-                    /*item {
-                        Text(
-                            stringResource(R.string.iftaar_dua), style = typography.titleLarge.copy(
-                                fontFamily = FontFamily(Font(R.font.lateef))
-                            )
-                        )
-                    }*/
+                    item {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        ListItem(
+                            overlineContent = {
+                                Text("Iftaar Dua")
+                            }, headlineContent = {
+                                Text(
+                                    stringResource(R.string.iftaar_dua),
+                                    style = typography.headlineLarge.copy(
+                                        fontFamily = FontFamily(
+                                            Font(R.font.lateef)
+                                        )
+                                    ),
+                                    textAlign = TextAlign.Right
+                                )
+                            }, supportingContent = {
+                                Text(generateWord(15))
+                            })
+                    }
+                    item {
+                        ListItem(
+                            overlineContent = {
+                                Text("Suhoor Dua")
+                            }, headlineContent = {
+                                Text(
+                                    stringResource(R.string.iftaar_dua),
+                                    style = typography.headlineLarge.copy(
+                                        fontFamily = FontFamily(
+                                            Font(R.font.lateef)
+                                        )
+                                    ),
+                                    textAlign = TextAlign.Right
+                                )
+                            }, supportingContent = {
+                                Text(generateWord(15))
+                            })
+                    }
                 }
             }
         }
+    }
+}
+
+@Preview
+@Composable
+fun TitleWithDua(modifier: Modifier = Modifier) {
+    Column {
+        ListItem(
+            overlineContent = {
+                Text("Iftaar Dua")
+            }, headlineContent = {
+                Text(
+                    stringResource(R.string.iftaar_dua), style = typography.headlineLarge.copy(
+                        fontFamily = FontFamily(
+                            Font(R.font.lateef)
+                        )
+                    ), textAlign = TextAlign.Right
+                )
+            }, supportingContent = {
+                Text(generateWord(15))
+            })
     }
 }
 

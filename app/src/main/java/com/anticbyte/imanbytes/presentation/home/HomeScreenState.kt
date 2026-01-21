@@ -8,5 +8,6 @@ data class HomeScreenState(
     val prayerTimes: List<Pair<String, String>> = emptyList(),
     val asma: Asma = Asma(),
     val isLoading: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val isRefreshing: Boolean = false
 )

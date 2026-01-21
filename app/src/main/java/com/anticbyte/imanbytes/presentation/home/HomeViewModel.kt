@@ -9,14 +9,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Locale
 import javax.inject.Inject
 import kotlin.random.Random
 
@@ -27,17 +25,21 @@ class HomeViewModel @Inject constructor(
     private val quranRepo: QuranRepo
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(HomeScreenState())
-    val uiState = _uiState.asStateFlow().onStart {
-        fetchHomeData()
-    }.stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(5000),
-        _uiState.value
-    )
+    val uiState = _uiState.asStateFlow()
 
-    fun fetchHomeData() {
+    init { fetchHomeData(isRefreshing = false) }
+
+    fun refresh() = fetchHomeData(isRefreshing = true)
+
+    private fun fetchHomeData(isRefreshing: Boolean = false) {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, error = null) }
+            _uiState.update {
+                it.copy(
+                    isLoading = !isRefreshing,
+                    isRefreshing = isRefreshing,
+                    error = null
+                )
+            }
 
             val result = runCatching {
                 coroutineScope {
@@ -54,7 +56,7 @@ class HomeViewModel @Inject constructor(
                     }
 
                     val prayerTimeDeferred = async {
-                        val today = SimpleDateFormat("dd-MM-yyyy")
+                        val today = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
                             .format(Calendar.getInstance().time)
                         repo.getPrayerTimes(today).getOrThrow()
                     }
@@ -71,6 +73,7 @@ class HomeViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
+                        isRefreshing = false,
                         randomVerse = verse,
                         asma = asma,
                         prayerTimes = prayerTimes
@@ -80,11 +83,11 @@ class HomeViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
+                        isRefreshing = false,
                         error = throwable.localizedMessage
                     )
                 }
             }
         }
     }
-
 }

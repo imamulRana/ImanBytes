@@ -15,23 +15,22 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme.colorScheme
-import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SegmentedListItem
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEachIndexed
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -59,7 +58,8 @@ fun HomeScreenRoute(
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     HomeScreen(
         modifier = modifier, state = state,
-        navigateToRandomVerse = navigateToRandomVerse
+        navigateToRandomVerse = navigateToRandomVerse,
+        onRefresh = viewModel::refresh
     )
 }
 
@@ -68,6 +68,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     state: HomeScreenState = HomeScreenState(),
     navigateToRandomVerse: (verseId: String) -> Unit = {},
+    onRefresh: () -> Unit = {}
 ) {
     val topBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(state = topBarState)
@@ -92,7 +93,7 @@ fun HomeScreen(
                 onRetry = {})
             else
                 PullToRefreshBox(
-                    isRefreshing = false, onRefresh = {},
+                    isRefreshing = state.isRefreshing, onRefresh = onRefresh,
                 ) {
                     LazyColumn(
                         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -121,8 +122,7 @@ fun HomeScreen(
                                         ),
                                         trailingContent = {
                                             Text(
-                                                time,
-                                                style = typography.titleMedium
+                                                time
                                             )
                                         },
                                         colors = ListItemDefaults.segmentedColors(colorScheme.surfaceContainerLowest)
@@ -133,12 +133,7 @@ fun HomeScreen(
                             }
                         }
                         item {
-                            TitleAndContentSection(leadingContent = {
-                                VerticalDivider(
-                                    thickness = 4.dp,
-                                    modifier = Modifier.clip(shapes.medium)
-                                )
-                            }, title = "Verse of the day") {
+                            TitleAndContentSection(title = "Verse of the day") {
                                 RandomVerseCard(
                                     verse = state.randomVerse,
                                     onReadMore = navigateToRandomVerse
