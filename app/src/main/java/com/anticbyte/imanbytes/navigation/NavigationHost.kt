@@ -22,8 +22,5 @@ fun NavigationHost(
         randomVerseGraph(navController)
         knowledgeNavGraph(navController = navController)
         recitationGraph(navController = navController)
-        /*composable<PrayerTimeRamadanRoute> {
-            RamadanDayDetailRoute()
-        }*/
     }
 }

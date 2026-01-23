@@ -2,14 +2,18 @@ package com.anticbyte.imanbytes.feature
 
 import android.content.ComponentName
 import android.content.Context
+import android.os.Bundle
+import androidx.core.content.ContextCompat
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.session.MediaController
+import androidx.media3.session.SessionCommand
+import androidx.media3.session.SessionResult
 import androidx.media3.session.SessionToken
 import com.anticbyte.imanbytes.BuildConfig
 import com.anticbyte.imanbytes.domain.model.Surah
+import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
-import com.google.common.util.concurrent.MoreExecutors
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,8 +24,42 @@ class QuranAudioController @Inject constructor(@ApplicationContext private val c
     private val sessionToken =
         SessionToken(context, ComponentName(context, AudioPlaybackService::class.java))
 
+    private val _isPlayerReady = MutableStateFlow(false)
+    val isPlayerReady: StateFlow<Boolean> = _isPlayerReady
+
+    private val _isPlaying = MutableStateFlow(false)
+    val isPlaying: StateFlow<Boolean> = _isPlaying.asStateFlow()
+
+    private val _isPaused = MutableStateFlow(false)
+    val isPaused = _isPaused.asStateFlow()
+    val lst = object : Player.Listener {
+        override fun onIsPlayingChanged(isPlaying: Boolean) {
+            if (isPlaying) {
+                _isPlaying.value = true
+                _isPaused.value = false
+            } else {
+                _isPlaying.value = false
+                _isPaused.value = true
+            }
+        }
+
+    }
+
     private val controllerFuture: ListenableFuture<MediaController> =
-        MediaController.Builder(context, sessionToken).buildAsync()
+        MediaController.Builder(context, sessionToken)
+            .setListener(
+                object : MediaController.Listener {
+                    override fun onCustomCommand(
+                        controller: MediaController,
+                        command: SessionCommand,
+                        args: Bundle
+                    ): ListenableFuture<SessionResult> {
+                        controller.addListener(lst)
+                        return Futures.immediateFuture(SessionResult(SessionResult.RESULT_SUCCESS))
+                    }
+                }
+            ).buildAsync()
+
 
     private val _controller = MutableStateFlow<MediaController?>(null)
     val controller: StateFlow<MediaController?> = _controller.asStateFlow()
@@ -30,44 +68,22 @@ class QuranAudioController @Inject constructor(@ApplicationContext private val c
     private val _currentPlayingSurah = MutableStateFlow<String?>(null)
     val currentPlayingSurah: StateFlow<String?> = _currentPlayingSurah.asStateFlow()
 
-    // Track playback state
-    private val _isPlaying = MutableStateFlow(false)
-    val isPlaying: StateFlow<Boolean> = _isPlaying.asStateFlow()
-
-    private val _isPaused = MutableStateFlow(false)
-    val isPaused = _isPaused.asStateFlow()
+// Track playback state
 
 
     init {
         controllerFuture.addListener(
-            { _controller.value = controllerFuture.get(); setupListener() },
-            MoreExecutors.directExecutor()
+            {
+                _controller.value = controllerFuture.get()
+                _controller.value?.addListener(lst)
+            },
+            ContextCompat.getMainExecutor(context)
         )
-    }
-
-    private fun setupListener() {
-        val listener = object : Player.Listener {
-            override fun onIsPlayingChanged(isPlaying: Boolean) {
-                _isPlaying.value = isPlaying
-            }
-
-            override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
-                _currentPlayingSurah.value = mediaItem?.mediaId
-            }
-
-            override fun onPlaybackStateChanged(playbackState: Int) {
-                if (playbackState == Player.STATE_ENDED) {
-                    _isPlaying.value = false
-                }
-            }
-        }
-        _controller.value?.addListener(listener)
     }
 
     fun createMediaItem(surah: List<Surah>, recitationId: String) {
         val controller = _controller.value ?: return
         if (controller.mediaItemCount > 0) return
-
         controller.setMediaItems(surah.toMediaItems(recitationId))
         controller.prepare()
     }
@@ -96,6 +112,10 @@ class QuranAudioController @Inject constructor(@ApplicationContext private val c
                 controller.play()
             }
         }
+    }
+
+    fun onPlay(surahNumber: String) {
+        _controller.value?.play()
     }
 
     fun List<Surah>.toMediaItems(recitationId: String): List<MediaItem> = map { surah ->

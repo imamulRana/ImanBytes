@@ -48,7 +48,6 @@ class RecitationViewModel @Inject constructor(
     )
 
     fun togglePlayPause(surahNumber: String, recitationType: RecitationType) {
-        mediaController.togglePlayPause(surahNumber)
         _recitationUiState.update { state ->
             state.copy(nowPlayingSurah = state.surahList.find { it.number == surahNumber })
         }

@@ -15,11 +15,11 @@ import com.anticbyte.imanbytes.domain.model.SelfRecitation
 import com.anticbyte.imanbytes.domain.model.Surah
 import com.anticbyte.imanbytes.domain.model.SurahText
 import com.anticbyte.imanbytes.domain.model.Tafsir
+import com.anticbyte.imanbytes.utils.to12Hour
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.boolean
-import to12Hour
 
 fun SurahDto.SurahData.toSurah(): Surah = Surah(
     number = this.number.toString(),

@@ -17,13 +17,10 @@ import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
@@ -42,8 +39,6 @@ import com.anticbyte.imanbytes.presentation.component.AppTopBar
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.RecitationScreenState
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.RecitationType
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.RecitationViewModel
-import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationBottomSheet
-import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationFloatingBar
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationFloatingButton
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationListItem
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
@@ -89,8 +84,6 @@ fun RecitationArScreen(
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val listState = rememberLazyListState()
     val showScrollToTop by remember { derivedStateOf { (listState.firstVisibleItemIndex > 0) and listState.lastScrolledBackward } }
-    var showSheet by remember { mutableStateOf(false) }
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     Scaffold(
         modifier = modifier
@@ -131,7 +124,7 @@ fun RecitationArScreen(
                     recitationItemDescription(descriptionRes = R.string.recitation_description_arabic)
                     recitationItemsAr(
                         surahList = screenState.surahList,
-                        onSurahClick = { surahNumber -> showSheet = true },
+                        onSurahClick = { surahNumber -> },
                         currentSurahNumber = currentSurahNumber,
                         isPlaying = isPlaying,
                         togglePlayPause = togglePlayPause
@@ -141,21 +134,6 @@ fun RecitationArScreen(
                 innerPadding = innerPadding,
                 listState = listState,
                 showScrollToTop = showScrollToTop
-            )
-            RecitationFloatingBar(
-                modifier = Modifier.padding(innerPadding),
-                onExpand = { showSheet = !showSheet },
-                surah = screenState.nowPlayingSurah ?: Surah(),
-                player = player
-            )
-            RecitationBottomSheet(
-                modifier = Modifier,
-                sheetState = sheetState,
-                showSheet = showSheet,
-                onSheetHide = { showSheet = false },
-                onReadSurahClick = onNavigateToReadSurah,
-                player = player,
-                nowPlayingSurah = screenState.nowPlayingSurah
             )
         }
     }
@@ -175,9 +153,8 @@ fun LazyListScope.recitationItemsAr(
         RecitationListItem(
             modifier = modifier,
             surah = surah,
-            onSurahClick = { onSurahClick(surah.number) },
+            onPlaySurah = { onSurahClick(surah.number) },
             shapes = ListItemDefaults.segmentedShapes(index, surahList.size),
-            togglePlayPause = togglePlayPause,
             currentSurahNumber = currentSurahNumber,
             isPlaying = isPlaying
         )

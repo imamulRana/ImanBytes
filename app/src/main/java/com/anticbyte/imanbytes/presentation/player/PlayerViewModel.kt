@@ -11,15 +11,24 @@ import javax.inject.Inject
 @HiltViewModel
 class PlayerViewModel @Inject constructor(private val audioController: QuranAudioController) :
     ViewModel() {
-
-    val mediaControllerState = audioController.controller.stateIn(
+    val controller = audioController.controller.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.Eagerly,
+        started = SharingStarted.WhileSubscribed(5000L),
         initialValue = null
     )
-    val playerState = audioController.isPlaying.stateIn(
+
+    val isPlaying = audioController.isPlaying.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
+        started = SharingStarted.WhileSubscribed(5000L),
         initialValue = false
     )
+    val isPaused = audioController.isPaused.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000L),
+        initialValue = false
+    )
+
+    fun onPlay(surahNumber: String) {
+        audioController.onPlay(surahNumber)
+    }
 }

@@ -32,13 +32,15 @@ import com.anticbyte.imanbytes.theme.ImanBytesTheme
 fun MiniPlayer(
     modifier: Modifier = Modifier,
     onShowSheet: () -> Unit = {},
+    onDismissSheet: () -> Unit = {},
     viewModel: PlayerViewModel = hiltViewModel()
 ) {
-    val player by viewModel.mediaControllerState.collectAsStateWithLifecycle()
-    val isPlaying by viewModel.playerState.collectAsStateWithLifecycle()
+    val player by viewModel.controller.collectAsStateWithLifecycle()
+    val isPlaying by viewModel.isPlaying.collectAsStateWithLifecycle()
+    val isPaused by viewModel.isPaused.collectAsStateWithLifecycle()
     player?.let { audioPlayer ->
         val playPauseButtonState = rememberPlayPauseButtonState(audioPlayer)
-        if (isPlaying || playPauseButtonState.showPlay)
+        if (isPlaying || isPaused)
             SegmentedListItem(
                 modifier = modifier,
                 onClick = onShowSheet,
@@ -71,7 +73,7 @@ fun MiniPlayer(
                     }
                 }
             ) {
-                Text("Item playing", style = typography.titleMedium)
+                Text(audioPlayer.mediaMetadata.title.toString(), style = typography.titleMedium)
             }
     }
 }

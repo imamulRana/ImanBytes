@@ -10,7 +10,8 @@ import androidx.navigation.navigation
 import androidx.savedstate.SavedState
 import com.anticbyte.imanbytes.domain.model.RamadanCalender
 import com.anticbyte.imanbytes.presentation.ramadan.RamadanCalendarRoute
-import com.anticbyte.imanbytes.presentation.ramadan.RamadanDayDetailSRoute
+import com.anticbyte.imanbytes.presentation.ramadan.RamadanCalendarViewModel
+import com.anticbyte.imanbytes.presentation.ramadan.RamadanDayDetailRoute
 import com.anticbyte.imanbytes.presentation.ramadan.RamadanDayDetailViewModel
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -50,7 +51,7 @@ data class RamadanDetailRoute(val ramadanCalender: String)
 fun NavGraphBuilder.ramadanGraph(navController: NavHostController) {
     navigation<RamadanBaseRoute>(startDestination = RamadanRoute) {
         composable<RamadanRoute> {
-            val viewModel = hiltViewModel<RamadanDayDetailViewModel>()
+            val viewModel = hiltViewModel<RamadanCalendarViewModel>()
             RamadanCalendarRoute(
                 viewModel = viewModel,
                 navigateUp = { navController.navigateUp() },
@@ -63,8 +64,8 @@ fun NavGraphBuilder.ramadanGraph(navController: NavHostController) {
             enterTransition = { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Up) },
             exitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Down) },
         ) {
-            val viewModel = hiltViewModel<RamadanDetailViewModel>()
-            RamadanDayDetailSRoute(
+            val viewModel = hiltViewModel<RamadanDayDetailViewModel>()
+            RamadanDayDetailRoute(
                 viewModel = viewModel,
                 navigateUp = { navController.navigateUp() }
             )

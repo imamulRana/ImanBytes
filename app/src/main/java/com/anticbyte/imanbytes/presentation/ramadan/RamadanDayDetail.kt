@@ -54,7 +54,7 @@ import com.anticbyte.imanbytes.theme.ImanBytesTheme
 
 @Composable
 fun RamadanDayDetailRoute(
-    viewModel: RamadanDetailViewModel = hiltViewModel(),
+    viewModel: RamadanDayDetailViewModel = hiltViewModel(),
     navigateUp: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()

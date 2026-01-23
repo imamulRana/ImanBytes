@@ -7,10 +7,12 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import com.anticbyte.imanbytes.presentation.player.PlayerViewModel
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.RecitationScreenRoute
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.RecitationViewModel
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.arabic.RecitationArRoute
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.translation.RecitationTrRoute
+import com.anticbyte.imanbytes.presentation.screens.audioRecitation.translation.RecitationTrViewModel
 import com.anticbyte.imanbytes.presentation.screens.selfRecitation.RecitationSelfDetailRoute
 import com.anticbyte.imanbytes.presentation.screens.selfRecitation.RecitationSelfDetailViewModel
 import com.anticbyte.imanbytes.presentation.screens.selfRecitation.RecitationSelfRoute
@@ -66,9 +68,11 @@ fun NavGraphBuilder.recitationGraph(
         /* section for translation recitation */
         composable<RecitationTrRoute> {
             val playerViewModel =
-                hiltViewModel<RecitationViewModel>(LocalActivity.current as ComponentActivity)
+                hiltViewModel<PlayerViewModel>(LocalActivity.current as ComponentActivity)
+            val screenViewModel = hiltViewModel<RecitationTrViewModel>()
             RecitationTrRoute(
-                viewModel = playerViewModel,
+                playerViewModel = playerViewModel,
+                screenViewModel = screenViewModel,
                 onNavigateBack = { navController.navigateUp() },
                 navigateToReadSurah = { surahNumber ->
                     navController.navigate(

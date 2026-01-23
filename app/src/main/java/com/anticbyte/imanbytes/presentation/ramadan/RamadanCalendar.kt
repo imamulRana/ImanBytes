@@ -42,7 +42,7 @@ import com.anticbyte.imanbytes.utils.LocalExtendedColors
 @Composable
 fun RamadanCalendarRoute(
     modifier: Modifier = Modifier,
-    viewModel: RamadanDayDetailViewModel = hiltViewModel(),
+    viewModel: RamadanCalendarViewModel = hiltViewModel(),
     navigateUp: () -> Unit,
     navigateToDetail: (RamadanCalender) -> Unit
 ) {
