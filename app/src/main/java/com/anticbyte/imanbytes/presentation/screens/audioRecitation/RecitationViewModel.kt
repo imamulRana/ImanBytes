@@ -3,6 +3,7 @@ package com.anticbyte.imanbytes.presentation.screens.audioRecitation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anticbyte.imanbytes.domain.repo.QuranRepo
+import com.anticbyte.imanbytes.feature.PlayBackState
 import com.anticbyte.imanbytes.feature.QuranAudioController
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,15 +37,11 @@ class RecitationViewModel @Inject constructor(
         started = SharingStarted.Eagerly,
         initialValue = null
     )
-    val currentPlayingSurah = mediaController.currentPlayingSurah.stateIn(
+    val currentPlayingSurah = MutableStateFlow(String())
+    val isPlaying = mediaController.playBackState.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
-        initialValue = null
-    )
-    val isPlaying = mediaController.isPlaying.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
-        initialValue = false
+        initialValue = PlayBackState(isPlaying = false, isPaused = false)
     )
 
     fun togglePlayPause(surahNumber: String, recitationType: RecitationType) {

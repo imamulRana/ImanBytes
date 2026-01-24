@@ -62,7 +62,7 @@ fun RecitationArRoute(
         onNavigateToReadSurah = navigateToReadSurah,
         player = player,
         currentSurahNumber = currentSurahNumber,
-        isPlaying = isSurahPlaying,
+        isPlaying = isSurahPlaying.isPlaying,
         togglePlayPause = { viewModel.togglePlayPause(it, RecitationType.ARABIC) }
     )
 }

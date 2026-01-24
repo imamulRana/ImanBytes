@@ -31,6 +31,7 @@ fun NavigationScaffold(
     val currentDestination = currentBackStackEntry?.destination
     val player by playerViewModel.controller.collectAsStateWithLifecycle()
     var shouldShowSheet by remember { mutableStateOf(false) }
+    val state by playerViewModel.isPlaying.collectAsStateWithLifecycle()
 
     val excludedRoutes = setOf(
         Onboarding::class,
@@ -39,16 +40,15 @@ fun NavigationScaffold(
         RamadanDetailRoute::class
     )
 
-    if (shouldShowSheet)
-        RecitationBottomSheet(
-            modifier = Modifier,
-            showSheet = true,
-            onDismiss = { show ->
-                shouldShowSheet = show
-            },
-            onReadSurahClick = { surahNumber -> },
-            player = player
-        )
+    if (shouldShowSheet) RecitationBottomSheet(
+        modifier = Modifier,
+        showSheet = true,
+        onDismiss = { show ->
+            shouldShowSheet = show
+        },
+        onReadSurahClick = { surahNumber -> },
+        player = player
+    )
     Scaffold(
         bottomBar = {
             val shouldShowBottomBar = excludedRoutes.none { exRoute ->
@@ -56,10 +56,10 @@ fun NavigationScaffold(
             }
             if (shouldShowBottomBar) {
                 Column {
-                    MiniPlayer(
-                        viewModel = playerViewModel,
+                    if (state.isControllerReady && (state.isPlaying || state.isPaused)) MiniPlayer(
                         onShowSheet = { shouldShowSheet = true },
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                        player = player
                     )
                     AppBottomBar(currentRoute = currentDestination, onItemSelected = {
                         navController.navigate(it ?: HomeBaseRoute) {
@@ -70,12 +70,10 @@ fun NavigationScaffold(
                     })
                 }
             }
-        }
-    ) { innerPadding ->
+        }) { innerPadding ->
         innerPadding
         NavigationHost(
-            navController = navController,
-            startDestination = startDestination
+            navController = navController, startDestination = startDestination
         )
     }
 }
