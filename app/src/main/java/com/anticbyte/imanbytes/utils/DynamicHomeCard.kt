@@ -3,6 +3,9 @@ package com.anticbyte.imanbytes.utils
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
@@ -12,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.anticbyte.imanbytes.theme.ExtendedColorScheme
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
@@ -38,6 +42,13 @@ fun TitleLayout(
         content()
     }
 }
+
+val PaddingValues.miniPlayerPadding get() = PaddingValues(
+    start = this.calculateStartPadding(LayoutDirection.Ltr),
+    end = this.calculateEndPadding(LayoutDirection.Ltr),
+    top = this.calculateTopPadding(),
+    bottom = this.calculateBottomPadding().plus(72.dp)
+)
 
 val LocalExtendedColors = staticCompositionLocalOf<ExtendedColorScheme> {
     error("No ExtendedColors provided")

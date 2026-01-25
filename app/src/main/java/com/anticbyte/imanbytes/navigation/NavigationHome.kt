@@ -1,5 +1,6 @@
 package com.anticbyte.imanbytes.navigation
 
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -13,10 +14,10 @@ data object HomeBaseRoute
 @Serializable
 data object HomeRoute
 
-fun NavGraphBuilder.homeGraph(navController: NavHostController) {
+fun NavGraphBuilder.homeGraph(modifier: Modifier = Modifier, navController: NavHostController) {
     navigation<HomeBaseRoute>(HomeRoute) {
         composable<HomeRoute> {
-            HomeScreenRoute(navigateToRandomVerse = {
+            HomeScreenRoute(modifier = modifier, navigateToRandomVerse = {
                 navController.navigate(RandomVerseRoute(it))
             })
         }

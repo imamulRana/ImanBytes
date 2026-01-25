@@ -33,10 +33,10 @@ fun MiniPlayer(
     playBackState: PlayBackState,
     onShowSheet: () -> Unit = {},
     onDismissSheet: () -> Unit = {},
-    player: Player
+    player: Player?
 ) {
+    if (player == null) return
     val playPauseButtonState = rememberPlayPauseButtonState(player)
-    if (!playBackState.isControllerReady || playBackState.currentMediaId == null) return
     SegmentedListItem(
         modifier = modifier,
         onClick = onShowSheet,
@@ -54,7 +54,7 @@ fun MiniPlayer(
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                Text("1")
+                Text("")
             }
         },
         trailingContent = {
@@ -69,9 +69,8 @@ fun MiniPlayer(
             }
         }
     ) {
-        Text(audioPlayer.mediaMetadata.title.toString(), style = typography.titleMedium)
+        Text(player.mediaMetadata.title.toString(), style = typography.titleMedium)
     }
-}
 }
 
 @Preview

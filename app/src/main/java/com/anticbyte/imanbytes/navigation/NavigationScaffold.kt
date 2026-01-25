@@ -1,7 +1,9 @@
 package com.anticbyte.imanbytes.navigation
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -56,11 +58,13 @@ fun NavigationScaffold(
             }
             if (shouldShowBottomBar) {
                 Column {
-                    if (state.isControllerReady && (state.isPlaying || state.isPaused)) MiniPlayer(
-                        onShowSheet = { shouldShowSheet = true },
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                        player = player
-                    )
+                    if ((state.isPlaying || state.isPaused) && state.currentMediaId != null)
+                        MiniPlayer(
+                            onShowSheet = { shouldShowSheet = true },
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                            player = player,
+                            playBackState = state
+                        )
                     AppBottomBar(currentRoute = currentDestination, onItemSelected = {
                         navController.navigate(it ?: HomeBaseRoute) {
                             popUpTo(navController.graph.findStartDestination().id)
@@ -71,8 +75,11 @@ fun NavigationScaffold(
                 }
             }
         }) { innerPadding ->
-        innerPadding
         NavigationHost(
+            modifier = Modifier
+                .padding(innerPadding) // This physically moves the content
+                .consumeWindowInsets(innerPadding) // This prevent
+            ,
             navController = navController, startDestination = startDestination
         )
     }
