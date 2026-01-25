@@ -8,10 +8,13 @@ import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.exclude
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -23,6 +26,7 @@ import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.SegmentedListItem
 import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Surface
@@ -83,7 +87,8 @@ fun RamadanDayDetailScreen(
                     onNavigationIconClick = onNavigateUp,
                     scrollBehavior = scrollBehavior
                 )
-            }
+            },
+            contentWindowInsets = ScaffoldDefaults.contentWindowInsets.exclude(WindowInsets.navigationBars)
         ) { innerPadding ->
             Box(
                 modifier = modifier
@@ -167,7 +172,8 @@ fun RamadanDayDetailScreen(
                                 Text("Iftaar Dua")
                             }, headlineContent = {
                                 Text(
-                                    stringResource(R.string.iftaar_dua),
+                                    modifier = Modifier.fillMaxWidth(),
+                                    text = stringResource(R.string.iftaar_dua),
                                     style = typography.headlineLarge.copy(
                                         fontFamily = FontFamily(
                                             Font(R.font.lateef)
@@ -185,7 +191,8 @@ fun RamadanDayDetailScreen(
                                 Text("Suhoor Dua")
                             }, headlineContent = {
                                 Text(
-                                    stringResource(R.string.iftaar_dua),
+                                    modifier = Modifier.fillMaxWidth(),
+                                    text = stringResource(R.string.suhoor_dua),
                                     style = typography.headlineLarge.copy(
                                         fontFamily = FontFamily(
                                             Font(R.font.lateef)

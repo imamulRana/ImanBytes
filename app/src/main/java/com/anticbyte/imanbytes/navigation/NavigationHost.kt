@@ -1,8 +1,5 @@
 package com.anticbyte.imanbytes.navigation
 
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.consumeWindowInsets
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -19,8 +16,7 @@ fun NavigationHost(
     startDestination: Any
 ) {
     NavHost(
-        modifier = modifier
-            .safeDrawingPadding(),
+        modifier = modifier,
         navController = navController,
         startDestination = startDestination,
     ) {

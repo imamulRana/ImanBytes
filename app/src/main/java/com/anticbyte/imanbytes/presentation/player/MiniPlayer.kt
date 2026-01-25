@@ -1,7 +1,9 @@
 package com.anticbyte.imanbytes.presentation.player
 
 import androidx.annotation.OptIn
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
@@ -38,9 +40,13 @@ fun MiniPlayer(
     if (player == null) return
     val playPauseButtonState = rememberPlayPauseButtonState(player)
     SegmentedListItem(
-        modifier = modifier,
+        modifier = modifier
+            .border(
+                BorderStroke(.5.dp, color = colorScheme.surfaceContainerHighest),
+                shape = shapes.large
+            ),
         onClick = onShowSheet,
-        shapes = ListItemDefaults.shapes(),
+        shapes = ListItemDefaults.shapes(shape = shapes.large),
         supportingContent = {
             Text(player.mediaMetadata.title.toString(), style = typography.bodySmall)
         },
@@ -54,7 +60,6 @@ fun MiniPlayer(
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                Text("")
             }
         },
         trailingContent = {
@@ -67,7 +72,10 @@ fun MiniPlayer(
                     ), null
                 )
             }
-        }
+        },
+        colors = ListItemDefaults.segmentedColors(
+            containerColor = colorScheme.surfaceContainer
+        )
     ) {
         Text(player.mediaMetadata.title.toString(), style = typography.titleMedium)
     }

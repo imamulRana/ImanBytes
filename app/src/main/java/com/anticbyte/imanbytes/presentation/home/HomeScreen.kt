@@ -5,8 +5,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -50,13 +48,12 @@ import com.anticbyte.imanbytes.theme.ImanBytesTheme
 
 @Composable
 fun HomeScreenRoute(
-    modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel(),
     navigateToRandomVerse: (verseId: String) -> Unit = {},
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     HomeScreen(
-        modifier = modifier, state = state,
+        state = state,
         navigateToRandomVerse = navigateToRandomVerse,
         onRefresh = viewModel::refresh
     )
@@ -64,7 +61,6 @@ fun HomeScreenRoute(
 
 @Composable
 fun HomeScreen(
-    modifier: Modifier = Modifier,
     state: HomeScreenState = HomeScreenState(),
     navigateToRandomVerse: (verseId: String) -> Unit = {},
     onRefresh: () -> Unit = {}
@@ -72,7 +68,6 @@ fun HomeScreen(
     val topBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(state = topBarState)
     Scaffold(
-        modifier = modifier,
         topBar = {
             AppTopBar(
                 title = "Iman Bytes",
@@ -150,7 +145,7 @@ fun HomeScreen(
 }
 
 
-@Preview
+@Preview(showSystemUi = true)
 @Composable
 private fun HomeScreenPrev() {
     ImanBytesTheme(darkTheme = false, dynamicColor = false) {
