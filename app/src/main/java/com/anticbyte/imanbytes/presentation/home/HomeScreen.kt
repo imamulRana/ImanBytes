@@ -45,6 +45,7 @@ import com.anticbyte.imanbytes.presentation.home.component.PrayerTimeCard
 import com.anticbyte.imanbytes.presentation.home.component.PrayerTimeSec
 import com.anticbyte.imanbytes.presentation.home.component.RandomVerseCard
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
+import com.anticbyte.imanbytes.utils.lzColCustomPadding
 
 @Composable
 fun HomeScreenRoute(
@@ -90,10 +91,7 @@ fun HomeScreen(
                 ) {
                     LazyColumn(
                         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-                        contentPadding = PaddingValues(
-                            vertical = 24.dp,
-                            horizontal = 16.dp
-                        ),
+                        contentPadding = lzColCustomPadding,
                         verticalArrangement = Arrangement.spacedBy(24.dp)
                     ) {
                         item {

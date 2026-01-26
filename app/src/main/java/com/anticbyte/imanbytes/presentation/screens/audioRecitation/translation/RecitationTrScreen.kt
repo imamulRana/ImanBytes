@@ -32,6 +32,7 @@ import com.anticbyte.imanbytes.presentation.component.AppIconButton
 import com.anticbyte.imanbytes.presentation.component.AppLoader
 import com.anticbyte.imanbytes.presentation.component.AppTopBar
 import com.anticbyte.imanbytes.presentation.player.PlayerViewModel
+import com.anticbyte.imanbytes.presentation.screens.audioRecitation.RecitationType
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.arabic.recitationItemDescription
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationFloatingButton
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationListItem
@@ -54,7 +55,13 @@ fun RecitationTrRoute(
         onNavigateBack = onNavigateBack,
         onNavigateToReadSurah = navigateToReadSurah,
         player = player,
-        onPlay = { playerViewModel.onPlay("1") }
+        playSurah = {
+            playerViewModel.onPlay(
+                surahList = screenState.surahList,
+                recitationId = RecitationType.TRANSLATION.recitationId,
+                surahNumber = it
+            )
+        }
     )
 }
 
@@ -65,7 +72,7 @@ fun RecitationTrScreen(
     onNavigateToReadSurah: (String) -> Unit = {},
     screenState: RecitationTrScreenState = RecitationTrScreenState(),
     isPlaying: Boolean = false,
-    onPlay: (surahNumber: String) -> Unit,
+    playSurah: (surahNumber: String) -> Unit,
     player: Player? = null,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -80,13 +87,7 @@ fun RecitationTrScreen(
                 title = "Recitation & Meaning",
                 onNavigationIconClick = onNavigateBack,
                 isBackVisible = true,
-                scrollBehavior = scrollBehavior,
-                actions = {
-                    AppIconButton(
-                        onClick = { TODO("Add search") },
-                        iconRes = R.drawable.ic_search
-                    )
-                }
+                scrollBehavior = scrollBehavior
             )
         },
         contentWindowInsets = WindowInsets(bottom = 64.dp)
@@ -112,7 +113,7 @@ fun RecitationTrScreen(
                         surahList = screenState.surahList,
                         isPlaying = isPlaying,
                         currentSurahNumber = screenState.currentSurahNumber,
-                        onPlaySurah = onPlay
+                        onPlaySurah = playSurah
                     )
                 }
             RecitationFloatingButton(
@@ -128,7 +129,6 @@ fun RecitationTrScreen(
 fun LazyListScope.recitationItemsTr(
     modifier: Modifier = Modifier,
     surahList: List<Surah>,
-    onSurahClick: (surahNumber: String) -> Unit = {},
     currentSurahNumber: String?,
     isPlaying: Boolean,
     onPlaySurah: (surahNumber: String) -> Unit = {}
@@ -137,10 +137,9 @@ fun LazyListScope.recitationItemsTr(
         RecitationListItem(
             modifier = modifier,
             surah = surah,
-            onPlaySurah = { onSurahClick(surah.number) },
+            onPlaySurah = onPlaySurah,
             shapes = ListItemDefaults.segmentedShapes(index, surahList.size),
             currentSurahNumber = currentSurahNumber,
-            isPlaying = isPlaying
         )
     }
 }

@@ -2,11 +2,15 @@ package com.anticbyte.imanbytes.feature
 
 import android.content.ComponentName
 import android.content.Context
+import androidx.compose.foundation.content.MediaType
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.anticbyte.imanbytes.BuildConfig
+import com.anticbyte.imanbytes.R
 import com.anticbyte.imanbytes.domain.model.Surah
 import com.google.common.util.concurrent.ListenableFuture
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -53,15 +57,51 @@ class QuranAudioController @Inject constructor(@ApplicationContext private val c
     }
 
     // Toggle play/pause for a specific surah
-    fun onPlay(surahNumber: String) {
-        _controller.value?.play()
+    fun playSurah(
+        surahs: List<Surah>,
+        recitationId: String,
+        targetSurahNumber: String
+    ) {
+        val controller = _controller.value ?: return
+
+        // Check if we are switching to a different set of audio
+        // We check the first item's ID or a custom tag to see if it matches
+        val firstIdInQueue = if (controller.mediaItemCount > 0) {
+            controller.getMediaItemAt(0).mediaId
+        } else null
+
+        val firstIdInNewList = surahs.firstOrNull()?.number
+
+        // If the list is different, replace the whole playlist
+        if (firstIdInQueue != firstIdInNewList) {
+            controller.stop() // Stop current playback
+            controller.setMediaItems(surahs.toMediaItems(recitationId))
+            controller.prepare()
+        }
+
+        // Now find the index of the specific surah in the (now updated) list
+        val index = (0 until controller.mediaItemCount).firstOrNull {
+            controller.getMediaItemAt(it).mediaId == targetSurahNumber
+        }
+
+        index?.let {
+            controller.seekTo(it, 0L)
+            controller.play()
+        }
     }
 
     fun List<Surah>.toMediaItems(recitationId: String): List<MediaItem> = map { surah ->
+
+        val metaData = MediaMetadata.Builder()
+            .setTitle(surah.englishName)
+            .setArtworkUri(null)
+            .build()
+
         MediaItem.Builder()
             .setUri(BuildConfig.AUDIO_BASE_URL.format(recitationId, surah.number))
-            .setMediaId(surah.number)
-            .setTag(surah)
+            .setMediaId("${surah.number}.$recitationId")
+            .setMediaMetadata(metaData)
+            .setTag(surah.number)
             .build()
     }
 

@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
@@ -90,7 +91,10 @@ fun NavigationScaffold(
             AnimatedVisibility(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .padding(horizontal = 16.dp, vertical = 4.dp),
+                    .padding(
+                        start = 4.dp, end = 4.dp,
+                        bottom = 2.dp
+                    ),
                 visible =
                     (state.isPlaying || state.isPaused) && state.currentMediaId != null && shouldShowBottomBar,
                 enter = slideInVertically(
@@ -99,7 +103,7 @@ fun NavigationScaffold(
                         dampingRatio = 0.5f
                     )
                 ),
-                exit = fadeOut(
+                exit = slideOutVertically(
                     animationSpec = spring(
                         stiffness = 500f,
                         dampingRatio = 0.5f

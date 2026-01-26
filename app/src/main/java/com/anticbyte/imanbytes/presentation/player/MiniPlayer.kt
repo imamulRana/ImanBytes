@@ -40,13 +40,9 @@ fun MiniPlayer(
     if (player == null) return
     val playPauseButtonState = rememberPlayPauseButtonState(player)
     SegmentedListItem(
-        modifier = modifier
-            .border(
-                BorderStroke(.5.dp, color = colorScheme.surfaceContainerHighest),
-                shape = shapes.large
-            ),
+        modifier = modifier,
         onClick = onShowSheet,
-        shapes = ListItemDefaults.shapes(shape = shapes.large),
+        shapes = ListItemDefaults.segmentedShapes(0,1),
         supportingContent = {
             Text(player.mediaMetadata.title.toString(), style = typography.bodySmall)
         },
@@ -60,6 +56,10 @@ fun MiniPlayer(
                     ),
                 contentAlignment = Alignment.Center
             ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.ic_recitation),
+                    contentDescription = null
+                )
             }
         },
         trailingContent = {

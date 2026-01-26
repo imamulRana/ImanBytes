@@ -26,12 +26,10 @@ fun RecitationListItem(
     modifier: Modifier = Modifier,
     surah: Surah,
     currentSurahNumber: String?,
-    isPlaying: Boolean,
     onPlaySurah: (surahNumber: String) -> Unit = {},
     shapes: ListItemShapes
 ) {
     val isSelected = currentSurahNumber == surah.number
-    val isCurrentlyPlaying = isPlaying && isSelected
     SegmentedListItem(
         selected = isSelected,
         shapes = shapes,

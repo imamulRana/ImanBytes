@@ -9,8 +9,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.anticbyte.imanbytes.presentation.player.PlayerViewModel
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.RecitationScreenRoute
-import com.anticbyte.imanbytes.presentation.screens.audioRecitation.RecitationViewModel
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.arabic.RecitationArRoute
+import com.anticbyte.imanbytes.presentation.screens.audioRecitation.arabic.RecitationArViewModel
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.translation.RecitationTrRoute
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.translation.RecitationTrViewModel
 import com.anticbyte.imanbytes.presentation.screens.selfRecitation.RecitationSelfDetailRoute
@@ -52,18 +52,20 @@ fun NavGraphBuilder.recitationGraph(
         }
         /* section for arabic recitation */
         composable<RecitationArRoute> {
-            val ca = LocalActivity.current as ComponentActivity
-            val cont = ca.mediaController
             val playerViewModel =
-                hiltViewModel<RecitationViewModel>(LocalActivity.current as ComponentActivity)
+                hiltViewModel<PlayerViewModel>(LocalActivity.current as ComponentActivity)
+            val viewModel = hiltViewModel<RecitationArViewModel>()
             RecitationArRoute(
-                viewModel = playerViewModel,
+                viewModel = viewModel,
                 navigateBack = { navController.navigateUp() },
-                navigateToReadSurah = { surahNumber ->
+                /*navigateToReadSurah = { surahNumber ->
                     navController.navigate(
                         RecitationSelfDetailRoute(surahNumber = surahNumber)
                     )
-                })
+                }*/
+                playerViewModel = playerViewModel,
+                navigateToReadSurah = { it }
+            )
         }
         /* section for translation recitation */
         composable<RecitationTrRoute> {
