@@ -1,16 +1,16 @@
 [versions]
-agp = "8.13.2"
-kotlin = "2.2.0"
+agp = "9.0.0"
+kotlin = "2.3.0"
 coreKtx = "1.17.0"
 junit = "4.13.2"
 junitVersion = "1.3.0"
 espressoCore = "3.7.0"
 lifecycleRuntimeKtx = "2.10.0"
-activityCompose = "1.12.1"
-composeBom = "2025.12.01"
-material3 = "1.5.0-alpha11"
+activityCompose = "1.12.2"
+composeBom = "2026.01.00"
+material3 = "1.5.0-alpha12"
 splash = "1.2.0"
-kotlinxSerializationJson = "1.9.0"
+kotlinxSerializationJson = "1.10.0"
 navigationComponse = "2.9.6"
 googleServices = "4.4.4"
 
@@ -18,11 +18,11 @@ googleServices = "4.4.4"
 trustedTimeApi = "16.0.1"
 
 #network
-ktor = "3.3.3"
+ktor = "3.4.0"
 slf4jAndroid = "1.7.36"
 
 #hilt ksp
-hilt-android = "2.57.2"
+hilt-android = "2.59"
 kotlin-ksp = "2.3.4"
 hiltNavigation = "1.3.0"
 
@@ -33,11 +33,11 @@ pref-dataStore = "1.2.0"
 playInAppUpdates = "2.1.0"
 
 #media3
-media3 = "1.9.0"
+media3 = "1.9.1"
 playServicesMaps = "19.2.0"
 appcompat = "1.7.1"
 constraintlayout = "2.2.1"
-firebaseBom = "34.7.0"
+firebaseBom = "34.8.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -92,7 +92,7 @@ androidx-media3-ui = { module = "androidx.media3:media3-ui-compose", version.ref
 androidx-media3-session = { module = "androidx.media3:media3-session", version.ref = "media3" }
 
 #parse string from html jsoup
-jsoup = { module = "org.jsoup:jsoup", version = "1.21.1" }
+jsoup = { module = "org.jsoup:jsoup", version = "1.22.1" }
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-config = { group = "com.google.firebase", name = "firebase-config" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
