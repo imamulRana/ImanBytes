@@ -7,6 +7,7 @@ import androidx.media3.session.MediaController
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.conflate
 
 val MediaController.playBackStateFlow: Flow<PlayBackState>
     get() = callbackFlow {
@@ -41,25 +42,31 @@ val MediaController.playBackStateFlow: Flow<PlayBackState>
 
 val MediaController.mediaMetaDataFlow: Flow<PlayerUiState>
     get() = callbackFlow {
+        // 1. Define the listener
         val listener = object : Player.Listener {
             override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+                // When the song changes, emit the new item
                 trySend(mediaItem.toUiState)
             }
 
             override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
+                // When metadata (like ID3 tags) loads, emit the updated current item
                 trySend(currentMediaItem.toUiState)
             }
         }
 
-        // Register listener
+        // 2. Register listener
         addListener(listener)
 
-        // Send current item immediately
+        // 3. Emit Initial State IMMEDIATELY
+        // Don't wait/poll. If it's null, the UI should handle the "empty" state.
         trySend(currentMediaItem.toUiState)
 
-        // Remove listener when flow is closed
+        // 4. Cleanup
         awaitClose { removeListener(listener) }
     }
+        // 5. Optimization: Combine rapid updates
+        .conflate()
 
 
 val MediaItem?.toUiState: PlayerUiState
@@ -67,7 +74,7 @@ val MediaItem?.toUiState: PlayerUiState
         title = this?.mediaMetadata?.title?.toString().orEmpty(),
         artist = this?.mediaMetadata?.artist?.toString().orEmpty(),
         mediaId = this?.mediaId,
-        mediaIndex = this?.mediaMetadata?.writer?.toString()
+        mediaIndex = null
     )
 
 

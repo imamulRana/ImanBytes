@@ -50,7 +50,7 @@ class HomeViewModel @Inject constructor(
                     }
 
                     val asmaDeferred = async {
-                        asmaRepo.getSingleAsma(
+                        asmaRepo.getAsma(
                             Random.nextInt(1, 99).toString()
                         ).getOrThrow()
                     }

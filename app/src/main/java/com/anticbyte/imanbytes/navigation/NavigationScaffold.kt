@@ -2,7 +2,6 @@ package com.anticbyte.imanbytes.navigation
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.spring
-import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
@@ -43,6 +42,7 @@ fun NavigationScaffold(
     val player by playerViewModel.controller.collectAsStateWithLifecycle()
     var shouldShowSheet by remember { mutableStateOf(false) }
     val state by playerViewModel.isPlaying.collectAsStateWithLifecycle()
+    val mediaState by playerViewModel.mediaUiState.collectAsStateWithLifecycle()
 
     val excludedRoutes = setOf(
         Onboarding::class,
@@ -117,7 +117,8 @@ fun NavigationScaffold(
                         onDismissSheet = {
                             shouldShowSheet = false
                         },
-                        player = player
+                        player = player,
+                        metaDataUiState = mediaState
                     )
                 }
             )

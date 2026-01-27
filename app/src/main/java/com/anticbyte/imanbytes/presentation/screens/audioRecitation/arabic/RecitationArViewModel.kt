@@ -3,8 +3,8 @@ package com.anticbyte.imanbytes.presentation.screens.audioRecitation.arabic
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anticbyte.imanbytes.domain.repo.QuranRepo
+import com.anticbyte.imanbytes.feature.MediaPlaybackController
 import com.anticbyte.imanbytes.feature.PlayBackState
-import com.anticbyte.imanbytes.feature.QuranAudioController
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -19,7 +19,7 @@ import javax.inject.Inject
 class RecitationArViewModel
 @Inject constructor(
     private val quranRepo: QuranRepo,
-    private val mediaController: QuranAudioController
+    private val mediaController: MediaPlaybackController
 ) : ViewModel() {
     private val _recitationUiState = MutableStateFlow(RecitationArScreenState(isLoading = true))
     val recitationUiState: StateFlow<RecitationArScreenState> = _recitationUiState

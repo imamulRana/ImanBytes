@@ -28,7 +28,6 @@ import androidx.media3.common.util.UnstableApi
 import com.anticbyte.imanbytes.R
 import com.anticbyte.imanbytes.domain.model.Surah
 import com.anticbyte.imanbytes.presentation.component.AppErrorScreen
-import com.anticbyte.imanbytes.presentation.component.AppIconButton
 import com.anticbyte.imanbytes.presentation.component.AppLoader
 import com.anticbyte.imanbytes.presentation.component.AppTopBar
 import com.anticbyte.imanbytes.presentation.player.PlayerViewModel
@@ -56,8 +55,7 @@ fun RecitationTrRoute(
         onNavigateToReadSurah = navigateToReadSurah,
         player = player,
         playSurah = {
-            playerViewModel.onPlay(
-                surahList = screenState.surahList,
+            playerViewModel.playSurah(
                 recitationId = RecitationType.TRANSLATION.recitationId,
                 surahNumber = it
             )

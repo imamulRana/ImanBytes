@@ -11,7 +11,7 @@ import io.ktor.client.request.get
 import io.ktor.http.appendPathSegments
 
 class AsmaAlHusnaRepoImpl(private val httpClient: HttpClient) : AsmaAlHusnaRepo {
-    override suspend fun getSingleAsma(number: String): Result<Asma> {
+    override suspend fun getAsma(number: String): Result<Asma> {
         return safeApiCall {
             val response = httpClient.get("https://api.aladhan.com/asmaAlHusna") {
                 url.appendPathSegments(number)

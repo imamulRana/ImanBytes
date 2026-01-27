@@ -8,7 +8,6 @@ import com.anticbyte.imanbytes.domain.model.Tafsir
 
 interface QuranRepo {
     suspend fun getAllSurah(): Result<List<Surah>>
-    suspend fun getTranslatedRecitation(): Result<List<Surah>>
     suspend fun getTxtSurahAndTranslation(surahNumber: String): Result<List<SelfRecitation>>
     suspend fun getSurahInfoByNumber(surahNumber: String): Result<SurahInfoDto>
     suspend fun getRandomVerse(verseNumber: String): Result<RandomVerse>

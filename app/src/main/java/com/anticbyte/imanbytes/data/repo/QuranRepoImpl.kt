@@ -38,10 +38,6 @@ class QuranRepoImpl(
         }
     }
 
-    override suspend fun getTranslatedRecitation(): Result<List<Surah>> {
-        TODO("Not yet implemented")
-    }
-
     override suspend fun getTxtSurahAndTranslation(surahNumber: String): Result<List<SelfRecitation>> {
         return withContext(Dispatchers.IO) {
             safeApiCall {

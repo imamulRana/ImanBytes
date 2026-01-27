@@ -57,8 +57,7 @@ fun RecitationArRoute(
         onNavigateBack = navigateBack,
         currentSurahNumber = currentSurahNumber,
         playSurah = {
-            playerViewModel.onPlay(
-                surahList = screenState.surahList,
+            playerViewModel.playSurah(
                 recitationId = RecitationType.ARABIC.recitationId,
                 surahNumber = it
             )

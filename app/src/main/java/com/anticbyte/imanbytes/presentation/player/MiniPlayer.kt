@@ -1,9 +1,7 @@
 package com.anticbyte.imanbytes.presentation.player
 
 import androidx.annotation.OptIn
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
@@ -26,6 +24,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.compose.state.rememberPlayPauseButtonState
 import com.anticbyte.imanbytes.R
 import com.anticbyte.imanbytes.feature.PlayBackState
+import com.anticbyte.imanbytes.feature.PlayerUiState
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
 
 @OptIn(UnstableApi::class)
@@ -33,6 +32,7 @@ import com.anticbyte.imanbytes.theme.ImanBytesTheme
 fun MiniPlayer(
     modifier: Modifier = Modifier,
     playBackState: PlayBackState,
+    metaDataUiState: PlayerUiState,
     onShowSheet: () -> Unit = {},
     onDismissSheet: () -> Unit = {},
     player: Player?
@@ -42,9 +42,9 @@ fun MiniPlayer(
     SegmentedListItem(
         modifier = modifier,
         onClick = onShowSheet,
-        shapes = ListItemDefaults.segmentedShapes(0,1),
+        shapes = ListItemDefaults.segmentedShapes(0, 1),
         supportingContent = {
-            Text(player.mediaMetadata.title.toString(), style = typography.bodySmall)
+            Text(metaDataUiState.artist, style = typography.bodySmall)
         },
         leadingContent = {
             Box(
@@ -77,7 +77,7 @@ fun MiniPlayer(
             containerColor = colorScheme.surfaceContainer
         )
     ) {
-        Text(player.mediaMetadata.title.toString(), style = typography.titleMedium)
+        Text(metaDataUiState.title, style = typography.titleSmall)
     }
 }
 
