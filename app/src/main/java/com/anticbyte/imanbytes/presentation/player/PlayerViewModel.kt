@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anticbyte.imanbytes.domain.model.Surah
 import com.anticbyte.imanbytes.feature.PlayBackState
+import com.anticbyte.imanbytes.feature.PlayerUiState
 import com.anticbyte.imanbytes.feature.QuranAudioController
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -23,6 +24,17 @@ class PlayerViewModel @Inject constructor(private val audioController: QuranAudi
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000L),
         initialValue = PlayBackState(isPlaying = false, isPaused = false)
+    )
+
+    val mediaUiState = audioController.mediaUiState.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000L),
+        initialValue = PlayerUiState(
+            title = "",
+            artist = "",
+            mediaId = null,
+            mediaIndex = null
+        )
     )
 
     fun onPlay(

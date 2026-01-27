@@ -68,7 +68,8 @@ android {
     kotlin.compilerOptions {
         optIn.addAll(
             "androidx.compose.material3.ExperimentalMaterial3ExpressiveApi",
-            "androidx.compose.material3.ExperimentalMaterial3Api"
+            "androidx.compose.material3.ExperimentalMaterial3Api",
+            "kotlinx.coroutines.ExperimentalCoroutinesApi"
         )
         jvmTarget.set(JvmTarget.JVM_21)
         freeCompilerArgs.addAll(

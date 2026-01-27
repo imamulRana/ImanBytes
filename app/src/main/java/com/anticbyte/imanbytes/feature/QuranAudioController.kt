@@ -2,15 +2,12 @@ package com.anticbyte.imanbytes.feature
 
 import android.content.ComponentName
 import android.content.Context
-import androidx.compose.foundation.content.MediaType
 import androidx.core.content.ContextCompat
-import androidx.core.net.toUri
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.anticbyte.imanbytes.BuildConfig
-import com.anticbyte.imanbytes.R
 import com.anticbyte.imanbytes.domain.model.Surah
 import com.google.common.util.concurrent.ListenableFuture
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -29,9 +26,19 @@ class QuranAudioController @Inject constructor(@ApplicationContext private val c
     private val sessionToken =
         SessionToken(context, ComponentName(context, AudioPlaybackService::class.java))
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     val playBackState: Flow<PlayBackState> = _controller.flatMapLatest { cont ->
         cont?.playBackStateFlow ?: flowOf(PlayBackState(isPlaying = false, isPaused = false))
+    }
+
+    val mediaUiState: Flow<PlayerUiState> = _controller.flatMapLatest {
+        it?.mediaMetaDataFlow ?: flowOf(
+            PlayerUiState(
+                title = "",
+                artist = "",
+                mediaId = null,
+                mediaIndex = null
+            )
+        )
     }
     private val controllerFuture: ListenableFuture<MediaController> =
         MediaController.Builder(context, sessionToken).buildAsync()
@@ -58,24 +65,25 @@ class QuranAudioController @Inject constructor(@ApplicationContext private val c
 
     // Toggle play/pause for a specific surah
     fun playSurah(
-        surahs: List<Surah>,
+        surah: List<Surah>,
         recitationId: String,
         targetSurahNumber: String
     ) {
         val controller = _controller.value ?: return
 
+        controller.seekTo(surah.first().number)
         // Check if we are switching to a different set of audio
         // We check the first item's ID or a custom tag to see if it matches
         val firstIdInQueue = if (controller.mediaItemCount > 0) {
             controller.getMediaItemAt(0).mediaId
         } else null
 
-        val firstIdInNewList = surahs.firstOrNull()?.number
+        val firstIdInNewList = surah.firstOrNull()?.number
 
         // If the list is different, replace the whole playlist
         if (firstIdInQueue != firstIdInNewList) {
             controller.stop() // Stop current playback
-            controller.setMediaItems(surahs.toMediaItems(recitationId))
+            controller.setMediaItems(surah.toMediaItems(recitationId))
             controller.prepare()
         }
 

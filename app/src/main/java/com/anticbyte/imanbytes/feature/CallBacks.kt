@@ -1,5 +1,7 @@
 package com.anticbyte.imanbytes.feature
 
+import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import androidx.media3.session.MediaController
 import kotlinx.coroutines.channels.awaitClose
@@ -37,10 +39,48 @@ val MediaController.playBackStateFlow: Flow<PlayBackState>
         awaitClose { removeListener(listener) }
     }
 
+val MediaController.mediaMetaDataFlow: Flow<PlayerUiState>
+    get() = callbackFlow {
+        val listener = object : Player.Listener {
+            override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+                trySend(mediaItem.toUiState)
+            }
+
+            override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
+                trySend(currentMediaItem.toUiState)
+            }
+        }
+
+        // Register listener
+        addListener(listener)
+
+        // Send current item immediately
+        trySend(currentMediaItem.toUiState)
+
+        // Remove listener when flow is closed
+        awaitClose { removeListener(listener) }
+    }
+
+
+val MediaItem?.toUiState: PlayerUiState
+    get() = PlayerUiState(
+        title = this?.mediaMetadata?.title?.toString().orEmpty(),
+        artist = this?.mediaMetadata?.artist?.toString().orEmpty(),
+        mediaId = this?.mediaId,
+        mediaIndex = this?.mediaMetadata?.writer?.toString()
+    )
+
 
 data class PlayBackState(
     val isPlaying: Boolean = false,
     val isPaused: Boolean = false,
     val isControllerReady: Boolean = false, // New flag
     val currentMediaId: String? = null
+)
+
+data class PlayerUiState(
+    val title: String,
+    val artist: String,
+    val mediaId: String?,
+    val mediaIndex: String?
 )
