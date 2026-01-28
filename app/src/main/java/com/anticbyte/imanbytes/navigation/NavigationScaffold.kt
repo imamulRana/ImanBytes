@@ -42,7 +42,7 @@ fun NavigationScaffold(
     val player by playerViewModel.controller.collectAsStateWithLifecycle()
     var shouldShowSheet by remember { mutableStateOf(false) }
     val state by playerViewModel.isPlaying.collectAsStateWithLifecycle()
-    val mediaState by playerViewModel.mediaUiState.collectAsStateWithLifecycle()
+    val mediaState by playerViewModel.metadataUiState.collectAsStateWithLifecycle()
 
     val excludedRoutes = setOf(
         Onboarding::class,

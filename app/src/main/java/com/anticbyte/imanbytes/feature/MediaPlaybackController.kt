@@ -29,14 +29,9 @@ class MediaPlaybackController @Inject constructor(@ApplicationContext private va
         cont?.playBackStateFlow ?: flowOf(PlayBackState(isPlaying = false, isPaused = false))
     }
 
-    val mediaUiState: Flow<PlayerUiState> = _controller.flatMapLatest {
-        it?.mediaMetaDataFlow ?: flowOf(
-            PlayerUiState(
-                title = "",
-                artist = "",
-                mediaId = null,
-                mediaIndex = null
-            )
+    val metadataUiState: Flow<MetadataUiState> = _controller.flatMapLatest {
+        it?.metadataFlow ?: flowOf(
+            MetadataUiState.EMPTY
         )
     }
     private val controllerFuture: ListenableFuture<MediaController> =

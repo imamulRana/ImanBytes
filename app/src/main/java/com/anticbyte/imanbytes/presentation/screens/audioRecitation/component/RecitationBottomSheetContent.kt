@@ -54,7 +54,11 @@ fun RecitationBottomSheetContent(
                             contentDescription = null
                         )
                     }
-                })
+                },
+                onNavigationIconClick = {
+
+                }
+            )
             Box(
                 modifier = Modifier
                     .weight(1f)

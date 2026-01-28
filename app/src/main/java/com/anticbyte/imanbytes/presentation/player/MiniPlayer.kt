@@ -24,7 +24,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.compose.state.rememberPlayPauseButtonState
 import com.anticbyte.imanbytes.R
 import com.anticbyte.imanbytes.feature.PlayBackState
-import com.anticbyte.imanbytes.feature.PlayerUiState
+import com.anticbyte.imanbytes.feature.MetadataUiState
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
 
 @OptIn(UnstableApi::class)
@@ -32,7 +32,7 @@ import com.anticbyte.imanbytes.theme.ImanBytesTheme
 fun MiniPlayer(
     modifier: Modifier = Modifier,
     playBackState: PlayBackState,
-    metaDataUiState: PlayerUiState,
+    metaDataUiState: MetadataUiState,
     onShowSheet: () -> Unit = {},
     onDismissSheet: () -> Unit = {},
     player: Player?
