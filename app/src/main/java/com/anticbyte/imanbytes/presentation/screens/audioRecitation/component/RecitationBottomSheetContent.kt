@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.Player
@@ -37,6 +38,7 @@ fun RecitationBottomSheetContent(
     modifier: Modifier = Modifier,
     player: Player?,
     onReadSurahClick: (String) -> Unit,
+    onDismiss: () -> Unit = {}
 ) {
     player?.let { audioPlayer ->
         Column(modifier = modifier.fillMaxSize()) {
@@ -55,9 +57,7 @@ fun RecitationBottomSheetContent(
                         )
                     }
                 },
-                onNavigationIconClick = {
-
-                }
+                onNavigationIconClick = onDismiss
             )
             Box(
                 modifier = Modifier
@@ -88,6 +88,7 @@ fun RecitationBottomSheetContent(
                 )
                 Text(
                     text = audioPlayer.mediaMetadata.artist.toString(),
+                    textAlign = TextAlign.Center
                 )
                 AudioControlSection(
                     modifier = Modifier,

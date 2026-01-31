@@ -17,14 +17,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.compose.state.rememberPlayPauseButtonState
 import com.anticbyte.imanbytes.R
-import com.anticbyte.imanbytes.feature.PlayBackState
 import com.anticbyte.imanbytes.feature.MetadataUiState
+import com.anticbyte.imanbytes.feature.PlayBackState
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
 
 @OptIn(UnstableApi::class)
@@ -44,7 +45,12 @@ fun MiniPlayer(
         onClick = onShowSheet,
         shapes = ListItemDefaults.segmentedShapes(0, 1),
         supportingContent = {
-            Text(metaDataUiState.artist, style = typography.bodySmall)
+            Text(
+                metaDataUiState.artist,
+                style = typography.labelSmall,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         },
         leadingContent = {
             Box(
@@ -77,7 +83,12 @@ fun MiniPlayer(
             containerColor = colorScheme.surfaceContainer
         )
     ) {
-        Text(metaDataUiState.title, style = typography.titleSmall)
+        Text(
+            metaDataUiState.title,
+            style = typography.titleSmall,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
     }
 }
 

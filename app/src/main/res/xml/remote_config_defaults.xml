@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><defaults>
     <entry>
-        <key>friday_special</key>
+        <key>is_ramadan</key>
         <value>false</value>
     </entry>
 </defaults>

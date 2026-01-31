@@ -5,7 +5,6 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
@@ -23,8 +22,10 @@ import androidx.compose.material3.rememberSearchBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -40,7 +41,7 @@ import com.anticbyte.imanbytes.domain.model.Surah
 import com.anticbyte.imanbytes.presentation.component.AppErrorScreen
 import com.anticbyte.imanbytes.presentation.component.AppLoader
 import com.anticbyte.imanbytes.presentation.component.AppTopBar
-import com.anticbyte.imanbytes.presentation.component.SearchScreen
+import com.anticbyte.imanbytes.presentation.component.SearchDialog
 import com.anticbyte.imanbytes.presentation.player.PlayerViewModel
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.RecitationType
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationFloatingButton
@@ -89,6 +90,7 @@ fun RecitationArScreen(
     val searchBarState = rememberSearchBarState()
     val textFieldState = rememberTextFieldState()
     val scope = rememberCoroutineScope()
+    var isExpanded by remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = modifier
@@ -101,6 +103,7 @@ fun RecitationArScreen(
                 scrollBehavior = scrollBehavior,
                 actions = {
                     IconButton(onClick = {
+                        isExpanded = true
                         scope.launch {
                             searchBarState.animateToExpanded()
                         }
@@ -109,13 +112,22 @@ fun RecitationArScreen(
                     }
                 }
             )
-            SearchScreen(searchBarState = searchBarState, textFieldState = textFieldState)
+            SearchDialog(
+                isExpanded = isExpanded,
+                textFieldState = textFieldState,
+                onPlaySurah = playSurah,
+                onBack = {
+                    isExpanded = false
+                },
+                surahList = screenState.surahList.filter { surah ->
+                    surah.englishName.contains(textFieldState.text, ignoreCase = true)
+                }
+            )
         }) { innerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .navigationBarsPadding()
         ) {
             if (screenState.isLoading) AppLoader()
             else if (!screenState.errorMessages.isNullOrBlank()) AppErrorScreen(errorMessage = screenState.errorMessages) { }

@@ -51,12 +51,10 @@ fun NavigationScaffold(
         RamadanDetailRoute::class
     )
 
-    if (shouldShowSheet) RecitationBottomSheet(
+    RecitationBottomSheet(
         modifier = Modifier,
-        showSheet = true,
-        onDismiss = { show ->
-            shouldShowSheet = show
-        },
+        isOpen = shouldShowSheet,
+        onDismiss = { shouldShowSheet = false },
         onReadSurahClick = { surahNumber -> },
         player = player
     )

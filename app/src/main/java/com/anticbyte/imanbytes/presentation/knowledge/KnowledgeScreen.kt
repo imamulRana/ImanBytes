@@ -2,23 +2,29 @@
 
 package com.anticbyte.imanbytes.presentation.knowledge
 
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.anticbyte.imanbytes.presentation.component.AppTopBar
 import com.anticbyte.imanbytes.presentation.component.KnowledgeSectionItem
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
+import com.anticbyte.imanbytes.utils.lzColCustomPadding
 
 /**
  * Composable function that displays the Knowledge screen.
@@ -38,12 +44,14 @@ fun KnowledgeScreenRoute(
     navigateToAsma: () -> Unit,
     navigateToRamadan: () -> Unit
 ) {
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
     KnowledgeScreen(
         onNavigateToQuran = navigateToQuran,
         onNavigateToHadith = navigateToHadith,
         onNavigateToPillar = navigateToPillar,
         onNavigateToAsma = navigateToAsma,
-        onNavigateToRamadan = navigateToRamadan
+        onNavigateToRamadan = navigateToRamadan,
+        knowledgeItems = state.knowledgeItems
     )
 }
 
@@ -65,28 +73,42 @@ fun KnowledgeScreen(
     onNavigateToHadith: () -> Unit = {},
     onNavigateToPillar: () -> Unit = {},
     onNavigateToAsma: () -> Unit = {},
-    onNavigateToRamadan: () -> Unit = {}
+    onNavigateToRamadan: () -> Unit = {},
+    knowledgeItems: List<KnowledgeItem>
 ) {
-    Scaffold(topBar = {
-        AppTopBar(
-            title = "Knowledge",
-            isBackVisible = false,
-//            onNavigationIconClick = {}
-        )
-    }) { innerPadding ->
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(innerPadding),
-            verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap),
-        ) {
-            KnowledgeItems(
-                onNavigateToQuran = onNavigateToQuran,
-                onNavigateToHadith = onNavigateToHadith,
-                onNavigateToPillar = onNavigateToPillar,
-                onNavigateToAsma = onNavigateToAsma,
-                onNavigateToRamadan = onNavigateToRamadan
+    val scrollState = rememberScrollState()
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    Scaffold(
+        modifier = modifier
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            AppTopBar(
+                title = "Knowledge",
+                isBackVisible = false,
+                scrollBehavior = scrollBehavior
             )
+        }
+    ) { innerPadding ->
+        Box(
+            Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(scrollState)
+                    .padding(lzColCustomPadding)
+            ) {
+                KnowledgeItems(
+                    onNavigateToQuran = onNavigateToQuran,
+                    onNavigateToHadith = onNavigateToHadith,
+                    onNavigateToPillar = onNavigateToPillar,
+                    onNavigateToAsma = onNavigateToAsma,
+                    onNavigateToRamadan = onNavigateToRamadan,
+                    items = knowledgeItems
+                )
+            }
         }
     }
 }
@@ -103,11 +125,11 @@ fun KnowledgeItems(
     onNavigateToHadith: () -> Unit = {},
     onNavigateToPillar: () -> Unit = {},
     onNavigateToAsma: () -> Unit = {},
-    onNavigateToRamadan: () -> Unit = {}
+    onNavigateToRamadan: () -> Unit = {},
+    items: List<KnowledgeItem> = emptyList()
 ) {
-    KnowledgeItem.entries.fastForEach { item ->
+    items.fastForEach { item ->
         KnowledgeSectionItem(
-            modifier = Modifier.padding(horizontal = 16.dp),
             leadingIcon = item.iconRes,
             titleRes = item.titleRes,
             descriptionRes = item.descriptionRes,
@@ -131,6 +153,6 @@ fun KnowledgeItems(
 @Composable
 private fun HomeScreenPreview() {
     ImanBytesTheme(dynamicColor = false) {
-        KnowledgeScreen()
+        KnowledgeScreen(knowledgeItems = emptyList())
     }
 }
