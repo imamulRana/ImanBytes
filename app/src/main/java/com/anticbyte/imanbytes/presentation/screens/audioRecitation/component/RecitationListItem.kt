@@ -25,13 +25,12 @@ import com.anticbyte.imanbytes.theme.ImanBytesTheme
 fun RecitationListItem(
     modifier: Modifier = Modifier,
     surah: Surah,
-    currentSurahNumber: String?,
+    nowPlayingItem: String = "",
     onPlaySurah: (surahNumber: String) -> Unit = {},
     shapes: ListItemShapes
 ) {
-    val isSelected = currentSurahNumber == surah.number
     SegmentedListItem(
-        selected = isSelected,
+        selected = nowPlayingItem == surah.number,
         shapes = shapes,
         onClick = { onPlaySurah(surah.number) },
         modifier = modifier,

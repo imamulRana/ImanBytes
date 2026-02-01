@@ -47,7 +47,7 @@ val MediaController.metadataFlow: Flow<MetadataUiState>
             // Use ?.toString() followed by ?: to avoid the literal "null" string
             title = title?.toString() ?: "Unknown Title",
             artist = artist?.toString() ?: "Unknown Artist",
-            mediaId = null // Replace with actual ID logic if needed
+            mediaId = currentMediaItem?.mediaId // Replace with actual ID logic if needed
         )
 
         // Send current state immediately
@@ -62,14 +62,6 @@ val MediaController.metadataFlow: Flow<MetadataUiState>
         awaitClose { removeListener(listener) }
     }.distinctUntilChanged()
 
-
-fun MediaMetadata.toUiState() = MetadataUiState(
-    // .isNotBlank() check ensures we don't overwrite with empty strings
-    // if we already had data from the previous item
-    title = if (!title.isNullOrBlank()) title.toString() else "Loading...",
-    artist = if (!artist.isNullOrBlank()) artist.toString() else "Please wait...",
-    mediaId = null
-)
 
 data class PlayBackState(
     val isPlaying: Boolean = false,

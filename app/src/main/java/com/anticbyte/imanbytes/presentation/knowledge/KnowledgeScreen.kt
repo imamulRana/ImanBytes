@@ -21,6 +21,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.util.fastForEach
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.anticbyte.imanbytes.presentation.component.AppLoader
 import com.anticbyte.imanbytes.presentation.component.AppTopBar
 import com.anticbyte.imanbytes.presentation.component.KnowledgeSectionItem
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
@@ -51,7 +52,7 @@ fun KnowledgeScreenRoute(
         onNavigateToPillar = navigateToPillar,
         onNavigateToAsma = navigateToAsma,
         onNavigateToRamadan = navigateToRamadan,
-        knowledgeItems = state.knowledgeItems
+        screenState = state
     )
 }
 
@@ -74,7 +75,7 @@ fun KnowledgeScreen(
     onNavigateToPillar: () -> Unit = {},
     onNavigateToAsma: () -> Unit = {},
     onNavigateToRamadan: () -> Unit = {},
-    knowledgeItems: List<KnowledgeItem>
+    screenState: KnowledgeScreenState
 ) {
     val scrollState = rememberScrollState()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -94,21 +95,23 @@ fun KnowledgeScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(scrollState)
-                    .padding(lzColCustomPadding)
-            ) {
-                KnowledgeItems(
-                    onNavigateToQuran = onNavigateToQuran,
-                    onNavigateToHadith = onNavigateToHadith,
-                    onNavigateToPillar = onNavigateToPillar,
-                    onNavigateToAsma = onNavigateToAsma,
-                    onNavigateToRamadan = onNavigateToRamadan,
-                    items = knowledgeItems
-                )
-            }
+            if (screenState.isLoading) AppLoader()
+            else
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(scrollState)
+                        .padding(lzColCustomPadding)
+                ) {
+                    KnowledgeItems(
+                        onNavigateToQuran = onNavigateToQuran,
+                        onNavigateToHadith = onNavigateToHadith,
+                        onNavigateToPillar = onNavigateToPillar,
+                        onNavigateToAsma = onNavigateToAsma,
+                        onNavigateToRamadan = onNavigateToRamadan,
+                        items = screenState.knowledgeItems
+                    )
+                }
         }
     }
 }
@@ -153,6 +156,6 @@ fun KnowledgeItems(
 @Composable
 private fun HomeScreenPreview() {
     ImanBytesTheme(dynamicColor = false) {
-        KnowledgeScreen(knowledgeItems = emptyList())
+        KnowledgeScreen(screenState = KnowledgeScreenState())
     }
 }

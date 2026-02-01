@@ -3,7 +3,6 @@ package com.anticbyte.imanbytes.presentation.home
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -46,6 +45,7 @@ import com.anticbyte.imanbytes.presentation.home.component.PrayerTimeSec
 import com.anticbyte.imanbytes.presentation.home.component.RandomVerseCard
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
 import com.anticbyte.imanbytes.utils.lzColCustomPadding
+import com.anticbyte.imanbytes.utils.to12Hour
 
 @Composable
 fun HomeScreenRoute(
@@ -113,7 +113,7 @@ fun HomeScreen(
                                         ),
                                         trailingContent = {
                                             Text(
-                                                time
+                                                time.to12Hour()
                                             )
                                         },
                                         colors = ListItemDefaults.segmentedColors(colorScheme.surfaceContainerLowest)

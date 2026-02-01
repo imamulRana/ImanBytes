@@ -1,7 +1,6 @@
 package com.anticbyte.imanbytes.presentation.component
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.exclude
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,7 +13,6 @@ import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.clearText
 import androidx.compose.material3.AppBarWithSearch
 import androidx.compose.material3.BasicAlertDialog
-import androidx.compose.material3.ExpandedFullScreenContainedSearchBar
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -25,9 +23,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.SearchBarDefaults.inputFieldColors
-import androidx.compose.material3.SearchBarState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberSearchBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -46,78 +42,6 @@ import com.anticbyte.imanbytes.domain.model.Surah
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationListItem
 import com.anticbyte.imanbytes.utils.lzColCustomPadding
 import kotlinx.coroutines.delay
-
-@Composable
-fun SearchScreen(
-    modifier: Modifier = Modifier,
-    searchBarState: SearchBarState,
-    textFieldState: TextFieldState,
-    surahList: List<Surah> = emptyList(),
-    onPlaySurah: (surahNumber: String) -> Unit = {},
-    onBack: () -> Unit = {}
-) {
-    ExpandedFullScreenContainedSearchBar(
-        state = searchBarState, inputField = {
-            SearchBarDefaults.InputField(
-                searchBarState = searchBarState,
-                textFieldState = textFieldState,
-                onSearch = {},
-                placeholder = {
-                    Text("Search surah (e.g. Luqman)")
-                },
-                leadingIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_back),
-                            contentDescription = null
-                        )
-                    }
-                },
-                trailingIcon = {
-                    IconButton(onClick = {
-                        textFieldState.clearText()
-                    }) {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(R.drawable.ic_close),
-                            contentDescription = null
-                        )
-                    }
-                },
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = colorScheme.surfaceContainer,
-                    unfocusedContainerColor = colorScheme.surfaceContainer,
-                )
-            )
-        }, colors = SearchBarDefaults.containedColors(state = searchBarState)
-    ) {
-        LazyColumn(
-            modifier = modifier,
-            contentPadding = PaddingValues(
-                horizontal = 16.dp,
-                vertical = 8.dp
-            )
-        ) {
-            if (textFieldState.text.isEmpty())
-                item {
-                    Box(
-                        modifier = Modifier.fillParentMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text("Search results")
-                    }
-                }
-            else
-                itemsIndexed(surahList) { index, surah ->
-                    RecitationListItem(
-                        surah = surah,
-                        onPlaySurah = onPlaySurah,
-                        currentSurahNumber = null,
-                        shapes = ListItemDefaults.segmentedShapes(index, count = surahList.size)
-                    )
-                }
-        }
-    }
-}
 
 @Composable
 fun SearchDialog(
@@ -224,7 +148,7 @@ fun SearchDialog(
                                 RecitationListItem(
                                     surah = surah,
                                     onPlaySurah = onPlaySurah,
-                                    currentSurahNumber = null,
+                                    nowPlayingItem = "",
                                     shapes = ListItemDefaults.segmentedShapes(
                                         index,
                                         count = surahList.size

@@ -15,7 +15,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberSearchBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -28,7 +27,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import com.anticbyte.imanbytes.R
 import com.anticbyte.imanbytes.domain.model.Surah
@@ -50,23 +48,21 @@ fun RecitationTrRoute(
     modifier: Modifier = Modifier,
     playerViewModel: PlayerViewModel,
     screenViewModel: RecitationTrViewModel,
-    onNavigateBack: () -> Unit,
-    navigateToReadSurah: (String) -> Unit
+    onNavigateBack: () -> Unit
 ) {
     val screenState by screenViewModel.recitationUiState.collectAsStateWithLifecycle()
-    val player by playerViewModel.controller.collectAsStateWithLifecycle()
+    val currentMediaId by playerViewModel.metadataUiState.collectAsStateWithLifecycle()
     RecitationTrScreen(
         modifier = modifier,
         screenState = screenState,
         onNavigateBack = onNavigateBack,
-        onNavigateToReadSurah = navigateToReadSurah,
-        player = player,
         playSurah = {
             playerViewModel.playSurah(
                 recitationId = RecitationType.TRANSLATION.recitationId,
                 surahNumber = it
             )
-        }
+        },
+        currentMediaId = currentMediaId.mediaId
     )
 }
 
@@ -74,16 +70,13 @@ fun RecitationTrRoute(
 fun RecitationTrScreen(
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit = {},
-    onNavigateToReadSurah: (String) -> Unit = {},
     screenState: RecitationTrScreenState = RecitationTrScreenState(),
-    isPlaying: Boolean = false,
     playSurah: (surahNumber: String) -> Unit,
-    player: Player? = null,
+    currentMediaId: String?
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val listState = rememberLazyListState()
     val showScrollToTop by remember { derivedStateOf { (listState.firstVisibleItemIndex > 0) and listState.lastScrolledBackward } }
-    val searchBarState = rememberSearchBarState()
     val textFieldState = rememberTextFieldState()
     var isExpanded by remember { mutableStateOf(false) }
 
@@ -103,18 +96,6 @@ fun RecitationTrScreen(
                     }
                 }
             )
-            /*
-                        SearchScreen(
-                            searchBarState = searchBarState, textFieldState = textFieldState,
-                            onPlaySurah = playSurah,
-                            onBack = {
-                                scope.launch { searchBarState.animateToCollapsed() }
-                            },
-                            surahList = screenState.surahList.filter {
-                                it.englishName.contains(textFieldState.text, ignoreCase = true)
-                            }
-                        )
-            */
             SearchDialog(
                 isExpanded = isExpanded,
                 textFieldState = textFieldState,
@@ -142,8 +123,7 @@ fun RecitationTrScreen(
                     recitationItemDescription(descriptionRes = R.string.recitation_description_translation)
                     recitationItemsTr(
                         surahList = screenState.surahList,
-                        isPlaying = isPlaying,
-                        currentSurahNumber = screenState.currentSurahNumber,
+                        nowPlayingItem = screenState.surahList.find { "${RecitationType.TRANSLATION.recitationId}_${it.number}" == currentMediaId }?.number,
                         onPlaySurah = playSurah
                     )
                 }
@@ -160,8 +140,7 @@ fun RecitationTrScreen(
 fun LazyListScope.recitationItemsTr(
     modifier: Modifier = Modifier,
     surahList: List<Surah>,
-    currentSurahNumber: String?,
-    isPlaying: Boolean,
+    nowPlayingItem: String?,
     onPlaySurah: (surahNumber: String) -> Unit = {}
 ) {
     itemsIndexed(surahList) { index, surah ->
@@ -170,7 +149,7 @@ fun LazyListScope.recitationItemsTr(
             surah = surah,
             onPlaySurah = onPlaySurah,
             shapes = ListItemDefaults.segmentedShapes(index, surahList.size),
-            currentSurahNumber = currentSurahNumber,
+            nowPlayingItem = nowPlayingItem.orEmpty(),
         )
     }
 }

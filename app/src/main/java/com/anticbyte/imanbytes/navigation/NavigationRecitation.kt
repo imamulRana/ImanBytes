@@ -63,8 +63,7 @@ fun NavGraphBuilder.recitationGraph(
                         RecitationSelfDetailRoute(surahNumber = surahNumber)
                     )
                 }*/
-                playerViewModel = playerViewModel,
-                navigateToReadSurah = { it }
+                playerViewModel = playerViewModel
             )
         }
         /* section for translation recitation */
@@ -75,12 +74,8 @@ fun NavGraphBuilder.recitationGraph(
             RecitationTrRoute(
                 playerViewModel = playerViewModel,
                 screenViewModel = screenViewModel,
-                onNavigateBack = { navController.navigateUp() },
-                navigateToReadSurah = { surahNumber ->
-                    navController.navigate(
-                        RecitationSelfDetailRoute(surahNumber = surahNumber)
-                    )
-                })
+                onNavigateBack = { navController.navigateUp() }
+            )
         }
         /* section for self recitation */
         composable<RecitationSelfRoute> {

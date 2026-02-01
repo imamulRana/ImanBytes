@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
@@ -45,7 +43,8 @@ fun RecitationBottomSheetContent(
             AppTopBar(
                 isBackVisible = true, colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.Transparent
-                ), actions = {
+                ),
+                /*actions = {
                     Button(
                         onClick = { onReadSurahClick("") },
                         shapes = ButtonDefaults.shapes()
@@ -56,7 +55,7 @@ fun RecitationBottomSheetContent(
                             contentDescription = null
                         )
                     }
-                },
+                },*/
                 onNavigationIconClick = onDismiss
             )
             Box(

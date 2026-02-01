@@ -16,6 +16,7 @@ object : MediaSession.Callback {
     ): ListenableFuture<List<MediaItem>> {
         val updatedMediaItems = mediaItems.map { mediaItem ->
             val audioId = mediaItem.mediaId.split('_')
+            //edition_number
             val audioUri = BuildConfig.AUDIO_BASE_URL.format(
                 audioId[0], audioId[1]
             )

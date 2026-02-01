@@ -55,17 +55,16 @@ fun RecitationArRoute(
     modifier: Modifier = Modifier,
     playerViewModel: PlayerViewModel,
     viewModel: RecitationArViewModel,
-    navigateBack: () -> Unit,
-    navigateToReadSurah: (String) -> Unit
+    navigateBack: () -> Unit
 ) {
     val screenState by viewModel.recitationUiState.collectAsStateWithLifecycle()
-    val currentSurahNumber by viewModel.currentPlayingSurah.collectAsStateWithLifecycle()
+    val currentSurahNumber by playerViewModel.metadataUiState.collectAsStateWithLifecycle()
 
     RecitationArScreen(
         modifier = modifier,
         screenState = screenState,
         onNavigateBack = navigateBack,
-        currentSurahNumber = currentSurahNumber,
+        currentMediaId = currentSurahNumber.mediaId.orEmpty(),
         playSurah = {
             playerViewModel.playSurah(
                 recitationId = RecitationType.ARABIC.recitationId,
@@ -81,8 +80,8 @@ fun RecitationArScreen(
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit = {},
     screenState: RecitationArScreenState = RecitationArScreenState(),
-    currentSurahNumber: String? = null,
     playSurah: (surahNumber: String) -> Unit = {},
+    currentMediaId: String = ""
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val listState = rememberLazyListState()
@@ -140,8 +139,8 @@ fun RecitationArScreen(
                     recitationItemDescription(descriptionRes = R.string.recitation_description_arabic)
                     recitationItemsAr(
                         surahList = screenState.surahList,
-                        currentSurahNumber = currentSurahNumber,
-                        onPlaySurah = playSurah
+                        onPlaySurah = playSurah,
+                        nowPlayingItem = screenState.surahList.find { "${RecitationType.ARABIC.recitationId}_${it.number}" == currentMediaId }?.number.orEmpty()
                     )
                 }
             RecitationFloatingButton(
@@ -158,7 +157,7 @@ fun RecitationArScreen(
 fun LazyListScope.recitationItemsAr(
     modifier: Modifier = Modifier,
     surahList: List<Surah>,
-    currentSurahNumber: String?,
+    nowPlayingItem: String?,
     onPlaySurah: (surahNumber: String) -> Unit = {}
 ) {
     itemsIndexed(surahList) { index, surah ->
@@ -167,7 +166,7 @@ fun LazyListScope.recitationItemsAr(
             surah = surah,
             onPlaySurah = onPlaySurah,
             shapes = ListItemDefaults.segmentedShapes(index, surahList.size),
-            currentSurahNumber = currentSurahNumber
+            nowPlayingItem = nowPlayingItem.orEmpty()
         )
     }
 }

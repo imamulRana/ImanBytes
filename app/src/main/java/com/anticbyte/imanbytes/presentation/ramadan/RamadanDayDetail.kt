@@ -8,18 +8,12 @@ import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.add
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.exclude
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContent
-import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -185,7 +179,7 @@ fun RamadanDayDetailScreen(
                                     textAlign = TextAlign.Right
                                 )
                             }, supportingContent = {
-                                Text(generateWord(15))
+                                Text("Thirst is gone, the veins are moistened and the reward is certain if Allah wills.")
                             })
                     }
                     item {
@@ -204,7 +198,7 @@ fun RamadanDayDetailScreen(
                                     textAlign = TextAlign.Right
                                 )
                             }, supportingContent = {
-                                Text(generateWord(15))
+                                Text("I intend to keep the fast for tomorrow in the month of Ramadan")
                             })
                     }
                 }

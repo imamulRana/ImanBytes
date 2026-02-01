@@ -35,10 +35,6 @@ import androidx.media3.ui.compose.state.rememberProgressStateWithTickInterval
 import com.anticbyte.imanbytes.R
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
 
-enum class PlayerSeekType(val seekDuration: Long) {
-    FORWARD(seekDuration = 10000L), BACKWARD(seekDuration = 10000L)
-}
-
 @OptIn(UnstableApi::class)
 @Composable
 fun AudioControlSection(
@@ -53,7 +49,18 @@ fun AudioControlSection(
     var dragPosition by remember { mutableFloatStateOf(0f) }
     var isDragging by remember { mutableStateOf(false) }
 
-    val current by remember { derivedStateOf { getStringForTime(progressState.currentPositionMs) } }
+    val current by remember {
+        derivedStateOf {
+            val displayedTimeMs = if (isDragging) {
+                // Calculate time based on where the user is currently dragging
+                (dragPosition * progressState.durationMs.toFloat()).toLong()
+            } else {
+                // Otherwise show actual player progress
+                progressState.currentPositionMs
+            }
+            getStringForTime(displayedTimeMs)
+        }
+    }
     val duration by remember { derivedStateOf { getStringForTime(progressState.durationMs) } }
 
     LaunchedEffect(progressState.currentPositionMs) {
