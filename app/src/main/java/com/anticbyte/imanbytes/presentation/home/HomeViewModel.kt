@@ -41,8 +41,7 @@ class HomeViewModel @Inject constructor(
 
     private fun setupRemoteConfig() {
         val configSettings = remoteConfigSettings {
-            minimumFetchIntervalInSeconds =
-                if (BuildConfig.DEBUG) 0 else 3600
+            minimumFetchIntervalInSeconds = BuildConfig.REMOTE_CONFIG_INTERVAL
         }
 
         remoteConfig.setConfigSettingsAsync(configSettings)

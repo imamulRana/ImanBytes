@@ -29,6 +29,7 @@ android {
             isDebuggable = true
             applicationIdSuffix = ".debug"
             versionNameSuffix = "-debug"
+            buildConfigField("Long", "REMOTE_CONFIG_INTERVAL", "0L")
             buildConfigField(
                 "String",
                 "AUDIO_BASE_URL",
@@ -40,6 +41,7 @@ android {
             versionNameSuffix = "-staging"
             isDebuggable = true
             signingConfig = signingConfigs.getByName("debug")
+            buildConfigField("Long", "REMOTE_CONFIG_INTERVAL", "60L")
             buildConfigField(
                 "String",
                 "AUDIO_BASE_URL",
@@ -54,6 +56,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("Long", "REMOTE_CONFIG_INTERVAL", "3600L")
             buildConfigField(
                 "String",
                 "AUDIO_BASE_URL",
