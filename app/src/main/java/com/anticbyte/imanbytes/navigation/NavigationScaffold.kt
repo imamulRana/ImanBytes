@@ -52,7 +52,6 @@ fun NavigationScaffold(
     )
 
     RecitationBottomSheet(
-        modifier = Modifier,
         isOpen = shouldShowSheet,
         onDismiss = { shouldShowSheet = false },
         onReadSurahClick = { surahNumber -> },
@@ -90,8 +89,8 @@ fun NavigationScaffold(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .padding(
-                        start = 4.dp, end = 4.dp,
-                        bottom = 2.dp
+                        start = 8.dp, end = 8.dp,
+                        bottom = 4.dp
                     ),
                 visible =
                     (state.isPlaying || state.isPaused) && state.currentMediaId != null && shouldShowBottomBar,
@@ -109,7 +108,7 @@ fun NavigationScaffold(
                 ),
                 content = {
                     MiniPlayer(
-                        playBackState = state, onShowSheet = {
+                        onShowSheet = {
                             shouldShowSheet = true
                         },
                         onDismissSheet = {

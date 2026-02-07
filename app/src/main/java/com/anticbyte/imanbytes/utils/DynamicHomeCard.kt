@@ -57,6 +57,11 @@ val lzColCustomPadding: PaddingValues
         .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom)
         .add(WindowInsets(top = 0.dp, left = 16.dp, right = 16.dp, bottom = 88.dp))
         .asPaddingValues()
+val lzColCustomPaddingNone: PaddingValues
+    @Composable get() = WindowInsets.safeDrawing
+        .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom)
+        .add(WindowInsets(top = 12.dp, left = 0.dp, right = 0.dp, bottom = 88.dp))
+        .asPaddingValues()
 
 val LocalExtendedColors = staticCompositionLocalOf<ExtendedColorScheme> {
     error("No ExtendedColors provided")

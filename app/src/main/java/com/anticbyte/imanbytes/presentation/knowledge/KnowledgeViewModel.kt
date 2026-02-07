@@ -62,8 +62,6 @@ class KnowledgeViewModel : ViewModel() {
             if (remoteConfig.getBoolean("is_ramadan")) {
                 add(KnowledgeItem.RAMADAN)
             }
-
-            add(KnowledgeItem.DUA)
         }
 }
 

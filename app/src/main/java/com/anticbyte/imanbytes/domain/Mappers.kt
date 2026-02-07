@@ -9,6 +9,7 @@ import com.anticbyte.imanbytes.data.remote.SurahDto
 import com.anticbyte.imanbytes.data.remote.SurahEditionDto
 import com.anticbyte.imanbytes.domain.model.Asma
 import com.anticbyte.imanbytes.domain.model.Edition
+import com.anticbyte.imanbytes.domain.model.PrayerTime
 import com.anticbyte.imanbytes.domain.model.RamadanCalender
 import com.anticbyte.imanbytes.domain.model.RandomVerse
 import com.anticbyte.imanbytes.domain.model.SelfRecitation
@@ -67,13 +68,24 @@ fun JsonElement.toSajda(): Boolean {
     }
 }
 
-fun PrayerTimesResDto.Timings.toPrayerTime(): List<Pair<String, String>> = listOf(
-    "Fajr" to fajr,
-    "Dhuhr" to dhuhr,
-    "Asr" to asr,
-    "Maghrib" to maghrib,
-    "Isha" to isha
-)
+fun PrayerTimesResDto.Data.toPrayerTime(): PrayerTime {
+    fun String.cleanTime() = substringBefore(" ").to12Hour()
+
+    return PrayerTime(
+        prayerTime = listOf(
+            "Fajr" to timings.fajr.cleanTime(),
+            "Dhuhr" to timings.dhuhr.cleanTime(),
+            "Asr" to timings.asr.cleanTime(),
+            "Maghrib" to timings.maghrib.cleanTime(),
+            "Isha" to timings.isha.cleanTime()
+        ),
+        suhoor = timings.fajr.cleanTime(),
+        iftaar = timings.sunset.cleanTime(),
+        hijriDate = "${date.hijri.day} ${date.hijri.month.en} ${date.hijri.year}",
+        gregorianDate = date.gregorian.date,
+        readableDate = date.readable
+    )
+}
 
 fun AsmaAlHusnaDto.Data.toAsma(): Asma = Asma(
     name = this.name,
@@ -110,8 +122,7 @@ fun GetRandomVerseDto.toDomain(): RandomVerse {
         manzil = data.manzil,
         page = data.page,
         ruku = data.ruku,
-        hizbQuarter = data.hizbQuarter,
-        sajda = data.sajda
+        hizbQuarter = data.hizbQuarter
     )
 }
 

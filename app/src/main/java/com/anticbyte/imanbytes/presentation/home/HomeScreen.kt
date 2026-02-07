@@ -13,7 +13,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme.colorScheme
-import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SegmentedListItem
 import androidx.compose.material3.Text
@@ -28,7 +27,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.util.fastForEachIndexed
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.anticbyte.imanbytes.R
@@ -37,26 +35,29 @@ import com.anticbyte.imanbytes.domain.model.RandomVerse
 import com.anticbyte.imanbytes.presentation.component.AppErrorScreen
 import com.anticbyte.imanbytes.presentation.component.AppLoader
 import com.anticbyte.imanbytes.presentation.component.AppTopBar
-import com.anticbyte.imanbytes.presentation.component.TitleAndContentSection
 import com.anticbyte.imanbytes.presentation.home.component.AsmaAlHusnaCard
-import com.anticbyte.imanbytes.presentation.home.component.ComposableWithTitle
+import com.anticbyte.imanbytes.presentation.home.component.AsmaSection
 import com.anticbyte.imanbytes.presentation.home.component.PrayerTimeCard
-import com.anticbyte.imanbytes.presentation.home.component.PrayerTimeSec
+import com.anticbyte.imanbytes.presentation.home.component.PrayerTimeSection
+import com.anticbyte.imanbytes.presentation.home.component.RamadanSection
 import com.anticbyte.imanbytes.presentation.home.component.RandomVerseCard
+import com.anticbyte.imanbytes.presentation.home.component.RandomVerseSection
+import com.anticbyte.imanbytes.presentation.home.component.negativePadding
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
 import com.anticbyte.imanbytes.utils.lzColCustomPadding
-import com.anticbyte.imanbytes.utils.to12Hour
 
 @Composable
 fun HomeScreenRoute(
     viewModel: HomeViewModel = hiltViewModel(),
-    navigateToRandomVerse: (verseId: String) -> Unit = {},
+    navigateToRandomVerse: (verseId: String) -> Unit,
+    navigateToAsma: () -> Unit,
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     HomeScreen(
         state = state,
         navigateToRandomVerse = navigateToRandomVerse,
-        onRefresh = viewModel::refresh
+        onRefresh = viewModel::refresh,
+        onNavigateToAsma = navigateToAsma
     )
 }
 
@@ -64,7 +65,8 @@ fun HomeScreenRoute(
 fun HomeScreen(
     state: HomeScreenState = HomeScreenState(),
     navigateToRandomVerse: (verseId: String) -> Unit = {},
-    onRefresh: () -> Unit = {}
+    onRefresh: () -> Unit = {},
+    onNavigateToAsma: () -> Unit = {}
 ) {
     val topBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(state = topBarState)
@@ -72,7 +74,7 @@ fun HomeScreen(
         topBar = {
             AppTopBar(
                 title = "Iman Bytes",
-                subtitle = "Your Islamic Companion",
+                subtitle = "Quran Companion",
                 scrollBehavior = scrollBehavior
             )
         }
@@ -80,7 +82,8 @@ fun HomeScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)) {
+                .padding(innerPadding)
+        ) {
             if (state.isLoading) AppLoader()
             else if (state.error != null) AppErrorScreen(
                 errorMessage = state.error,
@@ -92,49 +95,39 @@ fun HomeScreen(
                     LazyColumn(
                         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
                         contentPadding = lzColCustomPadding,
-                        verticalArrangement = Arrangement.spacedBy(24.dp)
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        item {
-                            ComposableWithTitle(title = "prayer time") {
-                                state.prayerTimes.fastForEachIndexed { index, (prayer, time) ->
-                                    SegmentedListItem(
-                                        onClick = {},
-                                        leadingContent = {
-                                            Icon(
-                                                imageVector = ImageVector.vectorResource(
-                                                    PrayerTimeSec.entries[index].icon
-                                                ), null,
-                                                tint = colorScheme.onPrimaryContainer
-                                            )
-                                        },
-                                        shapes = ListItemDefaults.segmentedShapes(
-                                            index,
-                                            state.prayerTimes.size
-                                        ),
-                                        trailingContent = {
-                                            Text(
-                                                time.to12Hour()
-                                            )
-                                        },
-                                        colors = ListItemDefaults.segmentedColors(colorScheme.surfaceContainerLowest)
-                                    ) {
-                                        Text(prayer, style = typography.labelLarge)
-                                    }
-                                }
-                            }
-                        }
-                        item {
-                            TitleAndContentSection(title = "Verse of the day") {
-                                RandomVerseCard(
-                                    verse = state.randomVerse,
-                                    onReadMore = navigateToRandomVerse
+                        //ramadan overview
+                        if (state.ramadanOverView != null) {
+                            item {
+                                RamadanSection(
+                                    modifier = Modifier.negativePadding(),
+                                    prayerTime = state.prayerTime
                                 )
                             }
                         }
+                        //verse
                         item {
-                            TitleAndContentSection(title = "Asma al husna") {
-                                AsmaAlHusnaCard(asma = state.asma)
-                            }
+                            RandomVerseSection(
+                                modifier = Modifier.negativePadding(),
+                                verse = state.randomVerse,
+                                onReadMore = {
+                                    navigateToRandomVerse(it)
+                                })
+                        }
+                        //prayer time
+                        item {
+                            PrayerTimeSection(
+                                modifier = Modifier.negativePadding(),
+                                state.prayerTime
+                            )
+                        }
+                        //asma
+                        item {
+                            AsmaSection(
+                                modifier = Modifier.negativePadding(), asma = state.asma,
+                                onNavigateToAsma = onNavigateToAsma
+                            )
                         }
                     }
                 }
@@ -148,16 +141,7 @@ fun HomeScreen(
 private fun HomeScreenPrev() {
     ImanBytesTheme(darkTheme = false, dynamicColor = false) {
         HomeScreen(
-            state = HomeScreenState(
-                isLoading = false,
-                prayerTimes = listOf(
-                    "Fajr" to "04:30",
-                    "Dhuhr" to "12:30",
-                    "Asr" to "16:30",
-                    "Maghrib" to "18:30",
-                    "Isha" to "19:30"
-                )
-            )
+
         )
     }
 }
@@ -201,12 +185,9 @@ fun RamadanCard(modifier: Modifier = Modifier) {
                 headlineContent = {
                     Text("Ramadan")
                 },
-                supportingContent = {
-                    Text("1447")
-                },
                 trailingContent = {
                     Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_forward),
+                        imageVector = ImageVector.vectorResource(R.drawable.ic_chevron_right),
                         null
                     )
                 },

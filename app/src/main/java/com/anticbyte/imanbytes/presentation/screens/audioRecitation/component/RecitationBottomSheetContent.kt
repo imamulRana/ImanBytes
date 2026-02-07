@@ -44,18 +44,6 @@ fun RecitationBottomSheetContent(
                 isBackVisible = true, colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.Transparent
                 ),
-                /*actions = {
-                    Button(
-                        onClick = { onReadSurahClick("") },
-                        shapes = ButtonDefaults.shapes()
-                    ) {
-                        Text(text = "Read Now")
-                        Icon(
-                            imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_forward),
-                            contentDescription = null
-                        )
-                    }
-                },*/
                 onNavigationIconClick = onDismiss
             )
             Box(
@@ -87,7 +75,9 @@ fun RecitationBottomSheetContent(
                 )
                 Text(
                     text = audioPlayer.mediaMetadata.artist.toString(),
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    style = typography.bodyMedium,
+                    color = colorScheme.onSurfaceVariant
                 )
                 AudioControlSection(
                     modifier = Modifier,

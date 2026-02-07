@@ -39,10 +39,10 @@ enum class KnowledgeItem(
         descriptionRes = R.string.ramadan_calendar_desc,
         leadingShape = MaterialShapes.Pill
     ),
-    DUA(
-        iconRes = R.drawable.ic_dua,
-        titleRes = R.string.ramadan_calendar,
-        descriptionRes = R.string.ramadan_calendar_desc,
-        leadingShape = MaterialShapes.Cookie4Sided
-    )
+    /*    DUA(
+            iconRes = R.drawable.ic_dua,
+            titleRes = R.string.ramadan_calendar,
+            descriptionRes = R.string.ramadan_calendar_desc,
+            leadingShape = MaterialShapes.Cookie4Sided
+        )*/
 }

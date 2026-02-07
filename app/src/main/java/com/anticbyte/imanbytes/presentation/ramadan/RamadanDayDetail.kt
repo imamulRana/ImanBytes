@@ -109,7 +109,7 @@ fun RamadanDayDetailScreen(
                                 day.holidays.fastForEachIndexed { index, holiday ->
                                     SuggestionChip(onClick = {}, icon = {
                                         Icon(
-                                            imageVector = ImageVector.vectorResource(R.drawable.ic_events),
+                                            imageVector = ImageVector.vectorResource(R.drawable.ic_asterisk),
                                             null
                                         )
                                     }, label = {

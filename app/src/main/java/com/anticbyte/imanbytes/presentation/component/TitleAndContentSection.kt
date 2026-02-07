@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,7 +33,7 @@ fun TitleAndContentSection(
         ) {
             if (leadingContent != null)
                 leadingContent()
-            Text(title.uppercase(), style = typography.labelSmall, color = colorScheme.secondary)
+            Text(title, style = typography.labelLarge)
         }
         content()
     }

@@ -15,6 +15,7 @@ val jsonConfig: ContentNegotiationConfig.() -> Unit = {
             prettyPrint = true
             isLenient = true
             ignoreUnknownKeys = true
+            coerceInputValues = true
         }
     )
 }

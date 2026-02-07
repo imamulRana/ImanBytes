@@ -3,7 +3,6 @@ package com.anticbyte.imanbytes.presentation.screens.selfRecitation
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -43,6 +42,7 @@ import com.anticbyte.imanbytes.presentation.component.AppLoader
 import com.anticbyte.imanbytes.presentation.component.AppTopBar
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.paddingWithoutTop
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
+import com.anticbyte.imanbytes.utils.lzColCustomPaddingNone
 
 @Composable
 fun RecitationSelfDetailRoute(
@@ -87,10 +87,7 @@ fun RecitationSelfDetailScreen(
                 onRetry = {})
             else
                 LazyColumn(
-                    contentPadding = PaddingValues(
-                        top = 12.dp,
-                        bottom = 64.dp
-                    ),
+                    contentPadding = lzColCustomPaddingNone
                 ) {
                     txtRecitationItemDesc2(
                         revelationType = uiState.revelationType,
@@ -182,8 +179,8 @@ fun RecitationSelfDetailListItem(
             modifier = modifier,
             text = arSurahText.text,
             textAlign = TextAlign.Right,
-            style = typography.headlineLarge.copy(
-                fontFamily = FontFamily(Font(R.font.lateef))
+            style = typography.headlineSmall.copy(
+                fontFamily = FontFamily(Font(R.font.scheherazade))
             )
         )
     }, supportingContent = {

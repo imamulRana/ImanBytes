@@ -3,6 +3,7 @@ package com.anticbyte.imanbytes.data.remote
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonElement
 
 @Serializable
 data class GetRandomVerseDto(
@@ -22,7 +23,7 @@ data class GetRandomVerseDto(
         @SerialName("page") val page: Int,
         @SerialName("ruku") val ruku: Int,
         @SerialName("hizbQuarter") val hizbQuarter: Int,
-        @SerialName("sajda") val sajda: Boolean
+        @SerialName("sajda") val sajda: JsonElement? = null
     ) {
         @Serializable
         data class Edition(

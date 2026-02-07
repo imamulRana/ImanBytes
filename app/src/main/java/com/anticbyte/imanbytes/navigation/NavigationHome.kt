@@ -18,7 +18,7 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
         composable<HomeRoute> {
             HomeScreenRoute(navigateToRandomVerse = {
                 navController.navigate(RandomVerseRoute(it))
-            })
+            }, navigateToAsma = { navController.navigate(AsmaRoute) })
         }
     }
 }
