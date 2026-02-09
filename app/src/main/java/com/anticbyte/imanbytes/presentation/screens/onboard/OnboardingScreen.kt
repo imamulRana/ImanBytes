@@ -25,9 +25,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import com.anticbyte.imanbytes.R
 import com.anticbyte.imanbytes.presentation.component.AppOutlineButton
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
 
@@ -71,12 +73,13 @@ fun OnboardingScreen(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
-                    text = "Welcome to ImanBytes,",
-                    style = typography.displaySmall
+                    text = "As-salamu ʿalaykum,",
+                    style = typography.headlineSmall
                 )
                 Text(
-                    text = "ImanBytes is here to connect you to the creator of you understand him",
-                    style = typography.bodyLarge
+                    text = stringResource(R.string.app_intro_desc),
+                    style = typography.bodyMedium,
+                    color = colorScheme.onSurfaceVariant
                 )
             }
 
@@ -84,7 +87,7 @@ fun OnboardingScreen(
                 modifier = Modifier
                     .align(alignment = Alignment.BottomCenter)
                     .padding(bottom = 16.dp),
-                onClick = { onContinue() },
+                onClick = onContinue,
                 buttonLabel = "Continue"
             )
         }

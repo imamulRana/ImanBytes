@@ -6,8 +6,10 @@ import com.anticbyte.imanbytes.domain.model.RandomVerse
 
 data class HomeScreenState(
     val randomVerse: RandomVerse = RandomVerse(),
-    val prayerTimes: PrayerTime = PrayerTime(),
+    val prayerTime: PrayerTime = PrayerTime(),
+    val ramadanOverView: PrayerTime? = null,
     val asma: Asma = Asma(),
     val isLoading: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val isRefreshing: Boolean = false
 )

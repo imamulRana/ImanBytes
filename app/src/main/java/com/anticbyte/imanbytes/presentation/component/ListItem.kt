@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
@@ -30,6 +31,7 @@ import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -51,6 +53,7 @@ fun KnowledgeSectionItem(
     @StringRes titleRes: Int = R.string.title_quran,
     @StringRes descriptionRes: Int = R.string.desc_quran,
     onItemClick: () -> Unit = {},
+    leadingShape: Shape = CircleShape,
     shapes: ListItemShapes = ListItemDefaults.segmentedShapes(0,3)
 ) {
     SegmentedListItem(
@@ -59,7 +62,7 @@ fun KnowledgeSectionItem(
             Box(
                 Modifier
                     .size(40.dp)
-                    .background(colorScheme.primaryContainer, MaterialShapes.Clover4Leaf.toShape()),
+                    .background(colorScheme.primaryContainer, shape = leadingShape),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(

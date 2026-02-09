@@ -1,6 +1,7 @@
 package com.anticbyte.imanbytes.domain
 
 import com.anticbyte.imanbytes.data.remote.AsmaAlHusnaDto
+import com.anticbyte.imanbytes.data.remote.GetPrayerTimesByMonthDto
 import com.anticbyte.imanbytes.data.remote.GetRandomVerseDto
 import com.anticbyte.imanbytes.data.remote.GetTafsirDto
 import com.anticbyte.imanbytes.data.remote.PrayerTimesResDto
@@ -9,11 +10,13 @@ import com.anticbyte.imanbytes.data.remote.SurahEditionDto
 import com.anticbyte.imanbytes.domain.model.Asma
 import com.anticbyte.imanbytes.domain.model.Edition
 import com.anticbyte.imanbytes.domain.model.PrayerTime
+import com.anticbyte.imanbytes.domain.model.RamadanCalender
 import com.anticbyte.imanbytes.domain.model.RandomVerse
 import com.anticbyte.imanbytes.domain.model.SelfRecitation
 import com.anticbyte.imanbytes.domain.model.Surah
 import com.anticbyte.imanbytes.domain.model.SurahText
 import com.anticbyte.imanbytes.domain.model.Tafsir
+import com.anticbyte.imanbytes.utils.to12Hour
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
@@ -65,16 +68,22 @@ fun JsonElement.toSajda(): Boolean {
     }
 }
 
-fun PrayerTimesResDto.Timings.toPrayerTime(): PrayerTime {
+fun PrayerTimesResDto.Data.toPrayerTime(): PrayerTime {
+    fun String.cleanTime() = substringBefore(" ").to12Hour()
+
     return PrayerTime(
-        fajr = this.fajr,
-        dhuhr = this.dhuhr,
-        asr = this.asr,
-        maghrib = this.maghrib,
-        isha = this.isha,
-        sunRise = this.sunrise,
-        sunSet = this.sunset,
-        midNight = this.midnight
+        prayerTime = listOf(
+            "Fajr" to timings.fajr.cleanTime(),
+            "Dhuhr" to timings.dhuhr.cleanTime(),
+            "Asr" to timings.asr.cleanTime(),
+            "Maghrib" to timings.maghrib.cleanTime(),
+            "Isha" to timings.isha.cleanTime()
+        ),
+        suhoor = timings.fajr.cleanTime(),
+        iftaar = timings.sunset.cleanTime(),
+        hijriDate = "${date.hijri.day} ${date.hijri.month.en} ${date.hijri.year}",
+        gregorianDate = date.gregorian.date,
+        readableDate = date.readable
     )
 }
 
@@ -113,8 +122,7 @@ fun GetRandomVerseDto.toDomain(): RandomVerse {
         manzil = data.manzil,
         page = data.page,
         ruku = data.ruku,
-        hizbQuarter = data.hizbQuarter,
-        sajda = data.sajda
+        hizbQuarter = data.hizbQuarter
     )
 }
 
@@ -132,5 +140,37 @@ fun GetTafsirDto.Tafsir.toDomain(): Tafsir.TafsirData {
         author = author,
         groupVerse = groupVerse,
         content = content
+    )
+}
+
+fun GetPrayerTimesByMonthDto.toRamadanCalendar(): List<RamadanCalender> {
+    return data.map { it.toRamadanCalendar() }
+}
+
+private fun GetPrayerTimesByMonthDto.Data.toRamadanCalendar(): RamadanCalender {
+    return RamadanCalender(
+        //new
+        hijriDay = date.hijri.day,
+        gregorianWeekday = date.gregorian.weekday.en,
+        gregorianDate = date.readable,
+        hijriDate = date.hijri.day.plus(" " + date.hijri.month.en).plus(" " + date.hijri.year),
+        holidays = date.hijri.holidays,
+        imsak = timings.imsak.substringBefore(" ").to12Hour(),
+        sunset = timings.sunset.substringBefore(" ").to12Hour(),
+        prayerTimes = timings.toPrayerTimePairs()
+    )
+}
+
+private fun GetPrayerTimesByMonthDto.Data.Timings.toPrayerTimePairs(): List<Pair<String, String>> {
+    fun String.cleanTime() = substringBefore(" ").to12Hour()
+
+    return listOf(
+        "Fajr" to fajr.cleanTime(),
+        "Dhuhr" to dhuhr.cleanTime(),
+        "Asr" to asr.cleanTime(),
+        "Maghrib" to maghrib.cleanTime(),
+        "Isha" to isha.cleanTime(),
+        "Midnight" to midnight.cleanTime(),
+        "Lastthird" to lastThird.cleanTime()
     )
 }

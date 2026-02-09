@@ -17,7 +17,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 
@@ -36,13 +35,13 @@ fun BoxScope.RecitationFloatingButton(
             .padding(innerPadding)
             .padding(horizontal = 16.dp)
             .align(Alignment.BottomCenter)
-            .offset(y = -(ScreenOffset.plus(78.dp))),
+            .offset(y = -(ScreenOffset.plus(56.dp))),
         enter = fadeIn(),
         exit = fadeOut()
     ) {
         Button(colors = color,onClick = {
             coroutineScope.launch {
-                listState.animateScrollToItem(1)
+                listState.animateScrollToItem(0)
             }
         }) {
             Text("Scroll to top")

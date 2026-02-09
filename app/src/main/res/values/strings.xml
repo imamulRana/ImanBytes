@@ -4,7 +4,7 @@
     <string name="topic_all">All</string>
 
     <string name="title_quran">Quran</string>
-    <string name="desc_quran">Discover the miracles of Quran and get to know it.</string>
+    <string name="desc_quran">Explore the Quran with clarity, meaning, and guidance for everyday life.</string>
 
     <string name="title_seerah">Seerah</string>
     <string name="desc_seerah">Biography of our beloved prophet Muhammad (S.A.W).</string>
@@ -19,12 +19,11 @@
     <string name="desc_pillars">An unique way to learn the pillars of islam.</string>
 
     <string name="title_asma">Asma Al Husna</string>
-    <string name="desc_asma">An unique way to learn the pillars of islam.</string>
+    <string name="desc_asma">Discover the 99 names of Allah and grow closer through understanding His attributes.</string>
 
     <string name="test_verse_title">Allah Places Inspiration in us in Many Ways</string>
     <string name="test_verse">رَفِيعُ ٱلدَّرَجَـٰتِ ذُو ٱلْعَرْشِ يُلْقِى ٱلرُّوحَ مِنْ أَمْرِهِۦ عَلَىٰ مَن يَشَآءُ مِنْ عِبَادِهِۦ لِيُنذِرَ يَوْمَ ٱلتَّلَاقِ</string>
     <string name="test_verse_translation">[He is] the Exalted above [all] degrees, Owner of the Throne; He places the inspiration of His command [i.e., revelation] upon whom He wills of His servants to warn of the Day of Meeting.</string>
-    <string name="test_verse_info">- Surah %s, Verse %s</string>
     <string name="test_verse_tafsir">The root of many deviations is, in fact, the underestimation of God. Man is lost in admiration of other kinds of greatness, because he is unaware of God’s unlimited Greatness. He considers attachment to great men the means of his salvation. When Doomsday removes the veils over people’s eyes, they will come to know that God was and still is so great that the world could be enclosed in His fist like a small coin and the sky could be wrapped around His hand like an ordinary piece of paper.
 
 Just as a bell rings as soon as an examination is over, similarly as soon as the time of the world is over, a trumpet will be blown. After that, the whole system will change. Thereafter, a new world will come into existence.
@@ -43,4 +42,10 @@ This present world of ours is illuminated by the light of the sun, which is able
     <string name="recitation_description_translation">(it is) a Book (the Quran) which We have sent down to you, full of blessings, that they may ponder over its Verses, and that men of understanding may remember. [Sad 38:29]</string>
     <string name="read_surah">Read Surah</string>
     <string name="sajda">"Sajda"</string>
+    <string name="ramadan_calendar">Ramadan Calendar</string>
+    <string name="ramadan_calendar_desc">Ramadan calendar of 2026</string>
+
+    <string name="iftaar_dua">ذَهَبَ الظَّمَأُ وَابْتَلَّتِ الْعُرُوقُ وَثَبَتَ الأَجْرُ إِنْ شَاءَ اللَّهُ</string>
+    <string name="suhoor_dua">وَبِصَوْمِ غَدٍ نَّوَيْتُ مِنْ شَهْرِ رَمَضَانَ</string>
+    <string name="app_intro_desc">Iman Bytes is for the moments when your heart longs for peace. \n\nWhen noise feels empty, return to the words of Allah. Listen to the Qur’an, reflect on Surahs, Hadith, and Duas, and replace what distracts you with what brings light. Let your time become remembrance, and let remembrance bring you closer to the Lord of the worlds.</string>
 </resources>

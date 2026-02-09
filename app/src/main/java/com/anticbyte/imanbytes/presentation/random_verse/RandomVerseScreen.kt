@@ -110,9 +110,13 @@ fun LazyListScope.verseText(verse: RandomVerse) {
             TitleSec(verse = verse)
             TitleAndContentSection(
                 modifier = Modifier,
-                title = "VERSE ${verse.numberInSurah}"
+                title = "Verse ${verse.numberInSurah}"
             ) {
-                Text(verse.text)
+                Text(
+                    verse.text,
+                    style = typography.bodyMedium,
+                    color = colorScheme.onSurfaceVariant
+                )
             }
         }
     }
@@ -141,7 +145,8 @@ fun LazyListScope.tafsirText(tafsir: Tafsir) {
                 Text(
                     text = para,
                     textAlign = TextAlign.Justify,
-                    style = typography.bodyMedium
+                    style = typography.bodyMedium,
+                    color = colorScheme.onSurfaceVariant
                 )
             }
         }
@@ -179,13 +184,6 @@ fun TitleSec(
                 MetaChip(label = it.label)
             }
         }
-    }
-}
-
-@Composable
-fun VerseSec(modifier: Modifier = Modifier) {
-    TitleAndContentSection {
-        Text("")
     }
 }
 

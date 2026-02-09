@@ -1,0 +1,99 @@
+package com.anticbyte.imanbytes.presentation.player
+
+import androidx.annotation.OptIn
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.shapes
+import androidx.compose.material3.MaterialTheme.typography
+import androidx.compose.material3.SegmentedListItem
+import androidx.compose.material3.Text
+import androidx.compose.material3.TonalToggleButton
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.ui.compose.state.rememberPlayPauseButtonState
+import com.anticbyte.imanbytes.R
+import com.anticbyte.imanbytes.feature.MetadataUiState
+import com.anticbyte.imanbytes.theme.ImanBytesTheme
+
+@OptIn(UnstableApi::class)
+@Composable
+fun MiniPlayer(
+    modifier: Modifier = Modifier,
+    metaDataUiState: MetadataUiState,
+    onShowSheet: () -> Unit = {},
+    onDismissSheet: () -> Unit = {},
+    player: Player?
+) {
+    if (player == null) return
+    val playPauseButtonState = rememberPlayPauseButtonState(player)
+    SegmentedListItem(
+        modifier = modifier,
+        onClick = onShowSheet,
+        shapes = ListItemDefaults.segmentedShapes(0, 1),
+        supportingContent = {
+            Text(
+                metaDataUiState.artist,
+                style = typography.labelSmall,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        },
+        leadingContent = {
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .background(
+                        color = colorScheme.secondaryContainer,
+                        shape = shapes.medium
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.ic_recitation),
+                    contentDescription = null
+                )
+            }
+        },
+        trailingContent = {
+            TonalToggleButton(!playPauseButtonState.showPlay, onCheckedChange = {
+                playPauseButtonState.onClick()
+            }) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(
+                        if (!playPauseButtonState.showPlay) R.drawable.ic_pause_fill else R.drawable.ic_play_arrow_fill
+                    ), null
+                )
+            }
+        },
+        colors = ListItemDefaults.segmentedColors(
+            containerColor = colorScheme.surfaceContainer
+        )
+    ) {
+        Text(
+            metaDataUiState.title,
+            style = typography.titleSmall,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun MiniPlayerPreview() {
+    ImanBytesTheme {
+//        MiniPlayer(onShowSheet = {})
+    }
+}

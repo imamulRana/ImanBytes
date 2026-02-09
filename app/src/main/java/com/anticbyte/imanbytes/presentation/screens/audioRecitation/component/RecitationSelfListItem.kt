@@ -51,7 +51,7 @@ fun RecitationSelfListItem(
         },
         shapes = shapes,
         colors = ListItemDefaults.segmentedColors(
-            containerColor = colorScheme.surfaceContainerLow
+            containerColor = colorScheme.surfaceContainer
         )
     ) {
         Text(text = surah.englishName)

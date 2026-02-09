@@ -36,7 +36,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.anticbyte.imanbytes.R
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
 import kotlinx.coroutines.launch
 
@@ -102,7 +101,7 @@ fun Modifier.navigateOnClick(): Modifier = composed {
 @Preview
 @Composable
 fun SwipableCardStack() {
-    val images = listOf(R.drawable.img_quran_verse, R.drawable.img_hadith)
+    val images = listOf(2, 3)
     var currentIndex by remember { mutableIntStateOf(0) }
 
     if (currentIndex >= images.size) {
@@ -242,7 +241,7 @@ private fun AppCarouselPreview(@PreviewParameter(provider = AppCarouselPreviewPa
     ImanBytesTheme {
         AppCarousel(
             title = item.title, description = item.description, images = listOf(
-                R.drawable.img_quran_verse, R.drawable.img_hadith
+//                R.drawable.img_quran_verse, R.drawable.img_hadith
             )
         )
     }

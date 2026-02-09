@@ -15,16 +15,23 @@ enum class NavigationBarItem(
         itemLabel = "Home",
         navRoute = HomeBaseRoute
     ),
-    KNOWLEDGE(
+    QURAN(
         unselectedIcon = R.drawable.ic_nav_knowledge,
         selectedIcon = R.drawable.ic_nav_knowledge_fill,
+        itemLabel = "Quran",
+        navRoute = RecitationBaseRoute
+    ),
+    KNOWLEDGE(
+        unselectedIcon = R.drawable.ic_bulb,
+        selectedIcon = R.drawable.ic_bulb_fill,
         itemLabel = "Knowledge",
         navRoute = KnowledgeBaseRoute
-    ),
-    PROFILE(
+    )
+    // TODO: Add this in the next update.
+/*    PROFILE(
         unselectedIcon = R.drawable.ic_nav_profile,
         selectedIcon = R.drawable.ic_nav_profile_fill,
         itemLabel = "Profile",
-        navRoute = ProfileRoute.ProfileBaseRoute
-    )
+        navRoute = PrayerTimeRamadanRoute
+    )*/
 }

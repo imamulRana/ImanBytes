@@ -19,8 +19,6 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import com.anticbyte.imanbytes.navigation.NavigationBarItem
 
-@ExperimentalMaterial3ExpressiveApi
-@ExperimentalMaterial3Api
 @Composable
 fun AppBottomBar(
     modifier: Modifier = Modifier,
@@ -47,7 +45,6 @@ fun AppBottomBar(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Preview
 @Composable
 private fun AppBottomBarPreview() {

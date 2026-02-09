@@ -1,46 +1,66 @@
 package com.anticbyte.imanbytes.presentation.screens.audioRecitation.component
 
-import androidx.annotation.OptIn
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.SheetState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.media3.common.Player
-import androidx.media3.common.util.UnstableApi
-import com.anticbyte.imanbytes.domain.model.Surah
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
+import kotlinx.coroutines.launch
 
-@OptIn(UnstableApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecitationBottomSheet(
-    modifier: Modifier = Modifier,
-    sheetState: SheetState,
-    showSheet: Boolean,
-    onSheetHide: (Boolean) -> Unit = {},
-    nowPlayingSurah: Surah?,
+    isOpen: Boolean,
+    onDismiss: () -> Unit,
     onReadSurahClick: (String) -> Unit,
     player: Player? = null
 ) {
-    if (player == null) return
-    LaunchedEffect(showSheet) {
-        if (showSheet) sheetState.expand() else sheetState.hide()
-    }
-    if (showSheet)
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val scope = rememberCoroutineScope()
+
+    if (isOpen) {
         ModalBottomSheet(
-            onDismissRequest = { onSheetHide(false) },
+            onDismissRequest = {
+                // Determine if we need to clean up logic here
+                scope.launch {
+                    sheetState.hide()
+                }.invokeOnCompletion {
+                    if (!sheetState.isVisible) {
+                        onDismiss()
+                    }
+                }
+            },
             sheetState = sheetState,
-            dragHandle = null
+            dragHandle = null, // Custom drag handle or none
         ) {
             RecitationBottomSheetContent(
-                modifier = modifier,
-                nowPlayingSurah = nowPlayingSurah,
-                onReadSurahClick = onReadSurahClick,
-                player = player
+                onReadSurahClick = { surahId ->
+                    // Close sheet gracefully before navigation (optional preference)
+                    scope.launch {
+                        sheetState.hide()
+                    }.invokeOnCompletion {
+                        if (!sheetState.isVisible) {
+                            onDismiss()
+                            onReadSurahClick(surahId)
+                        }
+                    }
+                },
+                player = player,
+                onDismiss = {
+                    scope.launch {
+                        sheetState.hide()
+                    }.invokeOnCompletion {
+                        if (!sheetState.isVisible) {
+                            onDismiss()
+                        }
+                    }
+                }
             )
         }
+    }
 }
 
 @Preview
@@ -48,11 +68,8 @@ fun RecitationBottomSheet(
 private fun DefPrev() {
     ImanBytesTheme {
         RecitationBottomSheet(
-            sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
-            showSheet = true,
-            nowPlayingSurah = Surah(
-
-            ),
+            isOpen = true,
+            onDismiss = {},
             onReadSurahClick = {}
         )
     }

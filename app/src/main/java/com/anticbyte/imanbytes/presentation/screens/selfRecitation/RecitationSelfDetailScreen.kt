@@ -1,29 +1,31 @@
 package com.anticbyte.imanbytes.presentation.screens.selfRecitation
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.exclude
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -35,11 +37,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.anticbyte.imanbytes.R
 import com.anticbyte.imanbytes.domain.model.SelfRecitation
+import com.anticbyte.imanbytes.presentation.component.AppErrorScreen
+import com.anticbyte.imanbytes.presentation.component.AppLoader
 import com.anticbyte.imanbytes.presentation.component.AppTopBar
-import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.customInnerPadding
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.paddingWithoutTop
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
-import com.anticbyte.imanbytes.utils.loadingItem
+import com.anticbyte.imanbytes.utils.lzColCustomPaddingNone
 
 @Composable
 fun RecitationSelfDetailRoute(
@@ -67,28 +70,32 @@ fun RecitationSelfDetailScreen(
                 subtitle = uiState.surahEnglishTranslation,
                 onNavigationIconClick = onNavigateBack,
                 isBackVisible = true,
-                scrollBehavior = scrollBehavior,
-                actions = {
-                    IconButton(onClick = {}) {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(R.drawable.play_arrow_24px),
-                            contentDescription = null
-                        )
-                    }
-                })
-        }) { innerPadding ->
-        LazyColumn(
-            contentPadding = innerPadding.customInnerPadding(),
+                scrollBehavior = scrollBehavior
+            )
+        },
+        contentWindowInsets = ScaffoldDefaults.contentWindowInsets.exclude(WindowInsets.navigationBars)
+    ) { innerPadding ->
+        Box(
+            Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
         ) {
-            if (uiState.isLoading) loadingItem()
-            else {
-                txtRecitationItemDesc2(
-                    revelationType = uiState.revelationType,
-                    totalVerse = uiState.totalVerse,
-                    surahInfo = uiState.surahInfo
-                )
-                recitationItemsSelfDetail(uiState.txtRecitation)
-            }
+            if (uiState.isLoading) AppLoader()
+            // TODO: add retry logic
+            else if (uiState.errorMessage != null) AppErrorScreen(
+                errorMessage = uiState.errorMessage,
+                onRetry = {})
+            else
+                LazyColumn(
+                    contentPadding = lzColCustomPaddingNone
+                ) {
+                    txtRecitationItemDesc2(
+                        revelationType = uiState.revelationType,
+                        totalVerse = uiState.totalVerse,
+                        surahInfo = uiState.surahInfo
+                    )
+                    recitationItemsSelfDetail(uiState.txtRecitation)
+                }
         }
     }
 }
@@ -110,7 +117,8 @@ fun LazyListScope.txtRecitationItemDesc(@StringRes descriptionRes: Int) {
         Text(
             text = stringResource(descriptionRes),
             textAlign = TextAlign.Justify,
-            modifier = Modifier.paddingWithoutTop(16.dp)
+            style = typography.bodyMedium,
+            modifier = Modifier.padding(bottom = 16.dp)
         )
     }
 }
@@ -139,14 +147,9 @@ fun LazyListScope.txtRecitationItemDesc2(
                 }
                 append(totalVerse)
                 append("\n\n")
-                /*withStyle(
-                    style = typography.labelSmall.toSpanStyle()
-                        .copy(color = colorScheme.onBackground.copy(.5f))
-                ) {
-                    append("surah info".uppercase())
-                    append("\n")
-                }*/
-                append(surahInfo)
+                withStyle(style = typography.bodyMedium.toSpanStyle()) {
+                    append(surahInfo)
+                }
             }, textAlign = TextAlign.Justify)
         }
     }
@@ -176,8 +179,8 @@ fun RecitationSelfDetailListItem(
             modifier = modifier,
             text = arSurahText.text,
             textAlign = TextAlign.Right,
-            style = typography.headlineLarge.copy(
-                fontFamily = FontFamily(Font(R.font.lateef))
+            style = typography.headlineSmall.copy(
+                fontFamily = FontFamily(Font(R.font.scheherazade))
             )
         )
     }, supportingContent = {

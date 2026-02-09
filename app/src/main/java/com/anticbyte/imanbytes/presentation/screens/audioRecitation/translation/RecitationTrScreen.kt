@@ -1,6 +1,5 @@
 package com.anticbyte.imanbytes.presentation.screens.audioRecitation.translation
 
-import android.annotation.SuppressLint
 import androidx.annotation.OptIn
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,10 +9,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.text.input.rememberTextFieldState
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -21,50 +22,47 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import com.anticbyte.imanbytes.R
 import com.anticbyte.imanbytes.domain.model.Surah
-import com.anticbyte.imanbytes.presentation.component.AppIconButton
+import com.anticbyte.imanbytes.presentation.component.AppErrorScreen
+import com.anticbyte.imanbytes.presentation.component.AppLoader
 import com.anticbyte.imanbytes.presentation.component.AppTopBar
-import com.anticbyte.imanbytes.presentation.screens.audioRecitation.RecitationScreenState
+import com.anticbyte.imanbytes.presentation.component.SearchDialog
+import com.anticbyte.imanbytes.presentation.player.PlayerViewModel
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.RecitationType
-import com.anticbyte.imanbytes.presentation.screens.audioRecitation.RecitationViewModel
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.arabic.recitationItemDescription
-import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationBottomSheet
-import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationFloatingBar
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationFloatingButton
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.RecitationListItem
-import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.customInnerPadding
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
-import com.anticbyte.imanbytes.utils.loadingItem
+import com.anticbyte.imanbytes.utils.lzColCustomPadding
 
-@SuppressLint("VisibleForTests")
 @OptIn(UnstableApi::class)
 @Composable
 fun RecitationTrRoute(
     modifier: Modifier = Modifier,
-    viewModel: RecitationViewModel,
-    onNavigateBack: () -> Unit,
-    navigateToReadSurah: (String) -> Unit
+    playerViewModel: PlayerViewModel,
+    screenViewModel: RecitationTrViewModel,
+    onNavigateBack: () -> Unit
 ) {
-    val screenState by viewModel.recitationUiState.collectAsStateWithLifecycle()
-    val player by viewModel.mediaControllerState.collectAsStateWithLifecycle()
-    val currentSurahNumber by viewModel.currentPlayingSurah.collectAsStateWithLifecycle()
-    val isSurahPlaying by viewModel.isPlaying.collectAsStateWithLifecycle()
+    val screenState by screenViewModel.recitationUiState.collectAsStateWithLifecycle()
+    val currentMediaId by playerViewModel.metadataUiState.collectAsStateWithLifecycle()
     RecitationTrScreen(
         modifier = modifier,
         screenState = screenState,
         onNavigateBack = onNavigateBack,
-        onNavigateToReadSurah = navigateToReadSurah,
-        player = player,
-        currentSurahNumber = currentSurahNumber,
-        isPlaying = isSurahPlaying,
-        togglePlayPause = { viewModel.togglePlayPause(it, RecitationType.TRANSLATION) }
+        playSurah = {
+            playerViewModel.playSurah(
+                recitationId = RecitationType.TRANSLATION.recitationId,
+                surahNumber = it
+            )
+        },
+        currentMediaId = currentMediaId.mediaId
     )
 }
 
@@ -72,74 +70,67 @@ fun RecitationTrRoute(
 fun RecitationTrScreen(
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit = {},
-    onNavigateToReadSurah: (String) -> Unit = {},
-    screenState: RecitationScreenState = RecitationScreenState(recitationType = RecitationType.TRANSLATION),
-    currentSurahNumber: String? = null,
-    isPlaying: Boolean = false,
-    togglePlayPause: (surahNumber: String) -> Unit,
-    player: Player? = null,
+    screenState: RecitationTrScreenState = RecitationTrScreenState(),
+    playSurah: (surahNumber: String) -> Unit,
+    currentMediaId: String?
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val listState = rememberLazyListState()
     val showScrollToTop by remember { derivedStateOf { (listState.firstVisibleItemIndex > 0) and listState.lastScrolledBackward } }
-    var showSheet by remember { mutableStateOf(false) }
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val textFieldState = rememberTextFieldState()
+    var isExpanded by remember { mutableStateOf(false) }
+
 
     Scaffold(
         modifier = modifier
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             AppTopBar(
-                title = "Arabic Recitation Translation",
+                title = "Recitation & Meaning",
                 onNavigationIconClick = onNavigateBack,
                 isBackVisible = true,
                 scrollBehavior = scrollBehavior,
                 actions = {
-                    AppIconButton(
-                        onClick = { TODO("Add search") },
-                        iconRes = R.drawable.ic_search
-                    )
+                    IconButton(onClick = { isExpanded = true }) {
+                        Icon(imageVector = ImageVector.vectorResource(R.drawable.ic_search), null)
+                    }
                 }
             )
-        }) { innerPadding ->
-        Box(modifier = Modifier.fillMaxSize()) {
-            LazyColumn(
-                state = listState,
-                contentPadding = innerPadding.customInnerPadding(),
-                verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap)
-            ) {
-                if (screenState.isLoading) loadingItem()
-                else {
+            SearchDialog(
+                isExpanded = isExpanded,
+                textFieldState = textFieldState,
+                onPlaySurah = playSurah,
+                onBack = { isExpanded = false },
+                surahList = screenState.surahList.filter { surah ->
+                    surah.englishName.contains(textFieldState.text, ignoreCase = true)
+                }
+            )
+        }
+    ) { innerPadding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
+            if (screenState.isLoading) AppLoader()
+            else if (!screenState.errorMessages.isNullOrBlank()) AppErrorScreen(errorMessage = screenState.errorMessages) { }
+            else
+                LazyColumn(
+                    state = listState,
+                    contentPadding = lzColCustomPadding,
+                    verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap)
+                ) {
                     recitationItemDescription(descriptionRes = R.string.recitation_description_translation)
                     recitationItemsTr(
-                        modifier = Modifier.padding(horizontal = 16.dp),
                         surahList = screenState.surahList,
-                        onSurahClick = { surahNumber -> showSheet = true },
-                        currentSurahNumber = currentSurahNumber,
-                        isPlaying = isPlaying,
-                        togglePlayPause = togglePlayPause
+                        nowPlayingItem = screenState.surahList.find { "${RecitationType.TRANSLATION.recitationId}_${it.number}" == currentMediaId }?.number,
+                        onPlaySurah = playSurah
                     )
                 }
-            }
             RecitationFloatingButton(
                 innerPadding = innerPadding,
                 listState = listState,
                 showScrollToTop = showScrollToTop
-            )
-            RecitationFloatingBar(
-                modifier = Modifier.padding(innerPadding),
-                onExpand = { showSheet = !showSheet },
-                surah = screenState.nowPlayingSurah ?: Surah(),
-                player = player
-            )
-            RecitationBottomSheet(
-                modifier = Modifier,
-                sheetState = sheetState,
-                showSheet = showSheet,
-                onSheetHide = { showSheet = false },
-                onReadSurahClick = onNavigateToReadSurah,
-                player = player,
-                nowPlayingSurah = screenState.nowPlayingSurah
             )
         }
     }
@@ -147,22 +138,18 @@ fun RecitationTrScreen(
 
 //todo implement player state and onclick properly
 fun LazyListScope.recitationItemsTr(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     surahList: List<Surah>,
-    onSurahClick: (surahNumber: String) -> Unit = {},
-    currentSurahNumber: String?,
-    isPlaying: Boolean,
-    togglePlayPause: (surahNumber: String) -> Unit = {}
+    nowPlayingItem: String?,
+    onPlaySurah: (surahNumber: String) -> Unit = {}
 ) {
     itemsIndexed(surahList) { index, surah ->
         RecitationListItem(
             modifier = modifier,
             surah = surah,
-            onSurahClick = { onSurahClick(surah.number) },
+            onPlaySurah = onPlaySurah,
             shapes = ListItemDefaults.segmentedShapes(index, surahList.size),
-            togglePlayPause = togglePlayPause,
-            currentSurahNumber = currentSurahNumber,
-            isPlaying = isPlaying
+            nowPlayingItem = nowPlayingItem.orEmpty(),
         )
     }
 }

@@ -1,3 +1,4 @@
+import com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -8,6 +9,7 @@ plugins {
     alias(libs.plugins.dagger.hilt.android) // dagger hilt android plugin
     alias(libs.plugins.kotlin.ksp) // kotlin ksp plugin
     alias(libs.plugins.google.services)
+    alias(libs.plugins.crashlytics)
 }
 
 android {
@@ -17,10 +19,19 @@ android {
         applicationId = "com.anticbyte.imanbytes"
         minSdk = 24
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 4
+        versionName = "1.1.0-rc01"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        create("release") {
+            storeFile = file("anticbyte.jks")
+            storePassword = project.property("release_store_pass") as String
+            keyAlias = project.property("release_key_alias") as String
+            keyPassword = project.property("release_key_alias_pass") as String
+        }
     }
 
     buildTypes {
@@ -29,12 +40,7 @@ android {
             isDebuggable = true
             applicationIdSuffix = ".debug"
             versionNameSuffix = "-debug"
-            buildConfigField(type = "Boolean", name = "LOGGING", value = "true")
-            buildConfigField(
-                type = "String",
-                name = "BASE_URL",
-                value = "\"https://jsonplaceholder.typicode.com/\""
-            )
+            buildConfigField("Long", "REMOTE_CONFIG_INTERVAL", "0L")
             buildConfigField(
                 "String",
                 "AUDIO_BASE_URL",
@@ -42,24 +48,28 @@ android {
             )
         }
         release {
-            signingConfig = signingConfigs.getByName("debug")
-            isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("release")
+            isMinifyEnabled = true
             isDebuggable = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            buildConfigField(type = "Boolean", name = "LOGGING", value = "false")
-            buildConfigField(
-                type = "String",
-                name = "BASE_URL",
-                value = "\"https://jsonplaceholder.typicode.com/\""
-            )
+            configure<CrashlyticsExtension> {
+                mappingFileUploadEnabled = true
+            }
+            buildConfigField("Long", "REMOTE_CONFIG_INTERVAL", "3600L")
             buildConfigField(
                 "String",
                 "AUDIO_BASE_URL",
                 "\"https://cdn.islamic.network/quran/audio-surah/128/%s/%s.mp3\""
             )
+        }
+        create("staging") {
+            initWith(getByName("release"))
+            isMinifyEnabled = false
+            versionNameSuffix = "-staging"
+            buildConfigField("Long", "REMOTE_CONFIG_INTERVAL", "60L")
         }
     }
     compileOptions {
@@ -69,7 +79,8 @@ android {
     kotlin.compilerOptions {
         optIn.addAll(
             "androidx.compose.material3.ExperimentalMaterial3ExpressiveApi",
-            "androidx.compose.material3.ExperimentalMaterial3Api"
+            "androidx.compose.material3.ExperimentalMaterial3Api",
+            "kotlinx.coroutines.ExperimentalCoroutinesApi"
         )
         jvmTarget.set(JvmTarget.JVM_21)
         freeCompilerArgs.addAll(
@@ -112,6 +123,7 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.config)
     implementation(libs.firebase.analytics)
+    implementation(libs.firebase.crashlytics)
 
     //pref datastore
     implementation(libs.pref.datastore)
@@ -125,9 +137,6 @@ dependencies {
 
     //androidx media3
     implementation(libs.bundles.media3)
-
-    //parse string from html jsoup
-    implementation(libs.jsoup)
 
     //test
     testImplementation(libs.junit)
