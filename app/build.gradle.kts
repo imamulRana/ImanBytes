@@ -1,3 +1,4 @@
+import com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -8,6 +9,7 @@ plugins {
     alias(libs.plugins.dagger.hilt.android) // dagger hilt android plugin
     alias(libs.plugins.kotlin.ksp) // kotlin ksp plugin
     alias(libs.plugins.google.services)
+    alias(libs.plugins.crashlytics)
 }
 
 android {
@@ -17,10 +19,19 @@ android {
         applicationId = "com.anticbyte.imanbytes"
         minSdk = 24
         targetSdk = 36
-        versionCode = 2
-        versionName = "0.6.5"
+        versionCode = 4
+        versionName = "1.1.0-rc01"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        create("release") {
+            storeFile = file("anticbyte.jks")
+            storePassword = project.property("release_store_pass") as String
+            keyAlias = project.property("release_key_alias") as String
+            keyPassword = project.property("release_key_alias_pass") as String
+        }
     }
 
     buildTypes {
@@ -36,32 +47,29 @@ android {
                 "\"https://cdn.islamic.network/quran/audio-surah/128/%s/%s.mp3\""
             )
         }
-        create("staging") {
-            applicationIdSuffix = ".staging"
-            versionNameSuffix = "-staging"
-            isDebuggable = true
-            signingConfig = signingConfigs.getByName("debug")
-            buildConfigField("Long", "REMOTE_CONFIG_INTERVAL", "60L")
-            buildConfigField(
-                "String",
-                "AUDIO_BASE_URL",
-                "\"https://cdn.islamic.network/quran/audio-surah/128/%s/%s.mp3\""
-            )
-        }
         release {
-            signingConfig = signingConfigs.getByName("debug")
-            isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("release")
+            isMinifyEnabled = true
             isDebuggable = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            configure<CrashlyticsExtension> {
+                mappingFileUploadEnabled = true
+            }
             buildConfigField("Long", "REMOTE_CONFIG_INTERVAL", "3600L")
             buildConfigField(
                 "String",
                 "AUDIO_BASE_URL",
                 "\"https://cdn.islamic.network/quran/audio-surah/128/%s/%s.mp3\""
             )
+        }
+        create("staging") {
+            initWith(getByName("release"))
+            isMinifyEnabled = false
+            versionNameSuffix = "-staging"
+            buildConfigField("Long", "REMOTE_CONFIG_INTERVAL", "60L")
         }
     }
     compileOptions {
@@ -115,6 +123,7 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.config)
     implementation(libs.firebase.analytics)
+    implementation(libs.firebase.crashlytics)
 
     //pref datastore
     implementation(libs.pref.datastore)

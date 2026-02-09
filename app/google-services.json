@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "527016575934-qj4u3g2mj9tj5q4olfunvmoo59q6dmas.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.anticbyte.imanbytes",
+            "certificate_hash": "40402cfd840841deae8741f0bb8a6a5edc41be52"
+          }
+        },
+        {
           "client_id": "527016575934-3rlvics2aafagbnrojtqhjs1jj3q3sic.apps.googleusercontent.com",
           "client_type": 3
         }
