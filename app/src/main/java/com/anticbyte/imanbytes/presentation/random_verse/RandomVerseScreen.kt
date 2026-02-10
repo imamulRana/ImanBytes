@@ -4,10 +4,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.exclude
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
@@ -18,6 +19,7 @@ import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -39,6 +41,7 @@ import com.anticbyte.imanbytes.presentation.component.TitleAndContentSection
 import com.anticbyte.imanbytes.presentation.random_verse.component.MetaChip
 import com.anticbyte.imanbytes.presentation.random_verse.component.VerseMetaChip
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
+import com.anticbyte.imanbytes.utils.lzColCustomPadding
 
 @Composable
 fun RandomVerseScreenRoute(
@@ -68,7 +71,7 @@ fun RandomVerseScreen(
                 scrollBehavior = scrollBehavior
             )
         },
-        contentWindowInsets = WindowInsets()
+        contentWindowInsets = ScaffoldDefaults.contentWindowInsets.exclude(WindowInsets.navigationBars)
     ) { innerPadding ->
         Box(
             modifier = Modifier
@@ -79,7 +82,7 @@ fun RandomVerseScreen(
             else if (uiState.errorMessage != null) AppErrorScreen(errorMessage = uiState.errorMessage) { }
             else
                 LazyColumn(
-                    contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 32.dp),
+                    contentPadding = lzColCustomPadding,
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     verseText(uiState.verse)

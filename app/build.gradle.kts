@@ -19,8 +19,8 @@ android {
         applicationId = "com.anticbyte.imanbytes"
         minSdk = 24
         targetSdk = 36
-        versionCode = 4
-        versionName = "1.1.0-rc01"
+        versionCode = 5
+        versionName = "1.1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

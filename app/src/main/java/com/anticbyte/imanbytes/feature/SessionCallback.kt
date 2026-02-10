@@ -28,35 +28,4 @@ object : MediaSession.Callback {
         }
         return Futures.immediateFuture(updatedMediaItems)
     }
-
-    /*override fun onPlaybackResumption(
-        mediaSession: MediaSession,
-        controller: MediaSession.ControllerInfo,
-        isForPlayback: Boolean
-    ): ListenableFuture<MediaSession.MediaItemsWithStartPosition> {
-
-        // Example: resume last played surah
-        val lastReciterId = "ar.alafasy"
-        val lastSurahNumber = 12
-
-        val mediaId = "$lastReciterId|$lastSurahNumber"
-
-        val mediaItem = MediaItem.Builder()
-            .setMediaId(mediaId)
-            .setMediaMetadata(
-                MediaMetadata.Builder()
-                    .setTitle("Surah $lastSurahNumber")
-                    .setArtist(lastReciterId)
-                    .setIsPlayable(true)
-                    .build()
-            )
-            .build()
-
-        return Futures.immediateFuture(
-            MediaSession.MediaItemsWithStartPosition(
-                listOf(mediaItem), 0, C.TIME_UNSET
-            )
-        )
-    }*/
-
 }
