@@ -4,10 +4,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.exclude
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,6 +19,7 @@ import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.SegmentedListItem
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -38,7 +40,9 @@ import com.anticbyte.imanbytes.domain.model.Asma
 import com.anticbyte.imanbytes.presentation.component.AppErrorScreen
 import com.anticbyte.imanbytes.presentation.component.AppLoader
 import com.anticbyte.imanbytes.presentation.component.AppTopBar
+import com.anticbyte.imanbytes.presentation.screens.audioRecitation.arabic.recitationItemDescription
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
+import com.anticbyte.imanbytes.utils.lzColCustomPadding
 
 @Composable
 fun AsmaHusnaRoute(
@@ -67,9 +71,8 @@ fun AsmaHusnaScreen(
                 onNavigationIconClick = onNavigateUp,
                 scrollBehavior = scrollBehavior
             )
-        }, contentWindowInsets = WindowInsets(
-            bottom = 88.dp
-        )
+        },
+        contentWindowInsets = ScaffoldDefaults.contentWindowInsets.exclude(WindowInsets.navigationBars)
     ) {
         Box(
             modifier = Modifier
@@ -82,9 +85,10 @@ fun AsmaHusnaScreen(
                 onRetry = {})
             else
                 LazyColumn(
-                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
+                    contentPadding = lzColCustomPadding,
                     verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap)
                 ) {
+                    recitationItemDescription(R.string.asma_husna_description)
                     asmaAlHusnaList(uiState.asmaList)
                 }
         }
@@ -115,13 +119,13 @@ fun LazyListScope.asmaAlHusnaList(asmaList: List<Asma>) {
                     Text(asma.transliteration, style = typography.bodySmall)
                 }
             },
-            colors = ListItemDefaults.segmentedColors(containerColor = colorScheme.surfaceContainer)
+            colors = ListItemDefaults.segmentedColors(containerColor = colorScheme.surfaceContainerLowest)
         ) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 text = asma.name,
                 textAlign = TextAlign.Right,
-                style = typography.headlineLargeEmphasized.copy(fontFamily = FontFamily(Font(R.font.lateef)))
+                style = typography.headlineMediumEmphasized.copy(fontFamily = FontFamily(Font(R.font.scheherazade_medium)))
             )
         }
     }
