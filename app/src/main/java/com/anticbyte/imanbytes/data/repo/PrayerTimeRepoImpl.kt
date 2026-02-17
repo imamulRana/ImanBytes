@@ -11,6 +11,7 @@ import com.anticbyte.imanbytes.utils.safeApiCall
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.appendPathSegments
 import io.ktor.http.isSuccess
 import kotlinx.coroutines.Dispatchers
@@ -23,13 +24,19 @@ class PrayerTimeRepoImpl @Inject constructor(private val httpClient: HttpClient)
             safeApiCall {
                 val response = httpClient.get("https://api.aladhan.com") {
                     url {
-                        appendPathSegments("v1", "timings", date)
+                        appendPathSegments("v1", "timings", date) // date as "DD-MM-YYYY"
                         parameters.append("latitude", "23.68")
-                        parameters.append("longitude", "90.36")
+                        parameters.append("longitude", "90.36") // corrected negative longitude
+                        parameters.append("method", "3") // calculation method
+                        parameters.append("shafaq", "general") // twilight angle type
+                        parameters.append("tune", "5,3,5,7,9,-1,0,8,-6") // prayer offsets
                         parameters.append("timezonestring", "Asia/Dhaka")
+                        parameters.append("calendarMethod", "MATHEMATICAL")
+                        parameters.append("adjustment", "-1")
                     }
                 }
                 if (response.status.isSuccess()) {
+                    println(response.bodyAsText())
                     response.body<PrayerTimesResDto>().data.toPrayerTime()
                 } else {
                     throw Exception(response.status.description)
@@ -43,9 +50,12 @@ class PrayerTimeRepoImpl @Inject constructor(private val httpClient: HttpClient)
             safeApiCall {
                 val response = httpClient.get("https://api.aladhan.com/v1/hijriCalendar/") {
                     url {
-                        appendPathSegments("1447", "9")
+                        appendPathSegments("1447", "9") // year/month
                         parameters.append("latitude", "23.68")
-                        parameters.append("longitude", "90.36")
+                        parameters.append("longitude", "90.36") // positive for Dhaka
+                        parameters.append("method", "3") // calculation method
+                        parameters.append("shafaq", "general") // twilight angle type
+                        parameters.append("tune", "5,3,5,7,9,-1,0,8,-6") // prayer offsets
                         parameters.append("timezonestring", "Asia/Dhaka")
                         parameters.append("calendarMethod", "MATHEMATICAL")
                         parameters.append("adjustment", "1")

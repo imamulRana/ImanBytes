@@ -79,7 +79,7 @@ fun PrayerTimesResDto.Data.toPrayerTime(): PrayerTime {
             "Maghrib" to timings.maghrib.cleanTime(),
             "Isha" to timings.isha.cleanTime()
         ),
-        suhoor = timings.fajr.cleanTime(),
+        suhoor = timings.imsak.cleanTime(),
         iftaar = timings.sunset.cleanTime(),
         hijriDate = "${date.hijri.day} ${date.hijri.month.en} ${date.hijri.year}",
         gregorianDate = date.gregorian.date,
