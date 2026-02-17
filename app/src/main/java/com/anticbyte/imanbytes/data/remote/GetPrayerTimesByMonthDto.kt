@@ -58,7 +58,6 @@ data class GetPrayerTimesByMonthDto(
                 @SerialName("year") val year: String,
                 @SerialName("designation") val designation: Designation,
                 @SerialName("holidays") val holidays: List<String>,
-                @SerialName("adjustedHolidays") val adjustedHolidays: List<String>,
                 @SerialName("method") val method: String
             ) {
 
@@ -90,8 +89,7 @@ data class GetPrayerTimesByMonthDto(
                 @SerialName("weekday") val weekday: Weekday,
                 @SerialName("month") val month: Month,
                 @SerialName("year") val year: String,
-                @SerialName("designation") val designation: Designation,
-                @SerialName("lunarSighting") val lunarSighting: Boolean
+                @SerialName("designation") val designation: Designation
             ) {
 
                 @Serializable

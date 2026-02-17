@@ -36,7 +36,10 @@ class RamadanCalendarViewModel @Inject constructor(
                 }
             }.onFailure {
                 _uiState.update { lState ->
-                    lState.copy(errorMessage = it.message)
+                    lState.copy(
+                        errorMessage = it.message,
+                        isLoading = false
+                    )
                 }
             }
         }

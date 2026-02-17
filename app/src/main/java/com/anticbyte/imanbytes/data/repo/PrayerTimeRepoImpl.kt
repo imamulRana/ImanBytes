@@ -47,6 +47,8 @@ class PrayerTimeRepoImpl @Inject constructor(private val httpClient: HttpClient)
                         parameters.append("latitude", "23.68")
                         parameters.append("longitude", "90.36")
                         parameters.append("timezonestring", "Asia/Dhaka")
+                        parameters.append("calendarMethod", "MATHEMATICAL")
+                        parameters.append("adjustment", "1")
                     }
                 }
                 if (response.status.isSuccess()) {

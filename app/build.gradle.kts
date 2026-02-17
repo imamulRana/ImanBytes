@@ -19,8 +19,8 @@ android {
         applicationId = "com.anticbyte.imanbytes"
         minSdk = 24
         targetSdk = 36
-        versionCode = 7
-        versionName = "1.1.0"
+        versionCode = 8
+        versionName = "1.1.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -28,9 +28,9 @@ android {
     signingConfigs {
         create("release") {
             storeFile = file("anticbyte.jks")
-            storePassword = project.property("release_store_pass") as String
-            keyAlias = project.property("release_key_alias") as String
-            keyPassword = project.property("release_key_alias_pass") as String
+            storePassword = project.property("key_store_pass") as String
+            keyAlias = project.property("key_alias") as String
+            keyPassword = project.property("key_alias_pass") as String
         }
     }
 
@@ -49,8 +49,8 @@ android {
         }
         release {
             signingConfig = signingConfigs.getByName("release")
-            isMinifyEnabled = true
-            isDebuggable = false
+            isMinifyEnabled = false
+            isDebuggable = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
