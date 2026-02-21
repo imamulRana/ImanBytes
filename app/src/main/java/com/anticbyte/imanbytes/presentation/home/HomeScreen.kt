@@ -38,11 +38,8 @@ import com.anticbyte.imanbytes.presentation.component.AppTopBar
 import com.anticbyte.imanbytes.presentation.home.component.AsmaAlHusnaCard
 import com.anticbyte.imanbytes.presentation.home.component.AsmaSection
 import com.anticbyte.imanbytes.presentation.home.component.PrayerTimeCard
-import com.anticbyte.imanbytes.presentation.home.component.PrayerTimeSection
 import com.anticbyte.imanbytes.presentation.home.component.RamadanSection
 import com.anticbyte.imanbytes.presentation.home.component.RandomVerseCard
-import com.anticbyte.imanbytes.presentation.home.component.RandomVerseSection
-import com.anticbyte.imanbytes.presentation.home.component.negativePadding
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
 import com.anticbyte.imanbytes.utils.lzColCustomPadding
 
@@ -95,21 +92,19 @@ fun HomeScreen(
                     LazyColumn(
                         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
                         contentPadding = lzColCustomPadding,
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                        verticalArrangement = Arrangement.spacedBy(24.dp)
                     ) {
                         //ramadan overview
                         if (state.ramadanOverView != null) {
                             item {
                                 RamadanSection(
-                                    modifier = Modifier.negativePadding(),
                                     prayerTime = state.prayerTime
                                 )
                             }
                         }
                         //verse
                         item {
-                            RandomVerseSection(
-                                modifier = Modifier.negativePadding(),
+                            RandomVerseCard(
                                 verse = state.randomVerse,
                                 onReadMore = {
                                     navigateToRandomVerse(it)
@@ -117,15 +112,12 @@ fun HomeScreen(
                         }
                         //prayer time
                         item {
-                            PrayerTimeSection(
-                                modifier = Modifier.negativePadding(),
-                                state.prayerTime
-                            )
+                            PrayerTimeCard(prayerTimes = state.prayerTime)
                         }
                         //asma
                         item {
                             AsmaSection(
-                                modifier = Modifier.negativePadding(), asma = state.asma,
+                                asma = state.asma,
                                 onNavigateToAsma = onNavigateToAsma
                             )
                         }
@@ -168,8 +160,6 @@ private fun AsmaAlHusnaPreview() {
 private fun PrayerTimeItemPreview() {
     ImanBytesTheme {
         PrayerTimeCard(
-            prayerName = "Fajr",
-            prayerTime = "04:30",
         )
     }
 }

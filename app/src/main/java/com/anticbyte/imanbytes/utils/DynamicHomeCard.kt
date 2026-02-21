@@ -45,13 +45,6 @@ fun TitleLayout(
     }
 }
 
-val miniPlayerPadding = PaddingValues(
-    start = 16.dp,
-    end = 16.dp,
-    top = 12.dp,
-    bottom = 88.dp
-)
-
 val lzColCustomPadding: PaddingValues
     @Composable get() = WindowInsets.safeDrawing
         .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom)

@@ -1,6 +1,5 @@
 package com.anticbyte.imanbytes.presentation.home.component
 
-import android.R.attr.onClick
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -15,7 +14,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme.colorScheme
@@ -29,7 +27,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
@@ -95,26 +92,32 @@ fun ListItemAvatar(
 
 enum class PrayerTimeSec(
     @DrawableRes val icon: Int,
+    val timing: String,
     val color: Color
 ) {
     FAJR(
         R.drawable.sunny_snowing_24px,
+        "Dawn",
         Color(0xFF5B6B8F)
     ),
     DHUHR(
         R.drawable.sunny_24px,
+        "Noon",
         Color(0xFFC68A3D)
     ),
     ASR(
         R.drawable.partly_cloudy_day_24px,
+        "Afternoon",
         Color(0xFFD68847)
     ),
     MAGHRIB(
         R.drawable.wb_twilight_24px,
+        "Evening",
         Color(0xFFB5485C)
     ),
     ISHA(
         R.drawable.bedtime_24px,
+        "Night",
         Color(0xFF4A5272)
     )
 }

@@ -27,10 +27,9 @@ class PrayerTimeRepoImpl @Inject constructor(private val httpClient: HttpClient)
                         appendPathSegments("v1", "timings", date) // date as "DD-MM-YYYY"
                         parameters.append("latitude", "23.68")
                         parameters.append("longitude", "90.36") // corrected negative longitude
-                        parameters.append("method", "3") // calculation method
+                        parameters.append("method", "1") // calculation method
                         parameters.append("shafaq", "general") // twilight angle type
-                        parameters.append("tune", "5,3,5,7,9,-1,0,8,-6") // prayer offsets
-                        parameters.append("timezonestring", "Asia/Dhaka")
+                        parameters.append("tune", "10,10,5,7,9,-1,2,8,-6") // prayer offsets
                         parameters.append("calendarMethod", "MATHEMATICAL")
                         parameters.append("adjustment", "-1")
                     }
@@ -53,10 +52,9 @@ class PrayerTimeRepoImpl @Inject constructor(private val httpClient: HttpClient)
                         appendPathSegments("1447", "9") // year/month
                         parameters.append("latitude", "23.68")
                         parameters.append("longitude", "90.36") // positive for Dhaka
-                        parameters.append("method", "3") // calculation method
+                        parameters.append("method", "1") // calculation method
                         parameters.append("shafaq", "general") // twilight angle type
-                        parameters.append("tune", "5,3,5,7,9,-1,0,8,-6") // prayer offsets
-                        parameters.append("timezonestring", "Asia/Dhaka")
+                        parameters.append("tune", "10,10,5,7,9,-1,2,8,-6") // prayer offsets
                         parameters.append("calendarMethod", "MATHEMATICAL")
                         parameters.append("adjustment", "1")
                     }

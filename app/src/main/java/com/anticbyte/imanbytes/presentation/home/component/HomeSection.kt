@@ -1,16 +1,17 @@
 package com.anticbyte.imanbytes.presentation.home.component
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -18,20 +19,22 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.SegmentedListItem
 import androidx.compose.material3.Text
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -44,6 +47,7 @@ import com.anticbyte.imanbytes.domain.model.Asma
 import com.anticbyte.imanbytes.domain.model.PrayerTime
 import com.anticbyte.imanbytes.domain.model.RandomVerse
 import com.anticbyte.imanbytes.domain.model.Surah
+import com.anticbyte.imanbytes.presentation.home.utils.shareAsma
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
 import com.anticbyte.imanbytes.utils.shareCardText
 
@@ -181,54 +185,56 @@ May this verse be a reminder for the heart 🤍
 
 @Composable
 fun AsmaSection(
-    modifier: Modifier = Modifier, asma: Asma, onNavigateToAsma: () -> Unit = {}
+    asma: Asma, onNavigateToAsma: () -> Unit = {}
 ) {
     val context = LocalContext.current
-    val shareText = """
-                            ${asma.number}. ${asma.name}
-                            (${asma.transliteration})
-                            
-                            Meaning: ${asma.englishMeaning}
-                            
-                            Learn and remember the beautiful names of Allah 🤍
-                        """.trimIndent()
-
-    Column(modifier = modifier) {
-        SectionHeader(
-            onCLick = onNavigateToAsma, headerText = "Asma al husna", isActionAvailable = true
-        )
-        Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-            Text(
-                modifier = Modifier, text = asma.name, style = typography.displaySmall.copy(
-                    fontFamily = FontFamily(
-                        Font(R.font.scheherazade),
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        HomeTitle(label = "Asma al husna", action = onNavigateToAsma)
+        Card(
+            shape = shapes.extraLarge,
+            colors = CardDefaults.cardColors(containerColor = colorScheme.surfaceContainerLowest)
+        ) {
+            Column(
+                modifier = Modifier.padding(horizontal = 12.dp, vertical = 16.dp),
+            ) {
+                AppAvatar {
+                    Text(
+                        asma.number.toString().padStart(2, '0').take(2),
+                        style = typography.titleMedium,
+                        color = colorScheme.onPrimaryContainer
+                    )
+                }
+                Text(
+                    modifier = Modifier, text = asma.name, style = typography.displaySmall.copy(
+                        fontFamily = FontFamily(
+                            Font(R.font.scheherazade),
+                        )
                     )
                 )
-            )
-            Spacer(Modifier.size(4.dp))
-            Text(asma.transliteration, style = typography.headlineSmall)
-            Spacer(Modifier.size(4.dp))
-            Text(asma.englishMeaning, style = typography.titleSmall)
-            Spacer(Modifier.size(12.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text("${asma.number}/ 99 names of Allah", style = typography.bodySmall)
-                FilledTonalIconButton(
-                    modifier = Modifier.size(
-                        IconButtonDefaults.smallContainerSize(
-                            widthOption = IconButtonDefaults.IconButtonWidthOption.Wide
-                        )
-                    ), onClick = {
-                        context.shareCardText(text = shareText)
-                    }, shapes = IconButtonDefaults.shapes()
+                Text(asma.transliteration, style = typography.headlineSmall)
+                Text(asma.englishMeaning, style = typography.titleSmall)
+                Spacer(Modifier.size(12.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.ic_share_fill), null,
-                        modifier = Modifier.size(IconButtonDefaults.smallIconSize)
-                    )
+                    Text("${asma.number}/ 99 names of Allah", style = typography.bodySmall)
+                    FilledTonalIconButton(
+                        modifier = Modifier.size(
+                            IconButtonDefaults.smallContainerSize(
+                                widthOption = IconButtonDefaults.IconButtonWidthOption.Wide
+                            )
+                        ), onClick = {
+                            context.shareCardText(text = asma.shareAsma())
+                        }, shapes = IconButtonDefaults.shapes()
+                    ) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(R.drawable.ic_share_fill),
+                            null,
+                            modifier = Modifier.size(IconButtonDefaults.smallIconSize)
+                        )
+                    }
                 }
             }
         }
@@ -239,40 +245,61 @@ fun AsmaSection(
 fun RamadanSection(
     modifier: Modifier = Modifier, prayerTime: PrayerTime
 ) {
-    Column(modifier = modifier) {
-        SectionHeader(
-            onCLick = {}, headerText = prayerTime.hijriDate
-        )
-        Spacer(Modifier.size(4.dp))
-        ListItem(
-            onClick = {}, colors = ListItemDefaults.colors(colorScheme.surfaceContainerLowest),
-            modifier = Modifier.padding(horizontal = 8.dp),
+    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        HomeTitle(label = prayerTime.hijriDate)
+        FlowRow(
+            maxItemsInEachRow = 2, modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(IntrinsicSize.Min),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column {
-                    Text(
-                        "Suhoor",
-                        style = typography.bodySmall,
-                        color = colorScheme.onSurfaceVariant
-                    )
-                    Text(prayerTime.suhoor, style = typography.headlineSmall)
-                }
-                VerticalDivider(modifier = Modifier.fillMaxHeight())
-                Column {
-                    Text(
-                        "Iftaar",
-                        style = typography.bodySmall,
-                        color = colorScheme.onSurfaceVariant
-                    )
-                    Text(prayerTime.iftaar, style = typography.headlineSmall)
-                }
+            RamadanOverViewCard(
+                modifier = Modifier.weight(1f),
+                prayerTime = prayerTime.suhoor,
+                timeLabel = "Suhoor",
+                icon = R.drawable.sunny_24px,
+                iconTint = Color(0xFFF3D769)
+            )
+            RamadanOverViewCard(
+                modifier = Modifier.weight(1f),
+                prayerTime = prayerTime.iftaar,
+                timeLabel = "Iftaar",
+                icon = R.drawable.bedtime_24px,
+                iconTint = Color(0xFF868CFA)
+            )
+        }
+    }
+}
+
+@Composable
+fun RamadanOverViewCard(
+    modifier: Modifier = Modifier,
+    timeLabel: String,
+    prayerTime: String,
+    @DrawableRes icon: Int = R.drawable.sunny_24px,
+    iconTint: Color = Color.Unspecified
+) {
+    Card(
+        modifier = modifier,
+        shape = shapes.extraLarge,
+        colors = CardDefaults.cardColors(containerColor = colorScheme.surfaceContainerLowest)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Icon(
+                    modifier = Modifier.size(16.dp),
+                    imageVector = ImageVector.vectorResource(icon),
+                    contentDescription = null,
+                    tint = iconTint
+                )
+                Text(timeLabel, style = typography.bodySmall)
             }
+            Text(
+                prayerTime.substringBefore(" "),
+                style = typography.displaySmall.copy(fontWeight = FontWeight.Bold)
+            )
+            Text(
+                prayerTime.substringAfter(" "),
+                style = typography.labelSmall
+            )
         }
     }
 }
