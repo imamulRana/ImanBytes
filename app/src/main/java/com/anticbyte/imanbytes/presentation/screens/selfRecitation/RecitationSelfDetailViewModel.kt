@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.anticbyte.imanbytes.domain.model.SelfRecitation
+import com.anticbyte.imanbytes.domain.model.Tafsir
 import com.anticbyte.imanbytes.domain.repo.QuranRepo
 import com.anticbyte.imanbytes.navigation.RecitationSelfDetailRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,6 +27,7 @@ data class RecitationSelfDetailUiState(
     val surahEnglishTranslation: String = "",
     val surahInfo: String = "",
     val txtRecitation: List<SelfRecitation> = emptyList(),
+    val tafsir: Tafsir = Tafsir(),
     val errorMessage: String? = null
 )
 
@@ -93,6 +95,16 @@ class RecitationSelfDetailViewModel @Inject constructor(
             }
             // Set loading to false ONCE at the end
             _uiState.update { state -> state.copy(isLoading = false, errorMessage = errorMessage) }
+        }
+    }
+
+    fun fetchTafsirByVerser(verseNumber: String, surahNumber: String) {
+        viewModelScope.launch {
+            quranRepo.getTafsir(surahNumber, verseNumber).onSuccess { tafsir ->
+                _uiState.update { state ->
+                    state.copy(tafsir = tafsir)
+                }
+            }
         }
     }
 }

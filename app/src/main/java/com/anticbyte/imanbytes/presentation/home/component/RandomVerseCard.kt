@@ -60,12 +60,12 @@ fun RandomVerseCard(
                         },
                     imageVector = ImageVector.vectorResource(R.drawable.ic_quote),
                     contentDescription = null,
-                    tint = colorScheme.primaryContainer
+                    tint = colorScheme.onSurfaceVariant
                 )
                 Text(
                     verse.text,
                     maxLines = 3,
-                    style = typography.headlineMedium,
+                    style = typography.titleLarge,
                     overflow = TextOverflow.Ellipsis
                 )
                 Row(

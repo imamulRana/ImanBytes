@@ -54,7 +54,7 @@ class PrayerTimeRepoImpl @Inject constructor(private val httpClient: HttpClient)
                         parameters.append("longitude", "90.36") // positive for Dhaka
                         parameters.append("method", "1") // calculation method
                         parameters.append("shafaq", "general") // twilight angle type
-                        parameters.append("tune", "10,10,5,7,9,-1,2,8,-6") // prayer offsets
+                        parameters.append("tune", "9,10,5,7,9,-1,2,8,-6") // prayer offsets
                         parameters.append("calendarMethod", "MATHEMATICAL")
                         parameters.append("adjustment", "1")
                     }

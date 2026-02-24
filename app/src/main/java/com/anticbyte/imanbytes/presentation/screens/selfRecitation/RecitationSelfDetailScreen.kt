@@ -23,6 +23,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
@@ -52,7 +55,10 @@ fun RecitationSelfDetailRoute(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     RecitationSelfDetailScreen(
-        modifier = modifier, uiState = uiState, onNavigateBack = navigateBack
+        modifier = modifier, uiState = uiState, onNavigateBack = navigateBack,
+        onVerseClick = { surahNumber, verseNumber ->
+            viewModel.fetchTafsirByVerser(verseNumber, surahNumber)
+        }
     )
 }
 
@@ -61,8 +67,10 @@ fun RecitationSelfDetailScreen(
     modifier: Modifier = Modifier,
     uiState: RecitationSelfDetailUiState = RecitationSelfDetailUiState(),
     onNavigateBack: () -> Unit = {},
+    onVerseClick: (surahNumber: String, verseNumber: String) -> Unit = { _, _ -> }
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    var showSheet by rememberSaveable { mutableStateOf(false) }
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection), topBar = {
             AppTopBar(
@@ -85,7 +93,7 @@ fun RecitationSelfDetailScreen(
             else if (uiState.errorMessage != null) AppErrorScreen(
                 errorMessage = uiState.errorMessage,
                 onRetry = {})
-            else
+            else {
                 LazyColumn(
                     contentPadding = lzColCustomPaddingNone
                 ) {
@@ -94,19 +102,35 @@ fun RecitationSelfDetailScreen(
                         totalVerse = uiState.totalVerse,
                         surahInfo = uiState.surahInfo
                     )
-                    recitationItemsSelfDetail(uiState.txtRecitation)
+                    recitationItemsSelfDetail(
+                        uiState.txtRecitation,
+                        onVerseClick = { surahNumber, verseNumber ->
+                            onVerseClick(surahNumber, verseNumber)
+                            showSheet = true
+                        })
                 }
+                RecitationSelfBottomSheet(
+                    modifier = modifier.padding(horizontal = 16.dp),
+                    showSheet = showSheet,
+                    onDismiss = { showSheet = false },
+                    state = uiState
+                )
+            }
         }
     }
 }
 
-fun LazyListScope.recitationItemsSelfDetail(surahTextList: List<SelfRecitation>) {
+fun LazyListScope.recitationItemsSelfDetail(
+    surahTextList: List<SelfRecitation>,
+    onVerseClick: (surahNumber: String, verseNumber: String) -> Unit
+) {
     if (surahTextList.isNotEmpty()) items(surahTextList.first().ayahs.size) { surahText ->
         RecitationSelfDetailListItem(
             modifier = Modifier.fillMaxWidth(),
             arSurahText = surahTextList.first().ayahs[surahText],
             trSurahText = surahTextList.last().ayahs[surahText],
-            surahNumber = surahTextList.first().numberInQuran
+            surahNumber = surahTextList.first().numberInQuran,
+            onVerseClick = onVerseClick
         )
         if (surahTextList.first().ayahs.size - 1 != surahText) HorizontalDivider()
     }
@@ -159,22 +183,34 @@ fun LazyListScope.txtRecitationItemDesc2(
 fun RecitationSelfDetailListItem(
     modifier: Modifier = Modifier,
     surahNumber: String,
+    onVerseClick: (surahNumber: String, verseNumber: String) -> Unit,
     arSurahText: SelfRecitation.Ayah,
     trSurahText: SelfRecitation.Ayah
 ) {
-    ListItem(modifier = modifier, overlineContent = {
-        Row(modifier.fillMaxWidth()) {
-            Text(text = surahNumber)
-            Text(":${arSurahText.numberInSurah}")
-            Spacer(Modifier.weight(1f))
-            if (arSurahText.sajda) {
+    ListItem(
+        onClick = { onVerseClick(surahNumber, arSurahText.numberInSurah.toString()) },
+        modifier = modifier,
+        overlineContent = {
+            Row(modifier.fillMaxWidth()) {
+                Text(text = surahNumber)
+                Text(":${arSurahText.numberInSurah}")
+                Spacer(Modifier.weight(1f))
+                if (arSurahText.sajda) {
+                    Text(
+                        text = stringResource(R.string.sajda),
+                        textDecoration = TextDecoration.Underline
+                    )
+                }
+            }
+        },
+        supportingContent = {
+            Column {
                 Text(
-                    text = stringResource(R.string.sajda),
-                    textDecoration = TextDecoration.Underline
+                    text = trSurahText.text,
+                    textAlign = TextAlign.Justify,
                 )
             }
-        }
-    }, headlineContent = {
+        }) {
         Text(
             modifier = modifier,
             text = arSurahText.text,
@@ -183,14 +219,7 @@ fun RecitationSelfDetailListItem(
                 fontFamily = FontFamily(Font(R.font.scheherazade))
             )
         )
-    }, supportingContent = {
-        Column {
-            Text(
-                text = trSurahText.text,
-                textAlign = TextAlign.Justify,
-            )
-        }
-    })
+    }
 }
 
 @Preview
