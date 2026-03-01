@@ -5,11 +5,13 @@ import com.anticbyte.imanbytes.data.remote.GetPrayerTimesByMonthDto
 import com.anticbyte.imanbytes.data.remote.GetRandomVerseDto
 import com.anticbyte.imanbytes.data.remote.GetTafsirDto
 import com.anticbyte.imanbytes.data.remote.PrayerTimesResDto
+import com.anticbyte.imanbytes.data.remote.QuranSearchResponseDto
 import com.anticbyte.imanbytes.data.remote.SurahDto
 import com.anticbyte.imanbytes.data.remote.SurahEditionDto
 import com.anticbyte.imanbytes.domain.model.Asma
 import com.anticbyte.imanbytes.domain.model.Edition
 import com.anticbyte.imanbytes.domain.model.PrayerTime
+import com.anticbyte.imanbytes.domain.model.QuranSearch
 import com.anticbyte.imanbytes.domain.model.RamadanCalender
 import com.anticbyte.imanbytes.domain.model.RandomVerse
 import com.anticbyte.imanbytes.domain.model.SelfRecitation
@@ -172,5 +174,35 @@ private fun GetPrayerTimesByMonthDto.Data.Timings.toPrayerTimePairs(): List<Pair
         "Isha" to isha.cleanTime(),
         "Midnight" to midnight.cleanTime(),
         "Lastthird" to lastThird.cleanTime()
+    )
+}
+
+//quran search
+
+fun QuranSearchResponseDto.toDomain(): QuranSearch {
+    return QuranSearch(
+        language = language,
+        query = query,
+        results = results.map { result ->
+            result.surah.toDomain() to result.verses.map { it.toDomain() }
+        },
+        total = total
+    )
+}
+
+fun QuranSearchResponseDto.VerseDto.toDomain(): QuranSearch.Verse {
+    return QuranSearch.Verse(
+        id = id,
+        text = text,
+        translation = translation
+    )
+}
+
+fun QuranSearchResponseDto.SurahDto.toDomain(): QuranSearch.Surah {
+    return QuranSearch.Surah(
+        id = id,
+        name = name,
+        transliteration = transliteration,
+        translation = translation
     )
 }

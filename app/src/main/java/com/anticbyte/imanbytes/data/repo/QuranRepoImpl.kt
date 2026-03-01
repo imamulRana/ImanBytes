@@ -2,9 +2,11 @@ package com.anticbyte.imanbytes.data.repo
 
 import com.anticbyte.imanbytes.data.remote.GetRandomVerseDto
 import com.anticbyte.imanbytes.data.remote.GetTafsirDto
+import com.anticbyte.imanbytes.data.remote.QuranSearchResponseDto
 import com.anticbyte.imanbytes.data.remote.SurahDto
 import com.anticbyte.imanbytes.data.remote.SurahEditionDto
 import com.anticbyte.imanbytes.data.remote.SurahInfoDto
+import com.anticbyte.imanbytes.domain.model.QuranSearch
 import com.anticbyte.imanbytes.domain.model.RandomVerse
 import com.anticbyte.imanbytes.domain.model.SelfRecitation
 import com.anticbyte.imanbytes.domain.model.Surah
@@ -88,6 +90,17 @@ class QuranRepoImpl(
                     url.appendPathSegments("${surahNumber}_${verseNumber}.json")
                 }
                 if (response.status.isSuccess()) response.body<GetTafsirDto>().toDomain()
+                else throw Exception(response.status.description)
+            }
+        }
+    }
+
+    override suspend fun searchQuran(query: String): Result<QuranSearch> {
+        return withContext(Dispatchers.IO) {
+            safeApiCall {
+                val response =
+                    ktorClient.get("https://alquran-api.pages.dev/api/quran/search?q=$query")
+                if (response.status.isSuccess()) response.body<QuranSearchResponseDto>().toDomain()
                 else throw Exception(response.status.description)
             }
         }
