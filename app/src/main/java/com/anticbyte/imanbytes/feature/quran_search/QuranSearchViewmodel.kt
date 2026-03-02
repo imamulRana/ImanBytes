@@ -16,7 +16,7 @@ class QuranSearchViewmodel @Inject constructor(
     private val quranRepo: QuranRepo
 ) : ViewModel() {
     val uiState: StateFlow<QuranSearchUiState>
-        field = MutableStateFlow(QuranSearchUiState(isLoading = true))
+        field = MutableStateFlow(QuranSearchUiState())
     val searchFieldState = TextFieldState()
 
     /**

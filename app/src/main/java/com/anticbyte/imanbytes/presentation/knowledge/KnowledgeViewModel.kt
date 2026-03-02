@@ -58,6 +58,7 @@ class KnowledgeViewModel : ViewModel() {
     private fun buildKnowledgeItems(): List<KnowledgeItem> =
         buildList {
             add(KnowledgeItem.ASMA)
+            add(KnowledgeItem.SEARCH)
 
             if (remoteConfig.getBoolean("is_ramadan")) {
                 add(KnowledgeItem.RAMADAN)

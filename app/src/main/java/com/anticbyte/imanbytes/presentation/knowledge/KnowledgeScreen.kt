@@ -45,7 +45,8 @@ fun KnowledgeScreenRoute(
     navigateToHadith: () -> Unit,
     navigateToPillar: () -> Unit,
     navigateToAsma: () -> Unit,
-    navigateToRamadan: () -> Unit
+    navigateToRamadan: () -> Unit,
+    navigateToSearch: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     KnowledgeScreen(
@@ -54,6 +55,7 @@ fun KnowledgeScreenRoute(
         onNavigateToPillar = navigateToPillar,
         onNavigateToAsma = navigateToAsma,
         onNavigateToRamadan = navigateToRamadan,
+        onNavigateToSearch = navigateToSearch,
         screenState = state
     )
 }
@@ -77,6 +79,7 @@ fun KnowledgeScreen(
     onNavigateToPillar: () -> Unit = {},
     onNavigateToAsma: () -> Unit = {},
     onNavigateToRamadan: () -> Unit = {},
+    onNavigateToSearch: () -> Unit = {},
     screenState: KnowledgeScreenState
 ) {
     val scrollState = rememberScrollState()
@@ -111,6 +114,7 @@ fun KnowledgeScreen(
                         onNavigateToPillar = onNavigateToPillar,
                         onNavigateToAsma = onNavigateToAsma,
                         onNavigateToRamadan = onNavigateToRamadan,
+                        onNavigateToSearch = onNavigateToSearch,
                         items = screenState.knowledgeItems
                     )
                 }
@@ -131,6 +135,7 @@ fun KnowledgeItems(
     onNavigateToPillar: () -> Unit = {},
     onNavigateToAsma: () -> Unit = {},
     onNavigateToRamadan: () -> Unit = {},
+    onNavigateToSearch: () -> Unit = {},
     items: List<KnowledgeItem> = emptyList()
 ) {
     items.fastForEach { item ->
@@ -147,6 +152,7 @@ fun KnowledgeItems(
                     KnowledgeItem.ASMA -> onNavigateToAsma()
                     KnowledgeItem.RAMADAN -> onNavigateToRamadan()
 //                    KnowledgeItem.DUA -> {}
+                    KnowledgeItem.SEARCH -> onNavigateToSearch()
                 }
             },
             shapes = ListItemDefaults.segmentedShapes(item.ordinal, KnowledgeItem.entries.size)

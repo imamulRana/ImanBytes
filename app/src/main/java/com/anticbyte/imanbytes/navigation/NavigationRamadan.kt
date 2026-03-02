@@ -48,6 +48,8 @@ val RamadanCalendarNavType: NavType<RamadanCalender> =
 @Serializable
 data class RamadanDetailRoute(val ramadanCalender: String)
 
+@Serializable
+data object SearchRoute
 fun NavGraphBuilder.ramadanGraph(navController: NavHostController) {
     navigation<RamadanBaseRoute>(startDestination = RamadanRoute) {
         composable<RamadanRoute> {

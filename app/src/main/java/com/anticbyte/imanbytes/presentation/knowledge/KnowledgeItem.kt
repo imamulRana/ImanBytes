@@ -45,4 +45,10 @@ enum class KnowledgeItem(
             descriptionRes = R.string.ramadan_calendar_desc,
             leadingShape = MaterialShapes.Cookie4Sided
         )*/
+    SEARCH(
+        iconRes = R.drawable.ic_search,
+        titleRes = R.string.title_seerah,
+        descriptionRes = R.string.desc_seerah,
+        leadingShape = MaterialShapes.Circle
+    )
 }

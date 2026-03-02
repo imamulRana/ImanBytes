@@ -7,6 +7,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import com.anticbyte.imanbytes.feature.quran_search.QuranSearchRoute
 import com.anticbyte.imanbytes.presentation.knowledge.KnowledgeScreenRoute
 import com.anticbyte.imanbytes.presentation.knowledge.KnowledgeViewModel
 import com.anticbyte.imanbytes.presentation.screens.hadith.HadithScreen
@@ -35,11 +36,13 @@ fun NavGraphBuilder.knowledgeNavGraph(navController: NavHostController) {
                 navigateToHadith = { navController.navigate(HadithRoute) },
                 navigateToPillar = { navController.navigate(PillarRoute) },
                 navigateToAsma = { navController.navigate(AsmaRoute) },
+                navigateToSearch = { navController.navigate(SearchRoute) },
                 navigateToRamadan = { navController.navigate(RamadanRoute) }
             )
         }
         composable<HadithRoute> { HadithScreen() }
         composable<PillarRoute> { HadithScreen() }
+        composable<SearchRoute> { QuranSearchRoute() }
         asmaGraph(navController = navController)
         ramadanGraph(navController = navController)
     }

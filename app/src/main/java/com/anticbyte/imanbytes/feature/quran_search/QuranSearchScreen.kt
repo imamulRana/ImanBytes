@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
@@ -57,7 +58,10 @@ fun QuranSearchRoute(
     QuranSearchScreen(
         modifier = modifier,
         state = state,
-        textFieldState = viewModel.searchFieldState
+        textFieldState = viewModel.searchFieldState,
+        onSearch = {
+            viewModel.searchQuran(it)
+        }
     )
 }
 
@@ -65,7 +69,8 @@ fun QuranSearchRoute(
 fun QuranSearchScreen(
     modifier: Modifier = Modifier,
     state: QuranSearchUiState,
-    textFieldState: TextFieldState
+    textFieldState: TextFieldState,
+    onSearch: (String) -> Unit = {}
 ) {
     Scaffold(
         topBar = {
@@ -83,6 +88,7 @@ fun QuranSearchScreen(
             modifier = modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .imePadding()
         ) {
             when {
                 state.isLoading -> AppLoader()
@@ -98,43 +104,45 @@ fun QuranSearchScreen(
                         verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap)
                     ) {
                         val searchItems = state.searchItems
-                        if (searchItems != null && searchItems.results.isNotEmpty()) {
-                            item {
-                                TextField(
-                                    state = textFieldState,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(vertical = 16.dp),
-                                    shape = shapes.large,
-                                    colors = TextFieldDefaults.colors(
-                                        focusedContainerColor = colorScheme.surfaceContainerLowest,
-                                        unfocusedContainerColor = colorScheme.surfaceContainerLowest,
-                                        focusedIndicatorColor = Color.Transparent,
-                                        unfocusedIndicatorColor = Color.Transparent
-                                    ),
-                                    leadingIcon = {
-                                        Icon(
-                                            imageVector = ImageVector.vectorResource(R.drawable.ic_search),
-                                            null
-                                        )
-                                    },
-                                    placeholder = {
-                                        Text("Mercy, Faith, and Love")
-                                    },
-                                    trailingIcon = {
-                                        if (textFieldState.text.isNotEmpty())
-                                            IconButton(onClick = {}) {
-                                                Icon(
-                                                    imageVector = ImageVector.vectorResource(R.drawable.ic_close),
-                                                    null
-                                                )
-                                            }
-                                    }
+                        item {
+                            TextField(
+                                state = textFieldState,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 16.dp),
+                                shape = shapes.large,
+                                colors = TextFieldDefaults.colors(
+                                    focusedContainerColor = colorScheme.surfaceContainerLowest,
+                                    unfocusedContainerColor = colorScheme.surfaceContainerLowest,
+                                    focusedIndicatorColor = Color.Transparent,
+                                    unfocusedIndicatorColor = Color.Transparent
+                                ),
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = ImageVector.vectorResource(R.drawable.ic_search),
+                                        null
+                                    )
+                                },
+                                placeholder = {
+                                    Text("Mercy, Faith, and Love")
+                                },
+                                trailingIcon = {
+                                    if (textFieldState.text.isNotEmpty())
+                                        IconButton(onClick = {
+                                            onSearch(textFieldState.text.toString())
+                                        }) {
+                                            Icon(
+                                                imageVector = ImageVector.vectorResource(R.drawable.ic_close),
+                                                null
+                                            )
+                                        }
+                                }
 
-                                )
-                            }
+                            )
+                        }
+                        if (searchItems != null && searchItems.results.isNotEmpty())
                             quranSearchResults(searchResult = searchItems)
-                        } else {
+                        else {
                             item {
                                 Text(
                                     text = "No results found",
@@ -160,9 +168,8 @@ fun LazyListScope.quranSearchResults(searchResult: QuranSearch) {
                         null
                     )
                 }) {
-                Row() {
-                    Text(surah.transliteration)
-                    Text(" (${surah.translation})")
+                Row {
+                    Text(surah.transliteration + " (${surah.translation})", maxLines = 1)
                 }
             }
         }
@@ -172,9 +179,7 @@ fun LazyListScope.quranSearchResults(searchResult: QuranSearch) {
                 shapes = ListItemDefaults.segmentedShapes(index, verses.size),
                 supportingContent = {
                     Text(
-                        text = verse.text,
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = colorScheme.primary
+                        text = verse.text
                     )
                 },
                 overlineContent = {
@@ -185,7 +190,7 @@ fun LazyListScope.quranSearchResults(searchResult: QuranSearch) {
                 )
             ) {
                 val text = verse.translation
-                val regex = "merciful".toRegex(RegexOption.IGNORE_CASE)
+                val regex = searchResult.query.toRegex(RegexOption.IGNORE_CASE)
                 Text(
                     text = buildAnnotatedString {
                         append(text)
