@@ -42,7 +42,9 @@ fun NavGraphBuilder.knowledgeNavGraph(navController: NavHostController) {
         }
         composable<HadithRoute> { HadithScreen() }
         composable<PillarRoute> { HadithScreen() }
-        composable<SearchRoute> { QuranSearchRoute() }
+        composable<SearchRoute> {
+            QuranSearchRoute(onNavigateBack = { navController.navigateUp() })
+        }
         asmaGraph(navController = navController)
         ramadanGraph(navController = navController)
     }

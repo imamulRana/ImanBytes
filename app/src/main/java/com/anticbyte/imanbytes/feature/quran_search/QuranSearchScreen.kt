@@ -11,7 +11,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.clearText
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -26,15 +29,18 @@ import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -51,7 +57,8 @@ import com.anticbyte.imanbytes.theme.ImanBytesTheme
 @Composable
 fun QuranSearchRoute(
     modifier: Modifier = Modifier,
-    viewModel: QuranSearchViewmodel = hiltViewModel()
+    viewModel: QuranSearchViewmodel = hiltViewModel(),
+    onNavigateBack: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -61,7 +68,8 @@ fun QuranSearchRoute(
         textFieldState = viewModel.searchFieldState,
         onSearch = {
             viewModel.searchQuran(it)
-        }
+        },
+        navigateBack = onNavigateBack
     )
 }
 
@@ -70,17 +78,19 @@ fun QuranSearchScreen(
     modifier: Modifier = Modifier,
     state: QuranSearchUiState,
     textFieldState: TextFieldState,
-    onSearch: (String) -> Unit = {}
+    onSearch: (String) -> Unit = {},
+    navigateBack: () -> Unit = {}
 ) {
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             AppTopBar(
                 title = "Search",
                 subtitle = "Search for verses in the Quran, by a specific word or phrase",
                 isBackVisible = true,
-                onNavigationIconClick = {
-                    //todo back click logic
-                }
+                onNavigationIconClick = navigateBack,
+                scrollBehavior = scrollBehavior
             )
         }
     ) { innerPadding ->
@@ -128,16 +138,23 @@ fun QuranSearchScreen(
                                 },
                                 trailingIcon = {
                                     if (textFieldState.text.isNotEmpty())
-                                        IconButton(onClick = {
-                                            onSearch(textFieldState.text.toString())
-                                        }) {
+                                        IconButton(onClick = { textFieldState.clearText() }) {
                                             Icon(
                                                 imageVector = ImageVector.vectorResource(R.drawable.ic_close),
                                                 null
                                             )
                                         }
+                                },
+                                lineLimits = TextFieldLineLimits.SingleLine,
+                                keyboardOptions = KeyboardOptions(
+                                    imeAction = ImeAction.Search
+                                ),
+                                onKeyboardAction = {
+                                    val query = textFieldState.text.toString().trim()
+                                    if (query.isNotEmpty()) {
+                                        onSearch(query)
+                                    }
                                 }
-
                             )
                         }
                         if (searchItems != null && searchItems.results.isNotEmpty())
@@ -197,7 +214,10 @@ fun LazyListScope.quranSearchResults(searchResult: QuranSearch) {
 
                         regex.findAll(text).forEach {
                             addStyle(
-                                SpanStyle(color = Color.Green, fontWeight = FontWeight.Medium),
+                                SpanStyle(
+                                    color = colorScheme.tertiary,
+                                    fontWeight = FontWeight.Medium
+                                ),
                                 start = it.range.first,
                                 end = it.range.last + 1
                             )

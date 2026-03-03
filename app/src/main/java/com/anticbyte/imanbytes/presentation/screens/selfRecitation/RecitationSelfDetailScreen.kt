@@ -7,12 +7,15 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.exclude
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme.colorScheme
@@ -26,6 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
@@ -45,7 +49,9 @@ import com.anticbyte.imanbytes.presentation.component.AppLoader
 import com.anticbyte.imanbytes.presentation.component.AppTopBar
 import com.anticbyte.imanbytes.presentation.screens.audioRecitation.component.paddingWithoutTop
 import com.anticbyte.imanbytes.theme.ImanBytesTheme
+import com.anticbyte.imanbytes.utils.VerticalScrollBar
 import com.anticbyte.imanbytes.utils.lzColCustomPaddingNone
+import com.anticbyte.imanbytes.utils.rememberSliderState
 
 @Composable
 fun RecitationSelfDetailRoute(
@@ -71,6 +77,8 @@ fun RecitationSelfDetailScreen(
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     var showSheet by rememberSaveable { mutableStateOf(false) }
+    val listState = rememberLazyListState()
+    val sliderState = rememberSliderState()
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection), topBar = {
             AppTopBar(
@@ -95,7 +103,8 @@ fun RecitationSelfDetailScreen(
                 onRetry = {})
             else {
                 LazyColumn(
-                    contentPadding = lzColCustomPaddingNone
+                    contentPadding = lzColCustomPaddingNone,
+                    state = listState
                 ) {
                     txtRecitationItemDesc2(
                         revelationType = uiState.revelationType,
@@ -109,6 +118,14 @@ fun RecitationSelfDetailScreen(
                             showSheet = true
                         })
                 }
+                VerticalScrollBar(
+                    listState = listState,
+                    sliderState = sliderState,
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .navigationBarsPadding()
+                        .align(Alignment.CenterEnd)
+                )
                 RecitationSelfBottomSheet(
                     modifier = modifier.padding(horizontal = 16.dp),
                     showSheet = showSheet,

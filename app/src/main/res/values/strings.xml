@@ -49,4 +49,6 @@ This present world of ours is illuminated by the light of the sun, which is able
     <string name="suhoor_dua">وَبِصَوْمِ غَدٍ نَّوَيْتُ مِنْ شَهْرِ رَمَضَانَ</string>
     <string name="app_intro_desc">Iman Bytes is for the moments when your heart longs for peace. \n\nWhen noise feels empty, return to the words of Allah. Listen to the Qur’an, reflect on Surahs, Hadith, and Duas, and replace what distracts you with what brings light. Let your time become remembrance, and let remembrance bring you closer to the Lord of the worlds.</string>
     <string name="asma_husna_description">Allah\'s Messenger (ﷺ) said, "Allah has ninety-nine Names, one-hundred less one; and he who memorized them all by heart will enter Paradise." To count something means to know it by heart.</string>
+    <string name="search_the_entire_quran">Search the entire Quran</string>
+    <string name="find_what_you_want_in_the_quran">Find what you want in the Quran</string>
 </resources>

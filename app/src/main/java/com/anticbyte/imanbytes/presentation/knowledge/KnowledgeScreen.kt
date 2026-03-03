@@ -165,6 +165,14 @@ fun KnowledgeItems(
 @Composable
 private fun HomeScreenPreview() {
     ImanBytesTheme(dynamicColor = false) {
-        KnowledgeScreen(screenState = KnowledgeScreenState())
+        KnowledgeScreen(
+            screenState = KnowledgeScreenState(
+                knowledgeItems = listOf(
+                    KnowledgeItem.ASMA,
+                    KnowledgeItem.RAMADAN,
+                    KnowledgeItem.SEARCH
+                )
+            )
+        )
     }
 }
