@@ -6,9 +6,9 @@ junit = "4.13.2"
 junitVersion = "1.3.0"
 espressoCore = "3.7.0"
 lifecycleRuntimeKtx = "2.10.0"
-activityCompose = "1.12.3"
-composeBom = "2026.01.01"
-material3 = "1.5.0-alpha13"
+activityCompose = "1.13.0"
+composeBom = "2026.05.01"
+material3 = "1.5.0-alpha21"
 splash = "1.2.0"
 kotlinxSerializationJson = "1.10.0"
 navigationComponse = "2.9.7"
@@ -34,8 +34,12 @@ pref-dataStore = "1.2.0"
 playInAppUpdates = "2.1.0"
 
 #media3
-media3 = "1.9.2"
-firebaseBom = "34.9.0"
+media3 = "1.10.1"
+firebaseBom = "34.14.1"
+
+#credentials manager
+credentials = "1.6.0"
+identity = "1.2.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -96,6 +100,12 @@ firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.r
 firebase-config = { group = "com.google.firebase", name = "firebase-config" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
+firebase-auth = { module = "com.google.firebase:firebase-auth" }
+
+#credentials manager
+credentials = { module = "androidx.credentials:credentials", version.ref = "credentials" }
+play-services-auth = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "credentials" }
+identity = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "identity" }
 
 [bundles]
 ktor = [

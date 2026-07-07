@@ -49,7 +49,6 @@ android {
         }
         release {
             signingConfig = signingConfigs.getByName("release")
-            isMinifyEnabled = true
             isDebuggable = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -124,9 +123,15 @@ dependencies {
     implementation(libs.firebase.config)
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.auth)
 
     //pref datastore
     implementation(libs.pref.datastore)
+
+    //credentials manager
+    implementation(libs.credentials)
+    implementation(libs.play.services.auth)
+    implementation(libs.identity)
 
     //play in app updates
     implementation(libs.play.ktx)
