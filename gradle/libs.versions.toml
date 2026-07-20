@@ -1,5 +1,7 @@
 [versions]
 agp = "9.0.1"
+firebaseCrashlyticsGradle = "3.0.7"
+googleServicesVersion = "4.5.0"
 kotlin = "2.3.10"
 coreKtx = "1.17.0"
 junit = "4.13.2"
@@ -39,6 +41,8 @@ firebaseBom = "34.9.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+firebase-crashlytics-gradle-v307 = { module = "com.google.firebase:firebase-crashlytics-gradle", version.ref = "firebaseCrashlyticsGradle" }
+google-services-v450 = { module = "com.google.gms:google-services", version.ref = "googleServicesVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -57,6 +61,9 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3",
 android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 hilt-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hilt-android" }
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+google-services-gradle = { group = "com.google.gms", name = "google-services", version.ref = "googleServices" }
+crashlytics-gradle = { group = "com.google.firebase", name = "firebase-crashlytics-gradle", version.ref = "crashlytics" }
+compose-gradle = { group = "org.jetbrains.kotlin", name = "compose-compiler-gradle-plugin", version.ref = "kotlin" }
 
 #trusted time api
 google-trusted-time = { module = "com.google.android.gms:play-services-time", version.ref = "trustedTimeApi" }
